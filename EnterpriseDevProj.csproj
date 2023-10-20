@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="LearningApp\**" />
+	  <Compile Remove="wwwroot\**" />
+	  <Content Remove="LearningApp\**" />
+	  <Content Remove="wwwroot\**" />
+	  <EmbeddedResource Remove="LearningApp\**" />
+	  <EmbeddedResource Remove="wwwroot\**" />
+	  <None Remove="LearningApp\**" />
+	  <None Remove="wwwroot\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+		<PackageReference Include="JWT" Version="10.1.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="MySql.Data" Version="8.1.0" />
+		<PackageReference Include="MySqlConnector" Version="2.2.7" />
+		<PackageReference Include="Nanoid" Version="3.0.0" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
+</Project>
