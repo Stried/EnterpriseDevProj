@@ -1,0 +1,213 @@
+import { Button, Tabs } from "flowbite-react";
+import { AiOutlineUser } from "react-icons/ai";
+import { GrGroup } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import http from "../../http";
+import { ToastContainer, toast } from "react-toastify";
+
+function Register() {
+    const navigate = useNavigate();
+
+    const formikIndiv = useFormik({
+        initialValues: {
+            Name: "",
+            NRIC: "",
+            Email: "",
+            PhoneNumber: 0,
+            Password: "",
+            UserRole: "User",
+        },
+        validationSchema: yup.object().shape({
+            Name: yup
+                .string()
+                .trim()
+                .min(3, "Minimum 3 characters.")
+                .max(50, "Maximum 50 characters.")
+                .required(),
+            NRIC: yup
+                .string()
+                .trim()
+                .test(
+                    "len",
+                    "NRIC must be 9 characters only.",
+                    (v) => v.length == 9
+                ),
+            Email: yup
+                .string()
+                .email("Please enter a valid email account.")
+                .required(),
+            PhoneNumber: yup
+                .number()
+                .typeError("Phone Number must be a Singaporean Number.")
+                .integer("Phone Number must be a Singaporean Number.")
+                .min(80000000, "Phone Number must be a Singaporean Number.")
+                .max(99999999, "Phone Number must be a Singaporean Number.")
+                .required("Phone Number is required."),
+            Password: yup
+                .string()
+                .min(8, "Password must be 8 characters long.")
+                .max(100, "Password can be at most 100 characters long.")
+                .required(),
+        }),
+        onSubmit: async (data) => {
+            const formData = {
+                Name: (data.Name = data.Name.trim()),
+                NRIC: (data.NRIC = data.NRIC.trim()),
+                Email: (data.Email = data.Email.trim()),
+                PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
+                Password: (data.Password = data.Password.trim()),
+                UserRole: "User"
+            };
+
+            await http
+                .post("/user/Register", formData)
+                .then((res) => {
+                    console.log(res.data); //TODO: Remove b4 presentation
+                    navigate("/login");
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    toast.error(`${err.response.data.message}`);
+                });
+        },
+    });
+
+    return (
+        <div className="">
+            <Tabs style="fullWidth">
+                <Tabs.Item
+                    active
+                    title="Individual"
+                    icon={AiOutlineUser}
+                >
+                    <div className="p-5">
+                        <h1 className="text-xl font-medium">
+                            Individual Account Registration
+                        </h1>
+                        <form
+                            onSubmit={formikIndiv.handleSubmit}
+                            className="text-lg font-medium"
+                        >
+                            <div className="my-4">
+                                <label htmlFor="name">Name</label>
+                                <p className="opacity-70 italic">
+                                    Name as on your NRIC/Birth Certificate
+                                </p>
+                                <input
+                                    type="text"
+                                    name="Name"
+                                    id="Name"
+                                    onChange={formikIndiv.handleChange}
+                                    value={formikIndiv.values.Name}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                                {formikIndiv.errors.Name ? (
+                                    <div className="text-red-400">
+                                        *{formikIndiv.errors.Name}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="my-4">
+                                <label htmlFor="NRIC">NRIC</label>
+                                <p className="opacity-70 italic">
+                                    National Registration Identity Card (NRIC)
+                                    Number
+                                </p>
+                                <input
+                                    type="text"
+                                    name="NRIC"
+                                    id="NRIC"
+                                    onChange={formikIndiv.handleChange}
+                                    value={formikIndiv.values.NRIC}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                                {formikIndiv.errors.NRIC ? (
+                                    <div className="text-red-400">
+                                        *{formikIndiv.errors.NRIC}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="my-4">
+                                <label htmlFor="Email">Email Address</label>
+                                <p className="opacity-70 italic">
+                                    Email Address to send receipts and other
+                                    important information.
+                                </p>
+                                <input
+                                    type="email"
+                                    name="Email"
+                                    id="Email"
+                                    onChange={formikIndiv.handleChange}
+                                    value={formikIndiv.values.Email}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                                {formikIndiv.errors.Email ? (
+                                    <div className="text-red-400">
+                                        *{formikIndiv.errors.Email}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="my-4">
+                                <label htmlFor="PhoneNumber">
+                                    Phone Number
+                                </label>
+                                <p className="opacity-70 italic">
+                                    Phone Number for contacting and relay
+                                    information.
+                                </p>
+                                <input
+                                    type="number"
+                                    name="PhoneNumber"
+                                    id="PhoneNumber"
+                                    onChange={formikIndiv.handleChange}
+                                    value={formikIndiv.values.PhoneNumber}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                                {formikIndiv.errors.PhoneNumber ? (
+                                    <div className="text-red-400">
+                                        *{formikIndiv.errors.PhoneNumber}
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="my-4">
+                                <label htmlFor="Password">
+                                    Password
+                                </label>
+                                <p className="opacity-70 italic">
+                                    Account Password.
+                                </p>
+                                <input
+                                    type="password"
+                                    name="Password"
+                                    id="Password"
+                                    onChange={formikIndiv.handleChange}
+                                    value={formikIndiv.values.Password}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                                {formikIndiv.errors.Password ? (
+                                    <div className="text-red-400">
+                                        *{formikIndiv.errors.Password}
+                                    </div>
+                                ) : null}
+                            </div>
+
+                            <button type="submit" className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </Tabs.Item>
+                <Tabs.Item
+                    title="Corporate"
+                    icon={GrGroup}
+                >
+                    Hello World
+                </Tabs.Item>
+            </Tabs>
+        </div>
+    );
+}
+
+export default Register;
