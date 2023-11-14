@@ -31,6 +31,9 @@ namespace EnterpriseDevProj.Models
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set;}
 
+        [JsonIgnore]
+        public List<UserGroup>? UserGroups { get; set; }
+
 
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using static System.Net.WebRequestMethods;
@@ -37,7 +38,8 @@ namespace EnterpriseDevProj.Controllers
                 registerRequest.Email = registerRequest.Email.Trim();
                 registerRequest.NRIC = registerRequest.NRIC.Trim();
                 registerRequest.PhoneNumber = registerRequest.PhoneNumber;
-                registerRequest.Password = registerRequest.Password.Trim(); ;
+                registerRequest.Password = registerRequest.Password.Trim();
+                registerRequest.UserRole = registerRequest.UserRole.Trim();
 
                 var userAccCheck = dbContext.Users.Where(x => x.Email == registerRequest.Email).FirstOrDefault();
                 if (userAccCheck != null)
@@ -54,6 +56,7 @@ namespace EnterpriseDevProj.Controllers
                     NRIC = registerRequest.NRIC,
                     PhoneNumber = registerRequest.PhoneNumber,
                     Password = passwordEncrypt,
+                    UserRole = registerRequest.UserRole,
                     CreatedAt = now,
                     UpdatedAt = now,
                 };
@@ -148,6 +151,22 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpGet("getAllUsers"), Authorize(Roles = "Staff")]
+        public IActionResult getAllUsers(string? search)
+        {
+            IQueryable<User> userList = dbContext.Users;
+            if (search != null)
+            {
+                userList = userList.Where(x => x.Name.Contains(search) 
+                || x.Email.Contains(search) 
+                || x.NRIC.Contains(search)
+                || x.PhoneNumber.ToString().Contains(search));
+            }
+
+            var returnedUserList = userList.OrderBy(x => x.Name).ToList();
+            return Ok(returnedUserList);
+        }
+
         [HttpGet, Authorize]
         [ProducesResponseType(typeof (IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult getUserDetailsSelf()
@@ -173,8 +192,117 @@ namespace EnterpriseDevProj.Controllers
             return Ok(userDTO);
         }
 
-        [HttpGet(":userID"),  Authorize]
+        [HttpGet("{userID}"),  Authorize]
+        [ProducesResponseType(typeof (IEnumerable<UserDTO>), StatusCodes.Status200OK)] 
+        public IActionResult getUserDetailOther(int userID)
+        {
+            try
+            {
+                var userId = userID;
+                var userAccCheck = dbContext.Users.Find(userId);
+                if (userAccCheck == null)
+                {
+                    logger.LogError("User account not found.");
+                    return StatusCode(500);
+                }
 
+                var userDTO = mapper.Map<UserDTO>(userAccCheck);
+                return Ok(userDTO);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in retrieving other User Account. ERRCODE 1003");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("updateUser"), Authorize]
+        public IActionResult updateUserDetails(UpdateUserRequest request)
+        {
+            try
+            {
+                var userID = GetUserID();
+                var userAccCheck = dbContext.Users.Find(userID);
+
+                userAccCheck.Name = request.Name.Trim();
+                userAccCheck.Email = request.Email.Trim();
+                userAccCheck.PhoneNumber = request.PhoneNumber;
+
+                dbContext.Users.Update(userAccCheck);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in updating user data. ERRCODE 1004");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete(), Authorize]
+        public IActionResult deleteUserDetails()
+        {
+            try
+            {
+                var userID = GetUserID();
+                var userAccCheck = dbContext.Users.Find(userID);
+
+                dbContext.Users.Remove(userAccCheck);
+                dbContext.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in deleting user account. ERRCODE 1005");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("updateUserRole/{NRIC}"), Authorize(Roles = "Administrator")]
+        public IActionResult updateUserRole(string NRIC, UpdateUserRoleRequest roleUpdate)
+        {
+            var user = dbContext.Users.FirstOrDefault(x => x.NRIC == NRIC);
+            if (user == null)
+            {
+                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1006");
+                return StatusCode(500);
+            }
+
+            user.UserRole = roleUpdate.UserRole.Trim();
+
+            dbContext.Users.Update(user);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpPost("addGroup"), Authorize(Roles = "User")]
+        public IActionResult addUserGroup(UserGroup userGroup)
+        {
+            try
+            {
+                var userID = GetUserID();
+
+
+
+                UserGroup theUserGroup = new()
+                {
+                    GroupName = userGroup.GroupName.Trim(),
+                    //GroupMembers = 
+                };
+
+                // TODO: Implement adding group member as well as checking the total member count of the group
+                // Maximum group size should be around 6 to 8 maximum
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in adding members to group. ERRCODE 1007");
+                return StatusCode(500);
+            }
+        }
 
         private string CreateToken(User user)
         {
