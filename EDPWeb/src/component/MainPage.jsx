@@ -3,6 +3,7 @@ import "./../App.css";
 import { AiOutlineMenu } from "react-icons/ai";
 
 import backgroundMain1 from "./../../src/assets/backgroundMain1.jpg";
+import NavBar from "./NavBar";
 
 function MainPage() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -29,7 +30,7 @@ function MainPage() {
                     top:
                         menuClicks % 5 == 0 && menuClicks != 0
                             ? `${position.y - 100}px`
-                            : "550px",
+                            : "90vh",
                     position:
                         menuClicks % 5 == 0 && menuClicks != 0
                             ? "absolute"
@@ -40,23 +41,24 @@ function MainPage() {
             >
                 <AiOutlineMenu className="m-auto" />
             </button>
-            <div className="relative italic text-gray-100 font-medium text-5xl bg-[url('..\src\assets\backgroundMain1.jpg')] bg-center h-[88vh] bg-cover backdrop-brightness-50">
-                <div className="flex backdrop-brightness-50 w-full h-full">
-                    <div className="w-[10%]"></div>
-                    <div className="my-auto w-1/3">
-                        <p className="">
+            <div className="relative bg-[url('..\src\assets\backgroundMain1.jpg')] bg-center h-[100vh] bg-cover backdrop-brightness-40">
+                <div className="flex-col backdrop-brightness-50 w-full h-full">
+                    <NavBar />
+                    <div className="flex items-center h-full">
+                        <div className="w-[15%]"></div>
+                        <p className="italic text-gray-100 font-medium text-6xl mb-20">
                             You play. <br />
                             We'll do the rest.
+                            <div className=""> {/* this is to make the button be below the text */}
+                                <button className="text-xl bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md hover:brightness-90 transition-all duration-300 ease-in-out">
+                                    Book an Activity
+                                </button>
+                            </div>
                         </p>
-                        <div className="">
-                            <button className="text-xl bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md hover:brightness-90 transition-all duration-300 ease-in-out">
-                                Book an Activity
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
-            <div className="py-10 px-20">
+            <div className="py-10 px-20 mt-16">
                 <h1 className="text-center text-3xl font-bold">About UPlay</h1>
                 <h2 className="text-2xl italic font-semibold pt-5">
                     You Play, We'll Do The Rest

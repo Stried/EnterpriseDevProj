@@ -21,9 +21,8 @@ function App() {
   };
     
     return (
-        <div className="w-screen min-h-screen h-full bg-gray-100">
+        <div className="w-screen min-h-screen h-full">
             <Router>
-                <NavBar />
                 <div className="">
                     <Routes>
                         <Route path="/" element={ <MainPage /> } />
