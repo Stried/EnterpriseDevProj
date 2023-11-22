@@ -4,6 +4,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 
 import backgroundMain1 from "./../../src/assets/backgroundMain1.jpg";
 import NavBar from "./NavBar";
+import NavBarMainpage from "./NavBarMainpage";
 
 function MainPage() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -43,7 +44,7 @@ function MainPage() {
             </button>
             <div className="relative bg-[url('..\src\assets\backgroundMain1.jpg')] bg-center h-[100vh] bg-cover backdrop-brightness-40">
                 <div className="flex-col backdrop-brightness-50 w-full h-full">
-                    <NavBar />
+                    <NavBarMainpage />
                     <div className="flex items-center h-full">
                         <div className="w-[15%]"></div>
                         <p className="italic text-gray-100 font-medium text-6xl mb-20">
