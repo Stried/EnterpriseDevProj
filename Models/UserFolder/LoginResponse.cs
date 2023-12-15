@@ -1,4 +1,4 @@
-﻿namespace EnterpriseDevProj.Models
+﻿namespace EnterpriseDevProj.Models.UserFolder
 {
     public class LoginResponse
     {

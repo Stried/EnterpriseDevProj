@@ -1,4 +1,4 @@
-﻿using EnterpriseDevProj.Models;
+﻿using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Metadata;
@@ -29,6 +29,10 @@ namespace EnterpriseDevProj
         }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<UserGroup> UserGroups { get; set; }
+
+        public DbSet<UserGroupLink> UserGroupLinks { get; set; }
     }
 }
 

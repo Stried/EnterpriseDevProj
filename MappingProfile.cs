@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EnterpriseDevProj.Models;
+using EnterpriseDevProj.Models.UserFolder;
 
 namespace EnterpriseDevProj
 {

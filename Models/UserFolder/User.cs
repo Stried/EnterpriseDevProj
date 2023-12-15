@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EnterpriseDevProj.Models
+namespace EnterpriseDevProj.Models.UserFolder
 {
     public class User
     {
@@ -29,7 +29,7 @@ namespace EnterpriseDevProj.Models
         public DateTime CreatedAt { get; set; }
 
         [Column(TypeName = "datetime")]
-        public DateTime UpdatedAt { get; set;}
+        public DateTime UpdatedAt { get; set; }
 
         [JsonIgnore]
         public List<UserGroup>? UserGroups { get; set; }

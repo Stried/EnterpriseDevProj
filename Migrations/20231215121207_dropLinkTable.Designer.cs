@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231215121207_dropLinkTable")]
+    partial class dropLinkTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,36 +93,6 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("UserGroups");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroupLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("GroupID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int?>("UserGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserGroupId");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserGroupLinks");
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
@@ -129,23 +102,6 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroupLink", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.UserGroup", "UserGroup")
-                        .WithMany()
-                        .HasForeignKey("UserGroupId");
-
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("UserGroup");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>

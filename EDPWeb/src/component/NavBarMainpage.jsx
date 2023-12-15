@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import LogoUPlay from "./../assets/logo_uplay.png";
+import UserContext from "../Users/UserContext";
 
 function NavBarMainpage() {
+    const { user } = useContext(UserContext);
+
     return (
         <div
             className={
@@ -44,12 +47,22 @@ function NavBarMainpage() {
                 >
                     MEMBERSHIP
                 </Link>
-                <Link
-                    to={"/login"}
-                    className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
-                >
-                    LOGIN
-                </Link>
+                {!user && (
+                    <Link
+                        to={"/login"}
+                        className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    >
+                        LOGIN
+                    </Link>
+                )}
+                {user && (
+                    <Link
+                        to={"/account"}
+                        className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    >
+                        {user.name}
+                    </Link>
+                )}
             </div>
         </div>
     );

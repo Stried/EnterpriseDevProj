@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,16 +11,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231215014504_UpdatedUserGroups2")]
+    partial class UpdatedUserGroups2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +66,7 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.UserGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -80,17 +83,17 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserGroups");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroupLink", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.UserGroupLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,47 +102,42 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("GroupID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("UserGroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserGroupId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserGroupLinks");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.UserGroup", b =>
                 {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                    b.HasOne("EnterpriseDevProj.Models.User", "User")
                         .WithMany("UserGroups")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroupLink", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.UserGroupLink", b =>
                 {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.UserGroup", "UserGroup")
+                    b.HasOne("EnterpriseDevProj.Models.UserGroup", "UserGroup")
                         .WithMany()
                         .HasForeignKey("UserGroupId");
 
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                    b.HasOne("EnterpriseDevProj.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -148,7 +146,7 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("UserGroup");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.User", b =>
                 {
                     b.Navigation("UserGroups");
                 });

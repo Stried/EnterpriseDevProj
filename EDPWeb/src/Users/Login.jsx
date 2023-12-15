@@ -7,9 +7,12 @@ import * as yup from "yup";
 import http from "../../http";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useContext } from "react";
+import UserContext from "./UserContext";
 
 function Login() {
     const navigate = useNavigate();
+    const { setUser } = useContext(UserContext);
 
     const formikIndiv = useFormik({
         initialValues: {
@@ -28,12 +31,14 @@ function Login() {
 
             await http.post("/user/Login", formData)
                 .then((res) => {
-                    console.log(res.data);
-                    localStorage.setItem("accessToken", res.data)
+                    console.log(res.data.user);
+                    localStorage.setItem("accessToken", res.data.accessToken)
+                    setUser(res.data.user);
+                    navigate("/")
                 })
                 .catch(function (err) {
                     console.log(err);
-                    toast.error(`${err.response.data}`)
+                    toast.error(`${err.response.data.message}`)
                 })
         },
     });
@@ -60,7 +65,7 @@ function Login() {
                 })
                 .catch(function (err) {
                     console.log(err);
-                    toast.error(`${err.response.data}`);
+                    toast.error(`${err.response.data.message}`);
                 })
         },
     });

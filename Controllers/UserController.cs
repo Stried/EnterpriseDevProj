@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EnterpriseDevProj.Models;
+using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using static System.Net.WebRequestMethods;
+
 namespace EnterpriseDevProj.Controllers
 {
     [ApiController]
@@ -126,8 +127,6 @@ namespace EnterpriseDevProj.Controllers
             try
             {
                 var id = Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
-                var name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).SingleOrDefault();
-                var email = User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
                 var userRole = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
 
                 if (id != 0)
@@ -140,7 +139,7 @@ namespace EnterpriseDevProj.Controllers
                 }
                 else
                 {
-                    logger.LogInformation($"{id}, {name}, {email}");
+                    logger.LogInformation($"{id}");
                     return Unauthorized();
                 }
             }
@@ -277,32 +276,6 @@ namespace EnterpriseDevProj.Controllers
             return Ok();
         }
 
-        [HttpPost("addGroup"), Authorize(Roles = "User")]
-        public IActionResult addUserGroup(UserGroup userGroup)
-        {
-            try
-            {
-                var userID = GetUserID();
-
-
-
-                UserGroup theUserGroup = new()
-                {
-                    GroupName = userGroup.GroupName.Trim(),
-                    //GroupMembers = 
-                };
-
-                // TODO: Implement adding group member as well as checking the total member count of the group
-                // Maximum group size should be around 6 to 8 maximum
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error in adding members to group. ERRCODE 1007");
-                return StatusCode(500);
-            }
-        }
 
         private string CreateToken(User user)
         {

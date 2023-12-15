@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EnterpriseDevProj.Models
+namespace EnterpriseDevProj.Models.UserFolder
 {
     public class UpdateUserRoleRequest
     {
