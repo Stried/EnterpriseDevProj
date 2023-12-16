@@ -8,7 +8,7 @@ function NavBar() {
     const { user } = useContext(UserContext);
 
     return (
-        <div className="flex px-4 py-5 text-3xl w-screen z-50 bg-transparent justify-between bg-white shadow-md">
+        <div className="flex px-4 py-5 text-3xl w-screen z-50 justify-between bg-stone-100 shadow-lg">
             <div
                 // className="w-1/4"
                 id="logoArea"

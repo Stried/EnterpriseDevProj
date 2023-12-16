@@ -158,6 +158,17 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpGet("getUserGroups"), Authorize(Roles = "User")]
+        [ProducesResponseType(typeof(IEnumerable<UserGroup>), StatusCodes.Status200OK)]
+        public IActionResult GetUserGroups(string? search)
+        {
+            try
+            {
+                var userID = GetUserID();
+                IQueryable<UserGroupLink> groupList = dbContext.UserGroupLinks.Where(x => x.UserID == userID);
+            }
+        }
+
         private int GetUserID()
         {
             try
