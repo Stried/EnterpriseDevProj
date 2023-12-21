@@ -7,7 +7,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Footer } from "flowbite-react";
-import http from "./../http"
+import http from "./../http";
 
 import backgroundMain1 from "./../src/assets/backgroundMain1.jpg";
 import MainPage from "./component/MainPage";
@@ -15,12 +15,13 @@ import Register from "./Users/Register";
 import Login from "./Users/Login";
 import UserContext from "./Users/UserContext";
 import UserAccount from "./Users/UserAccount";
+import MembershipMain from "./Membership/MembershipMain";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [ menuClicks, setMenuClicks ] = useState(0);
-    const [ navbarVis, setNavbarVis ] = useState(null);
-    const [ user, setUser ] = useState(null);
+    const [menuClicks, setMenuClicks] = useState(0);
+    const [navbarVis, setNavbarVis] = useState(null);
+    const [user, setUser] = useState(null);
 
     const handleMouseMove = (e) => {
         setTimeout(() => {
@@ -42,12 +43,12 @@ function App() {
         };
 
         handleLocationChange();
-    }, [ location.pathname, navbarVis ])
+    }, [location.pathname, navbarVis]);
 
     useEffect(() => {
         console.log(user);
-    })
-    
+    });
+
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
             http.get("/user", {
@@ -58,7 +59,7 @@ function App() {
                 },
             })
                 .then((res) => {
-                    setUser(res.data)
+                    setUser(res.data);
                     console.log(user);
                 })
                 .catch(function (err) {
@@ -85,7 +86,14 @@ function App() {
                             path="/login"
                             element={<Login />}
                         />
-                        <Route path="/account" element={<UserAccount />} />
+                        <Route
+                            path="/membership"
+                            element={<MembershipMain />}
+                        />
+                        <Route
+                            path="/account"
+                            element={<UserAccount />}
+                        />
                     </Routes>
                 </div>
             </div>

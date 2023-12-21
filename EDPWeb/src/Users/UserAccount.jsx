@@ -1,13 +1,33 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import { Spinner, Card, Avatar } from "flowbite-react";
 import { Link } from "react-router-dom";
+import http from "./../../http";
 
 import { MdEmail, MdPhone } from "react-icons/md";
 
 function UserAccount() {
     const { user } = useContext(UserContext);
     const [ currentOption, setCurrentOption ] = useState("optionOne");
+    const [ groupsList, setGroupsList ] = useState([]);
+
+    useEffect(() => {
+        if (localStorage.getItem("accessToken")) {
+            http.get("/group/getUserGroups", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            })
+                .then((res) => {
+                    setGroupsList(res.data);
+                    console.log(res.data);
+                    console.log(res.data.length);
+                })
+                .catch(function (err) {
+                    console.log(err);
+            })
+        }
+    }, [])
     
     return (
         <div className="min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400">
@@ -132,6 +152,21 @@ function UserAccount() {
                                 <h1 className="text-3xl font-light">
                                     Groups
                                 </h1>
+                                <div className="">
+                                    { groupsList.length != 0 ? (
+                                        groupsList.map((groups, i) => {
+                                            return (
+                                                <div className="">
+                                                    {groups.groupName}
+                                                </div>
+                                            )
+                                        })
+                                    ) : (
+                                            <div className="">
+                                                <p>You are currently not part of any groups.</p>
+                                            </div>
+                                    )}
+                                </div>
                             </div>
                         )}
 

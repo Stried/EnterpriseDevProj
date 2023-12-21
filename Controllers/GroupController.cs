@@ -165,7 +165,19 @@ namespace EnterpriseDevProj.Controllers
             try
             {
                 var userID = GetUserID();
-                IQueryable<UserGroupLink> groupList = dbContext.UserGroupLinks.Where(x => x.UserID == userID);
+
+                // try to solve this
+                var groups = from userGroups in dbContext.UserGroupLinks
+                             join groupEntity in dbContext.UserGroups on userGroups.GroupID equals groupEntity.Id
+                             where userID == groupEntity.UserID
+                             select groupEntity;
+                
+                return Ok(groups);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in Retrieving User Groups. ERRCODE 1011");
+                return StatusCode(500);
             }
         }
 
