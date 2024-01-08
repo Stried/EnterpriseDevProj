@@ -22,7 +22,8 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         [Required, Range(1, 200)]
         public int MaxPax { get; set; }
-        
+
+        [Required]
         public bool Approval { get; set; }
 
         [Required]
@@ -34,7 +35,7 @@ namespace EnterpriseDevProj.Models.EventFolder
         [Required]
         public DateOnly ExpiryDate { get; set; }
 
-        [Range(0, 200)]
+        [Required, Range(0, 200)]
         public int RemainingPax {  get; set; }
 
         public float AvgRating { get; set; }
