@@ -151,7 +151,39 @@ function UserAccount() {
                     <div className="w-2/3 p-10 bg-stone-100 rounded-lg">
                         {currentOption == "optionOne" && (
                             <div className="text-black">
-                                <button onClick={() => {logout()}}>
+                                <div className="pb-7">
+                                    <p className="text-lg">FULL NAME</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.name}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">NRIC</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.nric}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">EMAIL ADDRESS</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.email}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">PHONE NUMBER</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.phoneNumber}
+                                    </h2>
+                                </div>
+                                <button
+                                    className="my-10"
+                                    onClick={() => {
+                                        logout();
+                                    }}
+                                >
                                     Log Out
                                 </button>
                             </div>
@@ -163,22 +195,23 @@ function UserAccount() {
 
                         {currentOption == "optionThree" && (
                             <div className="text-black">
-                                <h1 className="text-3xl font-light">
-                                    Groups
-                                </h1>
+                                <h1 className="text-3xl font-light">Groups</h1>
                                 <div className="">
-                                    { groupsList.length != 0 ? (
+                                    {groupsList.length != 0 ? (
                                         groupsList.map((groups, i) => {
                                             return (
                                                 <div className="">
                                                     {groups.groupName}
                                                 </div>
-                                            )
+                                            );
                                         })
                                     ) : (
-                                            <div className="">
-                                                <p>You are currently not part of any groups.</p>
-                                            </div>
+                                        <div className="">
+                                            <p>
+                                                You are currently not part of
+                                                any groups.
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
