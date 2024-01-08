@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import { Spinner, Card, Avatar } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import http from "./../../http";
 
 import { MdEmail, MdPhone } from "react-icons/md";
@@ -28,6 +28,16 @@ function UserAccount() {
             })
         }
     }, [])
+
+    const navigate = useNavigate();
+
+    const logout = () => {
+        if (localStorage.getItem("accessToken")) {
+            localStorage.removeItem("accessToken");
+            navigate("/");
+            window.location.reload();
+        }
+    }
     
     return (
         <div className="min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400">
@@ -140,7 +150,11 @@ function UserAccount() {
                     </div>
                     <div className="w-2/3 p-10 bg-stone-100 rounded-lg">
                         {currentOption == "optionOne" && (
-                            <div className="text-black">HAH GAY</div>
+                            <div className="text-black">
+                                <button onClick={() => {logout()}}>
+                                    Log Out
+                                </button>
+                            </div>
                         )}
 
                         {currentOption == "optionTwo" && (

@@ -269,6 +269,17 @@ function Register() {
                                 >
                                     Submit
                                 </button>
+                                <div className="py-5">
+                                    <p>
+                                        Already have an account?{" "}
+                                        <a
+                                            href="/register"
+                                            className="text-blue-600 visited:text-purple-600"
+                                        >
+                                            Log In
+                                        </a>
+                                    </p>
+                                </div>
                             </form>
                         </div>
                     </div>
