@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Metadata;
-
+using EnterpriseDevProj.Models.EventFolder;
 namespace EnterpriseDevProj
 {
     public class MyDbContext : DbContext    
@@ -33,6 +33,7 @@ namespace EnterpriseDevProj
         public DbSet<UserGroup> UserGroups { get; set; }
 
         public DbSet<UserGroupLink> UserGroupLinks { get; set; }
+        public DbSet<Event> Events { get; set; }
     }
 }
 
