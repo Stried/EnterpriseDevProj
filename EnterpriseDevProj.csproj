@@ -8,13 +8,9 @@
 
 	<ItemGroup>
 	  <Compile Remove="LearningApp\**" />
-	  <Compile Remove="wwwroot\**" />
 	  <Content Remove="LearningApp\**" />
-	  <Content Remove="wwwroot\**" />
 	  <EmbeddedResource Remove="LearningApp\**" />
-	  <EmbeddedResource Remove="wwwroot\**" />
 	  <None Remove="LearningApp\**" />
-	  <None Remove="wwwroot\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,5 +33,9 @@
 		<PackageReference Include="Nanoid" Version="3.0.0" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 </Project>

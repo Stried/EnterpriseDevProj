@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import { Spinner, Card, Avatar } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import http from "./../../http";
 
 import { MdEmail, MdPhone } from "react-icons/md";
@@ -28,6 +28,16 @@ function UserAccount() {
             })
         }
     }, [])
+
+    const navigate = useNavigate();
+
+    const logout = () => {
+        if (localStorage.getItem("accessToken")) {
+            localStorage.removeItem("accessToken");
+            navigate("/");
+            window.location.reload();
+        }
+    }
     
     return (
         <div className="min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400">
@@ -140,7 +150,43 @@ function UserAccount() {
                     </div>
                     <div className="w-2/3 p-10 bg-stone-100 rounded-lg">
                         {currentOption == "optionOne" && (
-                            <div className="text-black">HAH GAY</div>
+                            <div className="text-black">
+                                <div className="pb-7">
+                                    <p className="text-lg">FULL NAME</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.name}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">NRIC</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.nric}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">EMAIL ADDRESS</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.email}
+                                    </h2>
+                                </div>
+
+                                <div className="pb-7">
+                                    <p className="text-lg">PHONE NUMBER</p>
+                                    <h2 className="text-3xl font-medium leading-6">
+                                        {user.phoneNumber}
+                                    </h2>
+                                </div>
+                                <button
+                                    className="my-10"
+                                    onClick={() => {
+                                        logout();
+                                    }}
+                                >
+                                    Log Out
+                                </button>
+                            </div>
                         )}
 
                         {currentOption == "optionTwo" && (
@@ -149,22 +195,23 @@ function UserAccount() {
 
                         {currentOption == "optionThree" && (
                             <div className="text-black">
-                                <h1 className="text-3xl font-light">
-                                    Groups
-                                </h1>
+                                <h1 className="text-3xl font-light">Groups</h1>
                                 <div className="">
-                                    { groupsList.length != 0 ? (
+                                    {groupsList.length != 0 ? (
                                         groupsList.map((groups, i) => {
                                             return (
                                                 <div className="">
                                                     {groups.groupName}
                                                 </div>
-                                            )
+                                            );
                                         })
                                     ) : (
-                                            <div className="">
-                                                <p>You are currently not part of any groups.</p>
-                                            </div>
+                                        <div className="">
+                                            <p>
+                                                You are currently not part of
+                                                any groups.
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
