@@ -33,7 +33,7 @@ function ApplyEvent() {
 
     const handleRadioChange = (event) => {
         setSelectedRadio(event.target.value);
-        formikEvent.handleChange(event); // Update Formik state
+        formikEvent.handleChange(event); 
       };
 
     const formikEvent = useFormik({
@@ -51,7 +51,7 @@ function ApplyEvent() {
             AvgRating: 0.0,
             DateType: "",
             ContentHTML: "",
-            UserID: 0, // Assuming UserID should have a default value, you can adjust accordingly
+            UserID: 0, 
         },
         validationSchema: yup.object().shape({
             EventName: yup
