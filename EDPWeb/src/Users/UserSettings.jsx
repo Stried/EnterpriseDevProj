@@ -66,17 +66,41 @@ function UserSettings() {
             };
 
             await http
-                .post("/user/updateUser", formData)
+                .put("/user/updateUser", formData, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "accessToken"
+                        )}`, // This is needed for mine for some reason, not part of the practical
+                    },
+                })
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/account")
+                    navigate("/account");
+                    window.location.reload();
                 })
                 .catch(function (err) {
                     console.log(err);
                     toast.error(`${err.response.data}`);
-            })
+                });
         }
     })
+
+    // TODO: Will complete later
+    // const formikPassword = useFormik({
+    //     initialValues: {
+    //         Password: "",
+    //     },
+    //     validationSchema: yup.object().shape({
+    //         Password: yup
+    //             .string()
+    //             .min(8, "Password must be 8 characters long.")
+    //             .max(100, "Password can be at most 100 characters long.")
+    //             .required(),
+    //     }),
+    //     onSubmit: async (data) => {
+    //         await http.post
+    //     }
+    // });
 
     return (
         <div className="">
