@@ -23,8 +23,8 @@ export default ({ onChange, options, value, classnames }) => {
           colors: {
             ...theme.colors,
 
-            primary25: '#22c55e',
-            primary: '#22c55e',
+            primary25: '#EF5350',
+            primary: '#EF5350',
           },
         })}
       
