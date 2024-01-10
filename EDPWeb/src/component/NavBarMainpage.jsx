@@ -31,26 +31,26 @@ function NavBarMainpage() {
             <div className="flex px-5 space-x-5 text-lg font-[450] my-auto tracking-tight text-white">
                 <Link
                     to={""}
-                    className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     EVENTS
                 </Link>
                 <Link
                     to={""}
-                    className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     PLUG & PLAY
                 </Link>
                 <Link
                     to={"/membership"}
-                    className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     MEMBERSHIP
                 </Link>
                 {!user && (
                     <Link
                         to={"/login"}
-                        className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                        className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                     >
                         LOGIN
                     </Link>
@@ -58,7 +58,7 @@ function NavBarMainpage() {
                 {user && (
                     <Link
                         to={"/account"}
-                        className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                        className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                     >
                         {user.name}
                     </Link>

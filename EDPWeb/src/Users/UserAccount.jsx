@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import http from "./../../http";
 
 import { MdEmail, MdPhone } from "react-icons/md";
+import { FaPen } from "react-icons/fa";
+import UserSettings from "./UserSettings";
+
 
 function UserAccount() {
     const { user } = useContext(UserContext);
@@ -38,6 +41,24 @@ function UserAccount() {
             window.location.reload();
         }
     }
+
+    useEffect(() => {
+        if (localStorage.getItem("accessToken")) {
+            http.get("/user", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`, // This is needed for mine for some reason, not part of the practical
+                },
+            })
+                .then((res) => {
+                    console.log(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+    }, []);
     
     return (
         <div className="min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400">
@@ -144,7 +165,7 @@ function UserAccount() {
                                 }
                                 onClick={() => setCurrentOption("optionSix")}
                             >
-                                <button>Placeholder Option 6</button>
+                                <button>Settings</button>
                             </div>
                         </nav>
                     </div>
@@ -152,34 +173,46 @@ function UserAccount() {
                         {currentOption == "optionOne" && (
                             <div className="text-black">
                                 <div className="pb-7">
-                                    <p className="text-lg">FULL NAME</p>
-                                    <h2 className="text-3xl font-medium leading-6">
+                                    <p className="text-lg flex">
+                                        FULL NAME{" "}
+                                        <FaPen className="my-auto mx-2" />
+                                    </p>
+                                    <h2 className="text-2xl font-medium leading-6">
                                         {user.name}
                                     </h2>
                                 </div>
 
                                 <div className="pb-7">
-                                    <p className="text-lg">NRIC</p>
-                                    <h2 className="text-3xl font-medium leading-6">
+                                    <p className="text-lg flex">
+                                        NRIC <FaPen className="my-auto mx-2" />
+                                    </p>
+                                    <h2 className="text-2xl font-medium leading-6">
                                         {user.nric}
                                     </h2>
                                 </div>
 
                                 <div className="pb-7">
-                                    <p className="text-lg">EMAIL ADDRESS</p>
-                                    <h2 className="text-3xl font-medium leading-6">
+                                    <p className="text-lg flex">
+                                        EMAIL ADDRESS{" "}
+                                        <FaPen className="my-auto mx-2" />
+                                    </p>
+                                    <h2 className="text-2xl font-medium leading-6">
                                         {user.email}
                                     </h2>
                                 </div>
 
                                 <div className="pb-7">
-                                    <p className="text-lg">PHONE NUMBER</p>
-                                    <h2 className="text-3xl font-medium leading-6">
+                                    <p className="text-lg flex">
+                                        PHONE NUMBER{" "}
+                                        <FaPen className="my-auto mx-2" />
+                                    </p>
+                                    <h2 className="text-2xl font-medium leading-6">
                                         {user.phoneNumber}
                                     </h2>
                                 </div>
+
                                 <button
-                                    className="my-10"
+                                    className="my-10 text-lg"
                                     onClick={() => {
                                         logout();
                                     }}
@@ -226,7 +259,10 @@ function UserAccount() {
                         )}
 
                         {currentOption == "optionSix" && (
-                            <div className="text-black">HAH GAY</div>
+                            <div className="text-black">
+                                <UserSettings />
+                                
+                            </div>
                         )}
                     </div>
                 </div>

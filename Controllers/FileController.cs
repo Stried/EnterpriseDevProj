@@ -21,7 +21,7 @@ namespace EnterpriseDevProj.Controllers
             if (file.Length > 2048 * 2048)
             {
                 var message = "Maximum file size is 2MB";
-                return BadRequest(new {message });
+                return BadRequest(new { message });
             }
 
             var id = Nanoid.Generate(size: 10);
