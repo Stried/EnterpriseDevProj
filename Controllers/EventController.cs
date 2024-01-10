@@ -30,7 +30,7 @@ namespace EnterpriseDevProj.Controllers
             .Where(c => c.Type == ClaimTypes.NameIdentifier)
             .Select(c => c.Value).SingleOrDefault());
         }
-        [HttpPost, Authorize]
+        [HttpPost("EventApplication"), Authorize]
         public IActionResult AddEvent(Event eventModel)
         {
             try
