@@ -234,7 +234,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpDelete("EventId"), Authorize]
+        [HttpDelete("{EventId}"), Authorize]
         public IActionResult DeleteEventApplication(int EventId)
         {
             try { 
