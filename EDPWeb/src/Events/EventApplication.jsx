@@ -131,8 +131,14 @@ function ApplyEvent() {
         UserID: user.id,
       };
       console.log(formData);
-      await http
-        .post("/event/Applications", formData)
+      await 
+        http.post("/event/Applications", formData, {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                  "accessToken"
+              )}`, // This is needed for mine for some reason, not part of the practical
+          },
+      })
         .then((res) => {
           console.log(res.data);
           navigate("/");

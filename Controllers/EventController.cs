@@ -25,7 +25,7 @@ namespace EnterpriseDevProj.Controllers
         }
 
 
-        [HttpPost("Applications")]
+        [HttpPost("Applications"), Authorize]
         [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
         public IActionResult AddEvents(EventApplication data)
         {
