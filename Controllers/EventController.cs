@@ -165,8 +165,8 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpGet("{EventId}"), Authorize]
-        public IActionResult GetTutorial(int EventId)
+        [HttpGet("Details/{EventId}"), Authorize]
+        public IActionResult GetEvent(int EventId)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace EnterpriseDevProj.Controllers
                 }
 
 
-                eventModel.Approval = eventModel.Approval;
+                eventModel.Approval = true;
                 eventModel.EventUpdatedAt = DateTime.Now;
 
                 dbContext.SaveChanges();

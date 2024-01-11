@@ -9,13 +9,12 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-import { Modal } from "flowbite-react";
+
 import http from "../../http";
 import { Box, IconButton } from "@mui/material";
 const EventApplications = () => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
-  const [openModals, setOpenModals] = useState([]);
   useEffect(() => {
     http.get('/event/GetAllApplications').then((res) => {
     console.log(res.data);
@@ -23,13 +22,7 @@ const EventApplications = () => {
     });
     }, []);
 
-    const toggleModal = (index) => {
-      setOpenModals((prevOpenModals) => {
-        const updatedModals = [...prevOpenModals];
-        updatedModals[index] = !updatedModals[index];
-        return updatedModals;
-      });
-    };
+
   
     function convertDateFormat(dateStr) {
       // Parse the input date string using Date object
@@ -140,8 +133,24 @@ const EventApplications = () => {
                     </a>
                   </div>
                 </th>
-                <th scope="col" class="px-6 py-3">
-                  <span class="sr-only">Edit</span>
+                <th
+                  scope="col"
+                  class="px-6 py-3"
+                >
+                  <div class="flex items-center">
+                    Base Entry Fee
+                    <a href="#">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
                 </th>
                 <th className="pl-20">
                   <div
@@ -193,62 +202,16 @@ const EventApplications = () => {
                     <td class="px-6 py-4">{event.userID}</td>
                     <td class="px-6 py-4">{convertDateFormat(event.eventCreatedAt)}</td>
                     <td class="px-6 py-4">{event.activityType}</td>
+                    <td class="px-6 py-4">{event.eventPrice}</td>
                     <td>
                       <Link
-                        to={`/event/Approval/${event.eventId}`}
+                        to={`/eventapplicationdetailed/Details/${event.eventId}`}
                         className="bg-orange-400 p-2 px-5 rounded-md text-black hover:bg-green-600 hover:text-white "
                       >
                         View Details
                       </Link>
                     </td>
-                    <td class="pl-0 pr-4 py-4 text-right">
-                      <a
-                        onClick={() => {
-                          toggleModal(i);
-                        }}
-                        href="#"
-                        className="bg-red-500 p-2 px-5 rounded-md text-black hover:bg-red-600 hover:text-white "
-                      >
-                        Decline
-                      </a>
-                      <Modal
-                        dismissible
-                        show={openModals[i] === true}
-                        onClose={() => toggleModal(i)}
-                      >
-                        <Modal.Header>Trial Car Deletion</Modal.Header>
-                        <Modal.Body>
-                          <div className="space-y-6">
-                            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                              Are you sure you want to delete the trial car
-                              with:{" "}
-                              <div>
-                                Event ID: <b>{event.eventId}</b>
-                              </div>{" "}
-                              <div>
-                                Event Title: <b>{event.eventName}</b>
-                              </div>
-                            </p>
-                          </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <button
-                            onClick={() =>
-                              deleteTrialCar("/")
-                            }
-                            className="px-3 py-2 bg-red-500 hover:bg-red-600 hover:text-white rounded font-medium"
-                          >
-                            Delete
-                          </button>
-                          <button
-                            onClick={() => toggleModal(i)}
-                            className="px-3 py-2 bg-sky-400 hover:bg-sky-600 hover:text-white rounded font-medium"
-                          >
-                            Cancel
-                          </button>
-                        </Modal.Footer>
-                      </Modal>
-                    </td>
+                    
                   </tr>
                 );
               })}
