@@ -132,7 +132,7 @@ function ApplyEvent() {
       };
       console.log(formData);
       await http
-        .post("/event/Application", formData)
+        .post("/event/Applications", formData)
         .then((res) => {
           console.log(res.data);
           navigate("/");

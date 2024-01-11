@@ -9,6 +9,7 @@ namespace EnterpriseDevProj
     {
         public MappingProfile() 
         {
+            CreateMap<Event, EventDTO>();
             CreateMap<User, UserDTO>();
             CreateMap<Cart, CartDTO>();
             CreateMap<CartItem, CartItemDTO>();

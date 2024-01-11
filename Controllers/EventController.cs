@@ -15,19 +15,18 @@ namespace EnterpriseDevProj.Controllers
     {
         private readonly MyDbContext dbContext;
         private readonly ILogger<EventController> logger;
-        private readonly IConfiguration configuration;
         private readonly IMapper mapper;
 
         public EventController(MyDbContext dbContext, ILogger<EventController> logger, IConfiguration configuration, IMapper mapper)
         {
             this.dbContext = dbContext;
             this.logger = logger;
-            this.configuration = configuration;
             this.mapper = mapper;
         }
 
 
         [HttpPost("Applications")]
+        [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
         public IActionResult AddEvents(EventApplication data)
         {
             try
@@ -36,36 +35,20 @@ namespace EnterpriseDevProj.Controllers
                 int userId = GetUserID();
                 logger.LogInformation($"Received Eventssssssss Application from User {userId}");
                 var now = DateTime.Now;
-
-                data.EventName=data.EventName.Trim();
-                data.EventPrice = data.EventPrice;
-                data.FriendPrice = data.FriendPrice;
-                data.NTUCPrice = data.NTUCPrice;
-                data.MaxPax = data.MaxPax;
-                data.Approval = data.Approval;
-                data.ActivityType = data.ActivityType.Trim();
-                data.EventLocation = data.EventLocation.Trim();
-                data.ExpiryDate = data.ExpiryDate;
-                data.RemainingPax = data.RemainingPax;
-                data.AvgRating = data.AvgRating;
-                data.DateType = data.DateType.Trim();
-                data.ContentHTML = data.ContentHTML;
-
-
                 var myEvent = new Event()
                 {
-                    EventName = data.EventName,
+                    EventName = data.EventName.Trim(),
                     EventPrice = data.EventPrice,
                     FriendPrice = data.FriendPrice,
                     NTUCPrice = data.NTUCPrice,
                     MaxPax = data.MaxPax,
                     Approval = false,
-                    ActivityType = data.ActivityType,
-                    EventLocation = data.EventLocation,
+                    ActivityType = data.ActivityType.Trim(),
+                    EventLocation = data.EventLocation.Trim(),
                     ExpiryDate = data.ExpiryDate,
                     RemainingPax = data.RemainingPax,
                     AvgRating = data.AvgRating,
-                    DateType = data.DateType,
+                    DateType = data.DateType.Trim(),
                     ContentHTML = data.ContentHTML,
                     UserID = userId,
                     EventCreatedAt = now,
@@ -74,7 +57,11 @@ namespace EnterpriseDevProj.Controllers
 
                 dbContext.Events.Add(myEvent);
                 dbContext.SaveChanges();
-                return Ok(myEvent);
+
+                Event? newEvent = dbContext.Events.Include(t => t.User)
+                .FirstOrDefault(t => t.EventId == myEvent.EventId);
+                EventDTO eventDTO = mapper.Map<EventDTO>(newEvent);
+                return Ok(eventDTO);
             }
             catch (Exception ex)
             {
@@ -255,14 +242,9 @@ namespace EnterpriseDevProj.Controllers
 
         private int GetUserID()
         {
-            try
-            {
-                return Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
-            }
-            catch (Exception ex)
-            {
-                return 401;
-            }
+            return Convert.ToInt32(User.Claims
+                            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+                            .Select(c => c.Value).SingleOrDefault());
         }
 
         }
