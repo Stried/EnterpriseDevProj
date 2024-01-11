@@ -179,6 +179,7 @@ namespace EnterpriseDevProj.Controllers
                 var data = new
                 {
                     eventModel.EventId,
+                    eventModel.EventName,
                     eventModel.EventPrice,
                     eventModel.FriendPrice,
                     eventModel.NTUCPrice,
@@ -208,7 +209,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPut("{EventId}"), Authorize]
+        [HttpPut("Approval/{EventId}"), Authorize]
         public IActionResult UpdateTutorial(int EventId)
         {
             try
