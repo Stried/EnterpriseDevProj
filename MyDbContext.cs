@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection.Metadata;
 using EnterpriseDevProj.Models.EventFolder;
+using EnterpriseDevProj.Models.CartFolder;
 namespace EnterpriseDevProj
 {
     public class MyDbContext : DbContext    
@@ -34,6 +35,9 @@ namespace EnterpriseDevProj
 
         public DbSet<UserGroupLink> UserGroupLinks { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems {  get; set; }
+        public DbSet<CartParticipant> CartParticipants { get; set; }
     }
 }
 

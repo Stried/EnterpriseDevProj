@@ -1,4 +1,5 @@
-﻿using EnterpriseDevProj.Models.EventFolder;
+﻿using EnterpriseDevProj.Models.CartFolder;
+using EnterpriseDevProj.Models.EventFolder;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -36,5 +37,6 @@ namespace EnterpriseDevProj.Models.UserFolder
         public List<UserGroup>? UserGroups { get; set; }
 
         public List<Event>? Events { get; set; }
+        public Cart? Cart { get; set; }
     }
 }
