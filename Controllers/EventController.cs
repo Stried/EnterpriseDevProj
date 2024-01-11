@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using EnterpriseDevProj.Models.UserFolder;
 using EnterpriseDevProj.Models.EventFolder;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 namespace EnterpriseDevProj.Controllers
@@ -24,18 +26,71 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-        private int GetUserId()
+
+        [HttpPost("Applications")]
+        public IActionResult AddEvents(EventApplication data)
         {
-            return Convert.ToInt32(User.Claims
-            .Where(c => c.Type == ClaimTypes.NameIdentifier)
-            .Select(c => c.Value).SingleOrDefault());
+            try
+            {
+                
+                int userId = GetUserID();
+                logger.LogInformation($"Received Eventssssssss Application from User {userId}");
+                var now = DateTime.Now;
+
+                data.EventName=data.EventName.Trim();
+                data.EventPrice = data.EventPrice;
+                data.FriendPrice = data.FriendPrice;
+                data.NTUCPrice = data.NTUCPrice;
+                data.MaxPax = data.MaxPax;
+                data.Approval = data.Approval;
+                data.ActivityType = data.ActivityType.Trim();
+                data.EventLocation = data.EventLocation.Trim();
+                data.ExpiryDate = data.ExpiryDate;
+                data.RemainingPax = data.RemainingPax;
+                data.AvgRating = data.AvgRating;
+                data.DateType = data.DateType.Trim();
+                data.ContentHTML = data.ContentHTML;
+
+
+                var myEvent = new Event()
+                {
+                    EventName = data.EventName,
+                    EventPrice = data.EventPrice,
+                    FriendPrice = data.FriendPrice,
+                    NTUCPrice = data.NTUCPrice,
+                    MaxPax = data.MaxPax,
+                    Approval = false,
+                    ActivityType = data.ActivityType,
+                    EventLocation = data.EventLocation,
+                    ExpiryDate = data.ExpiryDate,
+                    RemainingPax = data.RemainingPax,
+                    AvgRating = data.AvgRating,
+                    DateType = data.DateType,
+                    ContentHTML = data.ContentHTML,
+                    UserID = userId,
+                    EventCreatedAt = now,
+                    EventUpdatedAt = now,
+                };
+
+                dbContext.Events.Add(myEvent);
+                dbContext.SaveChanges();
+                return Ok(myEvent);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error Creating Event Application. ERRCODE 100007");
+                return StatusCode(500);
+            }
         }
-        [HttpPost("EventApplication"), Authorize]
+
+        [HttpPost("Application")]
         public IActionResult AddEvent(Event eventModel)
         {
             try
             {
-                int userId = GetUserId();
+                
+                int userId = GetUserID();
+                logger.LogInformation($"Received Event Application from User {userId}");
                 var now = DateTime.Now;
                 var myEvent = new Event()
                 {
@@ -44,7 +99,7 @@ namespace EnterpriseDevProj.Controllers
                     FriendPrice = eventModel.FriendPrice,
                     NTUCPrice = eventModel.NTUCPrice,
                     MaxPax = eventModel.MaxPax,
-                    Approval = eventModel.Approval,
+                    Approval = false,
                     ActivityType = eventModel.ActivityType.Trim(),
                     EventLocation = eventModel.EventLocation.Trim(),
                     ExpiryDate = eventModel.ExpiryDate,
@@ -57,7 +112,6 @@ namespace EnterpriseDevProj.Controllers
                     EventUpdatedAt = now,
                 };
 
-
                 dbContext.Events.Add(myEvent);
                 dbContext.SaveChanges();
                 return Ok(myEvent);
@@ -69,7 +123,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpGet, Authorize]
+        [HttpGet("GetAllApplications")]
         public IActionResult GetAllEventApplication(string? search)
         {
             try
@@ -85,6 +139,7 @@ namespace EnterpriseDevProj.Controllers
                 var data = listofEvents.Select(t => new
                 {
                     t.EventId,
+                    t.EventName,
                     t.EventPrice,
                     t.FriendPrice,
                     t.NTUCPrice,
@@ -110,7 +165,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpGet("{EventId}")]
+        [HttpGet("{EventId}"), Authorize]
         public IActionResult GetTutorial(int EventId)
         {
             try
@@ -124,6 +179,7 @@ namespace EnterpriseDevProj.Controllers
                 var data = new
                 {
                     eventModel.EventId,
+                    eventModel.EventName,
                     eventModel.EventPrice,
                     eventModel.FriendPrice,
                     eventModel.NTUCPrice,
@@ -153,7 +209,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPut("{EventId}"), Authorize]
+        [HttpPut("Approval/{EventId}"), Authorize]
         public IActionResult UpdateTutorial(int EventId)
         {
             try
@@ -179,7 +235,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpDelete("EventId"), Authorize]
+        [HttpDelete("{EventId}"), Authorize]
         public IActionResult DeleteEventApplication(int EventId)
         {
             try { 
@@ -194,6 +250,18 @@ namespace EnterpriseDevProj.Controllers
             {
                 logger.LogError(ex, $"Error Deleting Event Application {EventId}, ERRCODE 1011");
                 return StatusCode(500);
+            }
+        }
+
+        private int GetUserID()
+        {
+            try
+            {
+                return Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return 401;
             }
         }
 

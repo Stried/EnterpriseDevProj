@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,109 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240110121732_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CartId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartItem", b =>
-                {
-                    b.Property<int>("CartItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<float>("SubTotal")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("CartItemId");
-
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("EventId")
-                        .IsUnique();
-
-                    b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartParticipant", b =>
-                {
-                    b.Property<int>("CartParticipantId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CartItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CartParticipantEmail")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("CartParticipantName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("CartParticipantPhone")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("CartParticipantId");
-
-                    b.HasIndex("CartItemId");
-
-                    b.ToTable("CartParticipants");
-                });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
                 {
@@ -181,41 +89,6 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.Miscellaneous.Theme", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Background")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Highlight")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Main")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Secondary")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Themes");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
@@ -319,47 +192,6 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("UserGroupLinks");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
-                        .WithOne("Cart")
-                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.Cart", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartItem", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithOne("CartItem")
-                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartParticipant", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
-                        .WithMany("Participants")
-                        .HasForeignKey("CartItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
@@ -399,25 +231,8 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("UserGroup");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartItem", b =>
-                {
-                    b.Navigation("Participants");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
-                {
-                    b.Navigation("CartItem");
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("Events");
 
                     b.Navigation("UserGroups");

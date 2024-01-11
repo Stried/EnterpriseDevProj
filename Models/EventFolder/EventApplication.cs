@@ -1,13 +1,11 @@
-﻿using EnterpriseDevProj.Models.UserFolder;
+using EnterpriseDevProj.Models.UserFolder;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using EnterpriseDevProj.Models.CartFolder;
 
 namespace EnterpriseDevProj.Models.EventFolder
 {
-    public class Event
+    public class EventApplication
     {
-        public int EventId { get; set; }
 
         [Required, MinLength(3), MaxLength(60)]
         public string EventName { get; set; } = string.Empty;
@@ -47,17 +45,6 @@ namespace EnterpriseDevProj.Models.EventFolder
         [Required, MaxLength(3000)]
         public string ContentHTML { get; set; } = string.Empty;
 
-        [Required]
-        public int UserID { get; set; } 
 
-        public User? User { get; set; }
-
-        [Column(TypeName = "datetime")]
-        public DateTime EventCreatedAt { get; set; }
-
-        [Column(TypeName = "datetime")]
-        public DateTime EventUpdatedAt { get; set; }
-
-        public CartItem? CartItem { get; set; }
     }
 }

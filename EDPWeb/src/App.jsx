@@ -8,13 +8,14 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Footer } from "flowbite-react";
 import http from "./../http";
-
+import EventApply from "./Events/EventApplication";
 import backgroundMain1 from "./../src/assets/backgroundMain1.jpg";
 import MainPage from "./component/MainPage";
 import Register from "./Users/Register";
 import Login from "./Users/Login";
 import UserContext from "./Users/UserContext";
 import UserAccount from "./Users/UserAccount";
+import EventApplications from "./Events/EventApplicationAdmin";
 import MembershipMain from "./Membership/MembershipMain";
 import VoucherPage from "./Vouchers/VoucherPage";
 
@@ -103,6 +104,14 @@ function App() {
                         <Route
                             path="/login"
                             element={<Login />}
+                        />
+                        <Route
+                            path="/eventapply"
+                            element={<EventApply />}
+                        />
+                        <Route
+                            path="/eventapplications"
+                            element={<EventApplications />}
                         />
                         <Route
                             path="/membership"

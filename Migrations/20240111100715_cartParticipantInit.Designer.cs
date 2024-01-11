@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240111100715_cartParticipantInit")]
+    partial class cartParticipantInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,41 +184,6 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.Miscellaneous.Theme", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Background")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Highlight")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Main")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Secondary")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Themes");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>

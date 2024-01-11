@@ -10,6 +10,8 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@emotion/styled": "^11.11.0",
+        "@mui/material": "^5.15.3",
         "@vitejs/plugin-react": "^4.1.1",
         "autoprefixer": "^10.4.16",
         "axios": "^1.6.1",
@@ -32,6 +34,6 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
-        "vite": "^4.4.5"
+        "vite": "^4.5.1"
     }
 }
