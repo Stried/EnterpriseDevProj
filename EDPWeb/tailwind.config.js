@@ -4,7 +4,7 @@ export default {
     theme: {
         fontFamily: {
           sans: ['sans-serif']
-      }
+        },
   },
     plugins: [ require('flowbite/plugin') ],
 }

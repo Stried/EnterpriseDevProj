@@ -239,6 +239,34 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpPut("updatePassword"), Authorize]
+        public IActionResult updateUserPassword(UpdatePasswordRequest updatePasswordRequest)
+        {
+            try
+            {
+                var userID = GetUserID();
+                var userAccCheck = dbContext.Users.Find(userID);
+
+                if (updatePasswordRequest.Password.Trim() != updatePasswordRequest.ConfirmPassword.Trim())
+                {
+                    var message = "Password and Confirmed Password does not match!";
+                    return BadRequest(new { message });
+                }
+
+                var passwordEncrypt = BCrypt.Net.BCrypt.HashPassword(updatePasswordRequest.Password.Trim());
+                userAccCheck.Password = passwordEncrypt;
+                dbContext.Users.Update(userAccCheck);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in updating user password. ERRCODE 1005");
+                return StatusCode(500);
+            }
+        }
+
         [HttpDelete(), Authorize]
         public IActionResult deleteUserDetails()
         {
@@ -253,7 +281,7 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error in deleting user account. ERRCODE 1005");
+                logger.LogError(ex, "Error in deleting user account. ERRCODE 1006");
                 return StatusCode(500);
             }
         }
@@ -264,7 +292,7 @@ namespace EnterpriseDevProj.Controllers
             var user = dbContext.Users.FirstOrDefault(x => x.NRIC == NRIC);
             if (user == null)
             {
-                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1006");
+                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1007");
                 return StatusCode(500);
             }
 

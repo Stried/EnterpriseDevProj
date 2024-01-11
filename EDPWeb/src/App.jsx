@@ -16,12 +16,14 @@ import Login from "./Users/Login";
 import UserContext from "./Users/UserContext";
 import UserAccount from "./Users/UserAccount";
 import MembershipMain from "./Membership/MembershipMain";
+import VoucherPage from "./Vouchers/VoucherPage";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [menuClicks, setMenuClicks] = useState(0);
     const [navbarVis, setNavbarVis] = useState(null);
-    const [user, setUser] = useState(null);
+    const [ user, setUser ] = useState(null);
+    const [themeSetting, setTheme] = useState("");
 
     const handleMouseMove = (e) => {
         setTimeout(() => {
@@ -56,6 +58,7 @@ function App() {
                     Authorization: `Bearer ${localStorage.getItem(
                         "accessToken"
                     )}`, // This is needed for mine for some reason, not part of the practical
+                    // - So then, is it really practical? Pratically practicalism? Practicalismality? Praticalismalitism? Malteser?
                 },
             })
                 .then((res) => {
@@ -68,9 +71,24 @@ function App() {
         }
     }, []);
 
+    useEffect(() => {
+        http.get("/theme/1", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                console.log(res.data);
+                setTheme(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }, []);
+
     return (
         <UserContext.Provider value={{ user, setUser }}>
-            <div className="w-screen min-h-screen h-full">
+            <div className={`w-screen min-h-screen h-full bg-[${themeSetting.main}]`}>
                 {navbarVis === false && <NavBar />}
                 <div className="">
                     <Routes>
@@ -93,6 +111,10 @@ function App() {
                         <Route
                             path="/account"
                             element={<UserAccount />}
+                        />
+                        <Route
+                            path="/vouchers"
+                            element={<VoucherPage />}
                         />
                     </Routes>
                 </div>
