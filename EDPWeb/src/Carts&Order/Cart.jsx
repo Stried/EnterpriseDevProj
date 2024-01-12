@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import http from "../../http";
-import Dropdown from 'react-bootstrap/Dropdown'
 import UserContext from '../Users/UserContext';
-import { DropdownToggle } from 'react-bootstrap';
 
 function Cart() {
     const { user } = useContext(UserContext);
@@ -18,23 +16,56 @@ function Cart() {
         quantityMessage = <p>{cartList.length} items</p>
     }
     useEffect(() => {
-        if (localStorage.getItem("accessToken")) {
-            http.get("/GetCart", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
-                    )}`,
-                },
-            })
-                .then((res) => {
-                    setCartList(res.data);
-                    console.log(cartList);
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    console.log(cartList);
-                });
-        }});
+        const fetchData = async () => {
+          try {
+            useEffect(() => {
+                if (localStorage.getItem("accessToken")) {
+                    http.get(`/cart/GetCartItem/${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "accessToken"
+                            )}`,
+                        },
+                    })
+                        .then((res) => {
+                            setCartItemList(res.data);
+                            console.log(cartList);
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                            console.log(cartList);
+                        });
+                }});
+    
+            // Second GET request
+            useEffect(() => {
+                if (localStorage.getItem("accessToken")) {
+                    http.get(`/cart/GetCart${id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "accessToken"
+                            )}`,
+                        },
+                    })
+                        .then((res) => {
+                            setCartList(res.data);
+                            console.log(cartList);
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                            console.log(cartList);
+                        });
+                }});
+
+
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+
     return (
         <div className='bg-gray-300 px-10'>
             <div className='relative'>
@@ -45,16 +76,7 @@ function Cart() {
             </div>
             <div className='relative text-2xl font-bold '>
                 <p className='bg-gray-400 w-24 text-center'>{quantityMessage}</p>
-                {/* <Dropdown className='w-60 bg-gray-400 text-center absolute right-0 top-0'>
-                    <Dropdown.Toggle>
-                        Sort By
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item id=''>Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown> */}
+
             </div>
             <div className='px-5'>
                 {cartList.map((cart, i) => {
