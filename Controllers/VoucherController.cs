@@ -35,7 +35,7 @@ namespace EnterpriseDevProj.Controllers
                     VoucherName = createVoucherRequest.VoucherName,
                     VoucherValue = createVoucherRequest.VoucherValue,
                     VoucherUses = createVoucherRequest.VoucherUses,
-                    VoucherExpiry = createVoucherRequest.VoucherExpiry,
+                    VoucherExpiry = now,
                     CreatedAt = now,
                     UpdatedAt = now,
                 };
@@ -70,7 +70,7 @@ namespace EnterpriseDevProj.Controllers
                 voucherToUpdate.VoucherName = req.VoucherName;
                 voucherToUpdate.VoucherValue = req.VoucherValue;
                 voucherToUpdate.VoucherUses = req.VoucherUses;
-                voucherToUpdate.VoucherExpiry = req.VoucherExpiry;
+                voucherToUpdate.VoucherExpiry = now;
                 voucherToUpdate.UpdatedAt = now;
 
                 dbContext.Update(voucherToUpdate);
@@ -94,6 +94,8 @@ namespace EnterpriseDevProj.Controllers
 
                 dbContext.Vouchers.Remove(voucherToDelete);
                 dbContext.SaveChanges();
+
+                return Ok();
             }
             catch (Exception e)
             {

@@ -15,7 +15,8 @@ namespace EnterpriseDevProj.Models.VoucherFolder
         [Required, Range(5, 10000)]
         public int VoucherUses { get; set; }
 
-        [Required, Column(TypeName = "datetime")]
-        public DateTime VoucherExpiry { get; set; }
+        //[Required, Column(TypeName = "datetime")]
+        [Required]
+        public string VoucherExpiry { get; set; }
     }
 }
