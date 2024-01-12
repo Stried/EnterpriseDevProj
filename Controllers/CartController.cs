@@ -105,9 +105,10 @@ namespace EnterpriseDevProj.Controllers
         }
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         [HttpGet("/GetCartItem/{id}"), Authorize]
-        public IActionResult GetCartItems(int cartId)
+        public IActionResult GetCartItems()
         {
-            IQueryable<CartItem> result = _context.CartItems.Where(t => t.CartId == cartId).Include(t => t.Event).Include(t => t.Participants).Include(t => t.Cart);
+            int userId = GetUserId();
+            IQueryable<CartItem> result = _context.CartItems.Where(t => t.CartId == userId).Include(t => t.Event).Include(t => t.Participants).Include(t => t.Cart);
             IEnumerable<CartItemDTO> data = result.Select(t => _mapper.Map<CartItemDTO>(t));
             return Ok(data);
         }

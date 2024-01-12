@@ -176,9 +176,11 @@ function ApproveEvent() {
                   </p>
                   <p>
                     Posted by:{" "}
-                    <span className="text-orange-400">
 
-                    </span>
+                    {selectedevent.user && (
+                                <span className="text-orange-400"> {selectedevent.user.name}</span>
+          )}
+
                   </p>
                 </div>
               </CardContent>
