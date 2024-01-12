@@ -14,6 +14,7 @@ import DatePicker from "react-multi-date-picker";
 import "react-multi-date-picker/styles/colors/red.css";
 import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
+import MarkdownEditor from './MarkDownEditor';
 import UserContext from "../Users/UserContext";
 import {
   Box,
@@ -28,6 +29,7 @@ function ApplyEvent() {
   }
 
   const { user } = useContext(UserContext);
+
 
   const formikEvent = useFormik({
     initialValues: {
@@ -127,7 +129,7 @@ function ApplyEvent() {
         RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
         DateType: (data.DateType = data.DateType.trim()),
-        ContentHTML: (data.ContentHTML = data.ContentHTML.trim()),
+        ContentHTML: (data.ContentHTML = data.ContentHTML),
         UserID: user.id,
       };
       console.log(formData);
@@ -162,6 +164,9 @@ function ApplyEvent() {
     { value: "Travel", label: "Travel" },
   ];
 
+  const handleContentChange = (content) => {
+    formikEvent.setFieldValue('ContentHTML', content);
+  };
 
   const [selectedRadio, setSelectedRadio] = useState("");
 
@@ -435,6 +440,10 @@ function ApplyEvent() {
               </div>
             ) : null}
           </div>
+
+
+          <MarkdownEditor onContentChange={handleContentChange} />
+
           <button
             type="submit"
             className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
