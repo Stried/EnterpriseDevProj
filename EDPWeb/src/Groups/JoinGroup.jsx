@@ -13,7 +13,7 @@ function JoinGroup() {
             groupId: 0
         },
         validationSchema: yup.object().shape({
-            groupID: yup.number().required()
+            groupId: yup.number().required()
         }),
         onSubmit: async (data) => {
             await http
@@ -78,6 +78,17 @@ function JoinGroup() {
                             Join
                         </button>
                     </form>
+
+                    <hr className="my-10 mx-auto border-2 border-gray-400" />
+
+                    <div className="text-left font-medium">
+                        <p>Group Benefits:</p>
+                        <p>
+                            - Easy to book for big groups (Families, friends,
+                            etc)
+                        </p>
+                        <p>- Group chats for ease of communication</p>
+                    </div>
                 </div>
             </div>
         </div>

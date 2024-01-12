@@ -168,12 +168,12 @@ namespace EnterpriseDevProj.Controllers
                 var userID = GetUserID();
 
                 // try to solve this
-                var groups = from userGroups in dbContext.UserGroupLinks
-                             join groupEntity in dbContext.UserGroups on userGroups.GroupID equals groupEntity.Id
-                             where userID == groupEntity.UserID
-                             select groupEntity;
+                var groupings = from userGroups in dbContext.UserGroups
+                                join userGroupLinks in dbContext.UserGroupLinks on userGroups.Id equals userGroupLinks.GroupID
+                                where userGroupLinks.UserID == userID
+                                select userGroups;
                 
-                return Ok(groups);
+                return Ok(groupings);
             }
             catch (Exception ex)
             {

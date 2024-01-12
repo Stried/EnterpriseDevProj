@@ -264,7 +264,7 @@ function UserAccount() {
                                             {groupsList.length != 0 ? (
                                                 groupsList.map((groups) => {
                                                     return (
-                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg">
+                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
                                                             <h1 className="text-xl font-semibold">
                                                                 {
                                                                     groups.groupName
@@ -294,7 +294,7 @@ function UserAccount() {
                                                     <p>
                                                         Join a group?{" "}
                                                         <a
-                                                            href="/"
+                                                            href="/joinGroup"
                                                             className="text-blue-500 visited:text-purple-500 font-medium"
                                                         >
                                                             Find One Today
