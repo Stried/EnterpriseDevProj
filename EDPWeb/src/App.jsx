@@ -18,7 +18,7 @@ import UserAccount from "./Users/UserAccount";
 import EventApplications from "./Events/EventApplicationAdmin";
 import MembershipMain from "./Membership/MembershipMain";
 import EventApplicationDetailed from "./Events/EventApplicationDetailed";
-
+import EventRecords from "./Events/EventRecords";
 import VoucherPage from "./Vouchers/VoucherPage";
 
 function App() {
@@ -114,6 +114,10 @@ function App() {
                         <Route
                             path="/eventapplications"
                             element={<EventApplications />}
+                        />
+                        <Route
+                            path="/eventrecords"
+                            element={<EventRecords />}
                         />
                         <Route
                             path="/membership"
