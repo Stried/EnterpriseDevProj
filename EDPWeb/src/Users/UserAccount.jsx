@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import http from "./../../http";
 
 import { MdEmail, MdPhone } from "react-icons/md";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaRegUser } from "react-icons/fa";
+
 import UserSettings from "./UserSettings";
 
 
@@ -247,15 +248,6 @@ function UserAccount() {
                                                 {user.phoneNumber}
                                             </h2>
                                         </div>
-
-                                        <button
-                                            className="my-10 text-lg"
-                                            onClick={() => {
-                                                logout();
-                                            }}
-                                        >
-                                            Log Out
-                                        </button>
                                     </div>
                                 )}
 
@@ -268,12 +260,19 @@ function UserAccount() {
                                         <h1 className="text-3xl font-light">
                                             Groups
                                         </h1>
-                                        <div className="">
+                                        <div className="my-5 grid grid-cols-3">
                                             {groupsList.length != 0 ? (
                                                 groupsList.map((groups) => {
                                                     return (
-                                                        <div className="">
-                                                            {groups.groupName}
+                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg">
+                                                            <h1 className="text-xl font-semibold">
+                                                                {
+                                                                    groups.groupName
+                                                                }
+                                                            </h1>
+                                                            <p className="flex mt-4">
+                                                                <FaRegUser className="my-auto" /> <span className="mx-2">1</span>
+                                                            </p>
                                                         </div>
                                                     );
                                                 })
@@ -286,7 +285,7 @@ function UserAccount() {
                                                     <p className="">
                                                         Want to create a group?{" "}
                                                         <a
-                                                            href="/"
+                                                            href="/createGroup"
                                                             className="text-blue-500 visited:text-purple-500 font-medium"
                                                         >
                                                             Click here

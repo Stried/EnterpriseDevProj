@@ -20,6 +20,8 @@ import MembershipMain from "./Membership/MembershipMain";
 import EventApplicationDetailed from "./Events/EventApplicationDetailed";
 
 import VoucherPage from "./Vouchers/VoucherPage";
+import AddGroup from "./Groups/AddGroup";
+import JoinGroup from "./Groups/JoinGroup";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -91,7 +93,9 @@ function App() {
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
-            <div className={`w-screen min-h-screen h-full bg-[${themeSetting.main}]`}>
+            <div
+                className={`w-screen min-h-screen h-full bg-[${themeSetting.main}]`}
+            >
                 {navbarVis === false && <NavBar />}
                 <div className="">
                     <Routes>
@@ -121,15 +125,23 @@ function App() {
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
-                            element={< EventApplicationDetailed/>}
+                            element={<EventApplicationDetailed />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Approval/:EventId"
-                            element={< EventApplicationDetailed/>}
+                            element={<EventApplicationDetailed />}
                         />
                         <Route
                             path="/account"
                             element={<UserAccount />}
+                        />
+                        <Route
+                            path="/createGroup"
+                            element={<AddGroup />}
+                        />
+                        <Route
+                            path="/joinGroup"
+                            element={<JoinGroup />}
                         />
                         <Route
                             path="/vouchers"

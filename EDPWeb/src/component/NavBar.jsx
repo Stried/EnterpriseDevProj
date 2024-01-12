@@ -50,16 +50,19 @@ function NavBar() {
                 >
                     MEMBERSHIP
                 </Link>
-                { !user && (
+                {!user && (
                     <Link
                         to={"/login"}
                         className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                     >
                         LOGIN
                     </Link>
-                ) }
-                { user && (
-                    <Link to={ "/account" }>
+                )}
+                {user && (
+                    <Link
+                        to={"/account"}
+                        className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    >
                         {user.name}
                     </Link>
                 )}
