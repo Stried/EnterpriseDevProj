@@ -18,6 +18,7 @@ import UserAccount from "./Users/UserAccount";
 import EventApplications from "./Events/EventApplicationAdmin";
 import MembershipMain from "./Membership/MembershipMain";
 import EventApplicationDetailed from "./Events/EventApplicationDetailed";
+import Cart from "./Carts&Order/Cart";
 
 import VoucherPage from "./Vouchers/VoucherPage";
 
@@ -134,6 +135,10 @@ function App() {
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}
+                        />
+                        <Route
+                            path="/cart"
+                            element={<Cart/>}
                         />
                     </Routes>
                 </div>
