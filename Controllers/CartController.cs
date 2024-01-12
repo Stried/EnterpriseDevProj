@@ -57,11 +57,11 @@ namespace EnterpriseDevProj.Controllers
             }
         }
         [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
-        [HttpGet("/GetCart"), Authorize]
+        [HttpGet("/GetCart/${id}"), Authorize]
         public IActionResult GetCart()
         {
             int userId = GetUserId();
-            IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId).Include(t => t.User).Include(t => t.CartItems).ThenInclude(cartItem => cartItem.Event).ThenInclude(cartItem => cartItem.EventName);
+            IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId).Include(t => t.User).Include(t => t.CartItems).ThenInclude(cartItem => cartItem.Event);
             IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
             return Ok(data);
         }
