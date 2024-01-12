@@ -224,7 +224,7 @@ const EventRecords = () => {
                     <td>
                       <Link
                         to={`/eventapplicationdetailed/Details/${event.eventId}`}
-                        className="bg-orange-400 p-2 px-5 rounded-md text-black hover:bg-green-600 hover:text-white "
+                        className="bg-orange-400 p-2 px-5 rounded-md text-black hover:bg-red-600 hover:text-white "
                       >
                         View Details
                       </Link>

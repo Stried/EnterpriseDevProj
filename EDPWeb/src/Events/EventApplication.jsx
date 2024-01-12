@@ -16,6 +16,9 @@ import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
 import MarkdownEditor from './MarkDownEditor';
 import UserContext from "../Users/UserContext";
+
+import ReactMarkdown from 'react-markdown';
+
 import {
   Box,
   RadioGroup,
@@ -197,7 +200,7 @@ function ApplyEvent() {
 
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
-      <div className="p-5 text-center bg-stone-100 w-1/2 mx-auto rounded-lg drop-shadow-lg shadow-lg">
+      <div className="p-5 text-center bg-stone-100 w-7/12 mx-auto rounded-lg drop-shadow-lg shadow-lg">
         <h1 className="text-xl font-medium">Event Application</h1>
         <form
           onSubmit={formikEvent.handleSubmit}
@@ -421,28 +424,24 @@ function ApplyEvent() {
             ) : null}
           </div>
 
+
           <div className="my-4">
-            <label htmlFor="eventcontent">Content of your webpage</label>
-            <p className="opacity-70 italic">
-              create how the content of your webpage would be shown
-            </p>
-            <input
-              type="text"
-              name="ContentHTML"
-              id="eventcontent"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.ContentHTML}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
-            {formikEvent.errors.ContentHTML ? (
-              <div className="text-red-400">
-                {formikEvent.errors.ContentHTML}
-              </div>
-            ) : null}
-          </div>
+  <label htmlFor="eventcontent">Content of your webpage</label>
+  <p className="opacity-70 italic">
+    Create how the content of your webpage would be shown
+  </p>
+  <div className="flex justify-center"> {/* Updated here */}
+    <MarkdownEditor 
+      type="text"
+      name="ContentHTML"
+      id="eventcontent"
+      onChange={formikEvent.handleChange}
+      value={formikEvent.values.ContentHTML}
+      onContentChange={handleContentChange}
+    />
+  </div>
+</div>
 
-
-          <MarkdownEditor onContentChange={handleContentChange} />
 
           <button
             type="submit"

@@ -1,0 +1,37 @@
+.markdown-editor {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+  }
+  
+  .card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 25em;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  
+  .input-card {
+    order: 1;
+  }
+  
+  .output-card {
+    order: 2;
+  }
+  
+  textarea {
+    width: 23em;
+    height: 35em;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .markdown-preview {
+    margin-top: 10px;
+    word-wrap: break-word; /* Added property for content wrapping */
+    text-align: left;
+  }
