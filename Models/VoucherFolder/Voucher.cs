@@ -12,7 +12,7 @@ namespace EnterpriseDevProj.Models.VoucherFolder
         public int VoucherValue { get; set; }
 
         [Required, StringLength(5, MinimumLength = 5)]
-        public string VoucherName { get; set; }
+        public string VoucherName { get; set; } = string.Empty;
 
         [Required, Range(5, 10000)]
         public int VoucherUses { get; set; }

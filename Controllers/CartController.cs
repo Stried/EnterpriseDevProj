@@ -37,6 +37,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 var myCart = new Cart()
                 {
+                    CartId = userId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
@@ -56,11 +57,11 @@ namespace EnterpriseDevProj.Controllers
             }
         }
         [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
-        [HttpGet("/GetCart"), Authorize]
+        [HttpGet("/GetCart/${id}"), Authorize]
         public IActionResult GetCart()
         {
             int userId = GetUserId();
-            IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId).Include(t => t.User).Include(t => t.CartItems);
+            IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId).Include(t => t.User).Include(t => t.CartItems).ThenInclude(cartItem => cartItem.Event);
             IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
             return Ok(data);
         }
@@ -103,7 +104,7 @@ namespace EnterpriseDevProj.Controllers
             return Ok(cartItemDTO);
         }
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpGet("/GetCartItem"), Authorize]
+        [HttpGet("/GetCartItem/${id}"), Authorize]
         public IActionResult GetCartItems(int cartId)
         {
             IQueryable<CartItem> result = _context.CartItems.Where(t => t.CartId == cartId).Include(t => t.Event).Include(t => t.Participants).Include(t => t.Cart);

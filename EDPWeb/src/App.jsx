@@ -18,6 +18,8 @@ import UserAccount from "./Users/UserAccount";
 import EventApplications from "./Events/EventApplicationAdmin";
 import MembershipMain from "./Membership/MembershipMain";
 import EventApplicationDetailed from "./Events/EventApplicationDetailed";
+import EventRecords from "./Events/EventRecords";
+import GetCart from "./Carts&Order/Cart";
 
 import VoucherPage from "./Vouchers/VoucherPage";
 import AddGroup from "./Groups/AddGroup";
@@ -120,8 +122,20 @@ function App() {
                             element={<EventApplications />}
                         />
                         <Route
+                            path="/eventrecords"
+                            element={<EventRecords />}
+                        />
+                        <Route
                             path="/membership"
                             element={<MembershipMain />}
+                        />
+                        <Route
+                            path="/GetCartItem/:id"
+                            element={< GetCart/>}
+                        />
+                        <Route
+                            path="/GetCart/:id"
+                            element={< GetCart/>}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
@@ -147,6 +161,7 @@ function App() {
                             path="/vouchers"
                             element={<VoucherPage />}
                         />
+
                     </Routes>
                 </div>
             </div>
