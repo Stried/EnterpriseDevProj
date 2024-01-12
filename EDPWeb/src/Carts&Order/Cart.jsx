@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import http from "../../http";
 import UserContext from '../Users/UserContext';
+import { useNavigate, useParams } from "react-router-dom";
 
 function Cart() {
+    let { id } = useParams();
     const { user } = useContext(UserContext);
     const [cartList, setCartList] = useState([]);
-    const [cartItemList, setCartItemList] = useState([])
-    localStorage.setItem('user', JSON.stringify(user));
-    const storedUser = localStorage.getItem('user');
+    const [cartItemList, setCartItemList] = useState([]);
     let quantityMessage;
     if (cartItemList.length <= 1) {
         quantityMessage = <p>{cartList.length} item</p>
@@ -17,54 +17,36 @@ function Cart() {
     }
     useEffect(() => {
         const fetchData = async () => {
-          try {
-            useEffect(() => {
+            try {
                 if (localStorage.getItem("accessToken")) {
-                    http.get(`/cart/GetCartItem/${id}`, {
+                    // First GET request
+                    http.get(`GetCartItem/${id}`, {
                         headers: {
-                            Authorization: `Bearer ${localStorage.getItem(
-                                "accessToken"
-                            )}`,
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     })
-                        .then((res) => {
-                            setCartItemList(res.data);
-                            console.log(cartList);
-                        })
-                        .catch(function (err) {
-                            console.log(err);
-                            console.log(cartList);
-                        });
-                }});
+                    .then((res) => {
+                        console.log(res.data);
+                        setCartItemList(res.data);
+                    })
     
-            // Second GET request
-            useEffect(() => {
-                if (localStorage.getItem("accessToken")) {
-                    http.get(`/cart/GetCart${id}`, {
+                    // Second GET request
+                    const cartListResponse = await http.get(`GetCart/${id}`, {
                         headers: {
-                            Authorization: `Bearer ${localStorage.getItem(
-                                "accessToken"
-                            )}`,
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
-                    })
-                        .then((res) => {
-                            setCartList(res.data);
-                            console.log(cartList);
-                        })
-                        .catch(function (err) {
-                            console.log(err);
-                            console.log(cartList);
-                        });
-                }});
-
-
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+                    });
+                    setCartList(cartListResponse.data);
+                    console.log(cartListResponse.data);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
     
         fetchData();
-      }, []);
+    }, [id]); // Add dependencies as needed
+    
 
     return (
         <div className='bg-gray-300 px-10'>
@@ -82,7 +64,9 @@ function Cart() {
                 {cartList.map((cart, i) => {
                     return (
                         <div>                            
-                            {cart.eventId}
+                            {cartItemList.map((cartItem, i) => {
+                                cartItem.event
+                            })}
                         </div>
                     );
                 })}
