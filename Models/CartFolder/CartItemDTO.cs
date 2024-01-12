@@ -14,7 +14,7 @@ namespace EnterpriseDevProj.Models.CartFolder
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public CartDTO? Cart { get; set; }
-        public Event? Event { get; set; }
+        public EventDTO? Event { get; set; }
         public List<CartParticipantDTO>? Participants { get; set; }
     }
 }

@@ -20,23 +20,23 @@ function Cart() {
             try {
                 if (localStorage.getItem("accessToken")) {
                     // First GET request
-                    http.get(`GetCartItem/${id}`, {
+                    http.get(`GetCart/${id}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     })
                     .then((res) => {
                         console.log(res.data);
-                        setCartItemList(res.data);
+                        setCartList(res.data);
                     })
     
                     // Second GET request
-                    const cartListResponse = await http.get(`GetCart/${id}`, {
+                    const cartListResponse = await http.get(`GetCartItem/${id}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     });
-                    setCartList(cartListResponse.data);
+                    setCartItemList(cartListResponse.data);
                     console.log(cartListResponse.data);
                 }
             } catch (error) {
@@ -63,9 +63,14 @@ function Cart() {
             <div className='px-5'>
                 {cartList.map((cart, i) => {
                     return (
-                        <div>                            
+                        <div>
                             {cartItemList.map((cartItem, i) => {
-                                cartItem.event
+                                return (
+                                    <div>
+                                        {cartItem.eventId}
+                                    </div>
+                                )
+                                
                             })}
                         </div>
                     );
