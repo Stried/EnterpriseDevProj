@@ -80,15 +80,15 @@ function UserAccount() {
         <div className="">
             {themeSetting && (
                 <div
-                    className={`min-h-[100vh] max-h-full bg-gradient-to-b from-[${themeSetting.secondary}] to-[${themeSetting.main}]`}
+                    className={`min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400`}
                 >
                     {user && (
                         <div
-                            className={`p-5 flex space-x-6 backdrop-brightness-90 min-h-[100vh] text-[${themeSetting.text}]`}
+                            className={`p-5 flex space-x-6 backdrop-brightness-90 min-h-[100vh] text-black`}
                         >
                             <div className="w-1/3">
                                 <div
-                                    className={`flex bg-[${themeSetting.background}] p-5 rounded-lg shadow-md`}
+                                    className={`flex bg-stone-100 p-5 rounded-lg shadow-md`}
                                     id="userProfile"
                                 >
                                     <div className="w-1/3">
@@ -115,14 +115,14 @@ function UserAccount() {
                                     </div>
                                 </div>
                                 <nav
-                                    className={`flex flex-col space-y-3 mt-5 bg-[${themeSetting.background}] p-5 rounded-lg shadow-md`}
+                                    className={`flex flex-col space-y-3 mt-5 bg-stone-100 p-5 rounded-lg shadow-md`}
                                     id="optionsMenu"
                                 >
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionOne"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -134,9 +134,9 @@ function UserAccount() {
 
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionTwo"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -148,9 +148,9 @@ function UserAccount() {
 
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionThree"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -162,9 +162,9 @@ function UserAccount() {
 
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionFour"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -176,9 +176,9 @@ function UserAccount() {
 
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionFive"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -190,9 +190,9 @@ function UserAccount() {
 
                                     <div
                                         className={
-                                            `px-3 py-2 rounded-md hover:bg-[${themeSetting.secondary}] cursor-pointer ` +
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionSix"
-                                                ? `bg-[${themeSetting.main}]`
+                                                ? `bg-red-400`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -204,7 +204,7 @@ function UserAccount() {
                                 </nav>
                             </div>
                             <div
-                                className={`w-2/3 p-10 bg-[${themeSetting.background}] text-[${themeSetting.text}] rounded-lg`}
+                                className={`w-2/3 p-10 bg-stone-100 text-black rounded-lg`}
                             >
                                 {currentOption == "optionOne" && (
                                     <div className="">
@@ -279,9 +279,27 @@ function UserAccount() {
                                                 })
                                             ) : (
                                                 <div className="">
-                                                    <p>
+                                                    <p className="mb-5">
                                                         You are currently not
                                                         part of any groups.
+                                                    </p>
+                                                    <p className="">
+                                                        Want to create a group?{" "}
+                                                        <a
+                                                            href="/"
+                                                            className="text-blue-500 visited:text-purple-500 font-medium"
+                                                        >
+                                                            Click here
+                                                        </a>
+                                                    </p>
+                                                    <p>
+                                                        Join a group?{" "}
+                                                        <a
+                                                            href="/"
+                                                            className="text-blue-500 visited:text-purple-500 font-medium"
+                                                        >
+                                                            Find One Today
+                                                        </a>
                                                     </p>
                                                 </div>
                                             )}

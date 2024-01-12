@@ -37,6 +37,7 @@ namespace EnterpriseDevProj.Models.UserFolder
         public List<UserGroup>? UserGroups { get; set; }
 
         public List<Event>? Events { get; set; }
+
         public Cart? Cart { get; set; }
     }
 }

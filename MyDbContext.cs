@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 using EnterpriseDevProj.Models.EventFolder;
 using EnterpriseDevProj.Models.Miscellaneous;
 using EnterpriseDevProj.Models.CartFolder;
+using EnterpriseDevProj.Models.VoucherFolder;
 namespace EnterpriseDevProj
 {
     public class MyDbContext : DbContext    
@@ -39,9 +40,14 @@ namespace EnterpriseDevProj
         public DbSet<Theme> Themes { get; set; }
 
         public DbSet<Event> Events { get; set; }
+
         public DbSet<Cart> Carts { get; set; }
+
         public DbSet<CartItem> CartItems {  get; set; }
+
         public DbSet<CartParticipant> CartParticipants { get; set; }
+
+        public DbSet<Voucher> Vouchers { get; set; }
     }
 }
 
