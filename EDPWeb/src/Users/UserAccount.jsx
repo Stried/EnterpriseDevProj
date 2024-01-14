@@ -62,24 +62,25 @@ function UserAccount() {
         }
     }, []);
 
-    useEffect(() => {
-        http.get("/theme/1", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                setTheme(res.data);
-            })
-            .catch(function (err) {
-                console.log(err);
-        })
-    }, [])
+    // useEffect(() => {
+    //     http.get("/theme/1", {
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //         },
+    //     })
+    //         .then((res) => {
+    //             console.log(res.data);
+    //             setTheme(res.data);
+    //         })
+    //         .catch(function (err) {
+    //             console.log(err);
+    //     })
+    // }, [])
     
     return (
         <div className="">
-            {themeSetting && (
+            {/* change to theme */}
+            {user && (
                 <div
                     className={`min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400`}
                 >

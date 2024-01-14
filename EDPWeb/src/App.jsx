@@ -78,20 +78,20 @@ function App() {
         }
     }, []);
 
-    useEffect(() => {
-        http.get("/theme/1", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                setTheme(res.data);
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    }, []);
+    // useEffect(() => {
+    //     http.get("/theme/1", {
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //         },
+    //     })
+    //         .then((res) => {
+    //             console.log(res.data);
+    //             setTheme(res.data);
+    //         })
+    //         .catch(function (err) {
+    //             console.log(err);
+    //         });
+    // }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
