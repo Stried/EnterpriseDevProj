@@ -24,6 +24,7 @@ import GetCart from "./Carts&Order/Cart";
 import VoucherPage from "./Vouchers/VoucherPage";
 import AddGroup from "./Groups/AddGroup";
 import JoinGroup from "./Groups/JoinGroup";
+import GroupMain from "./Groups/GroupMain";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -157,6 +158,7 @@ function App() {
                             path="/joinGroup"
                             element={<JoinGroup />}
                         />
+                        <Route path="/group/:grpId" element={<GroupMain />} />
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}
