@@ -70,46 +70,6 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPost("Application")]
-        public IActionResult AddEvent(Event eventModel)
-        {
-            try
-            {
-                
-                int userId = GetUserID();
-                logger.LogInformation($"Received Event Application from User {userId}");
-                var now = DateTime.Now;
-                var myEvent = new Event()
-                {
-                    EventName = eventModel.EventName.Trim(),
-                    EventPrice = eventModel.EventPrice,
-                    FriendPrice = eventModel.FriendPrice,
-                    NTUCPrice = eventModel.NTUCPrice,
-                    MaxPax = eventModel.MaxPax,
-                    Approval = false,
-                    ActivityType = eventModel.ActivityType.Trim(),
-                    EventLocation = eventModel.EventLocation.Trim(),
-                    ExpiryDate = eventModel.ExpiryDate,
-                    RemainingPax = eventModel.RemainingPax,
-                    AvgRating = eventModel.AvgRating,
-                    DateType = eventModel.DateType.Trim(),
-                    ContentHTML = eventModel.ContentHTML.Trim(),
-                    UserID = userId,
-                    EventCreatedAt = now,
-                    EventUpdatedAt = now,
-                };
-
-                dbContext.Events.Add(myEvent);
-                dbContext.SaveChanges();
-                return Ok(myEvent);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error Creating Event Application. ERRCODE 1007");
-                return StatusCode(500);
-            }
-        }
-
         [HttpGet("GetAllApplications")]
         public IActionResult GetAllEventApplication(string? search)
         {
