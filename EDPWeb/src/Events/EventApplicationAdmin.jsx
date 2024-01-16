@@ -28,12 +28,12 @@ const EventApplications = () => {
       // Parse the input date string using Date object
       const date = new Date(dateStr);
     
-      // Extract year, month, and day components
+
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1 and pad with leading zero if needed
-      const day = String(date.getDate()).padStart(2, '0'); // Pad day with leading zero if needed
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const day = String(date.getDate()).padStart(2, '0'); 
     
-      // Construct the output date string in the desired format
+
       const formattedDate = `${day}/${month}/${year}`;
     
       return formattedDate;
@@ -43,7 +43,7 @@ const EventApplications = () => {
     try {
       const response = await fetch(`/event/GetAllApplications?search=${search}`);
       
-      // Check the response status
+
       if (!response.ok) {
         console.error('Error fetching data. Status:', response.status);
         return;

@@ -32,6 +32,6 @@
   
   .markdown-preview {
     margin-top: 10px;
-    word-wrap: break-word; /* Added property for content wrapping */
+    word-wrap: break-word;
     text-align: left;
   }
