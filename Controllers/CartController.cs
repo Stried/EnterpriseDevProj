@@ -37,7 +37,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 var myCart = new Cart()
                 {
-                    CartId = userId,
+
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
