@@ -82,6 +82,7 @@ namespace EnterpriseDevProj.Controllers
                     result = result.Where(x => x.EventName.Contains(search)
                     );
                 }
+                
                 var listofEvents = result.OrderByDescending(x => x.EventCreatedAt).ToList();
                 var data = listofEvents.Select(t => new
                 {
@@ -118,7 +119,7 @@ namespace EnterpriseDevProj.Controllers
             try
             {
                 Event? eventModel = dbContext.Events.Include(t => t.User)
-                    .FirstOrDefault(t => t.EventId == EventId); ;
+                    .FirstOrDefault(t => t.EventId == EventId); 
                 if (eventModel == null)
                 {
                     return NotFound();

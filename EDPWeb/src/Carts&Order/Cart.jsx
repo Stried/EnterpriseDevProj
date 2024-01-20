@@ -10,10 +10,10 @@ function Cart() {
     const [cartItemList, setCartItemList] = useState([]);
     let quantityMessage;
     if (cartItemList.length <= 1) {
-        quantityMessage = <p>{cartList.length} item</p>
+        quantityMessage = <p>{cartItemList.length} item</p>
     }
     else {
-        quantityMessage = <p>{cartList.length} items</p>
+        quantityMessage = <p>{cartItemList.length} items</p>
     }
     useEffect(() => {
         const fetchData = async () => {
@@ -61,20 +61,22 @@ function Cart() {
 
             </div>
             <div className='px-5'>
-                {cartList.map((cart, i) => {
-                    return (
-                        <div>
-                            {cartItemList.map((cartItem, i) => {
-                                return (
-                                    <div>
-                                        {cartItem.eventId}
-                                    </div>
-                                )
-                                
-                            })}
+            <div>
+                    {cartItemList && cartItemList.map((cartItem, i) => (
+                        <div key={i}>
+                            ID:
+                            {cartItem.eventId}
+                            <br></br>
+                            Name:
+                            {cartItem.event.eventName}
+                            <br></br>
+                            Price:
+                            {cartItem.event.eventPrice}
+                            <br></br>
+<hr/>
                         </div>
-                    );
-                })}
+                    ))}
+                </div>
             </div>
         </div>
     )
