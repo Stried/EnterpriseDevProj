@@ -24,6 +24,14 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
+        [HttpPost("Dates"), Authorize]
+        [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
+        public IActionResult EventDates([FromBody] EventDTO dto) {
+            try
+            {
+
+            }
+        }
 
         [HttpPost("Applications"), Authorize]
         [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
@@ -33,7 +41,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 
                 int userId = GetUserID();
-                logger.LogInformation($"Received Eventssssssss Application from User {userId}");
+                logger.LogInformation($"Received Event Application from User {userId}");
                 var now = DateTime.Now;
                 var myEvent = new Event()
                 {

@@ -13,7 +13,7 @@ namespace EnterpriseDevProj.Models.EventFolder
 		public string EventName { get; set; } = string.Empty;
 
 		[Required]
-		public DateOnly ExpiryDate { get; set; }
+		public DateOnly DateOfEvent { get; set; }
 
 		[Column(TypeName = "datetime")]
 		public DateTime DateCreatedAt { get; set; }
