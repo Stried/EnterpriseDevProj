@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240114043634_ticketsInit")]
-    partial class ticketsInit
+    [Migration("20240120143238_dateinit")]
+    partial class dateinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,41 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("CartItemId");
 
                     b.ToTable("CartParticipants");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
+                {
+                    b.Property<int>("DateId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CartItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("DateOfEvent")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("DateUpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EventName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.HasKey("DateId");
+
+                    b.HasIndex("CartItemId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Dates");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
@@ -432,6 +467,23 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("CartItem");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
+                        .WithMany()
+                        .HasForeignKey("CartItemId");
+
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CartItem");
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>

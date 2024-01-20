@@ -1,4 +1,4 @@
-using EnterpriseDevProj.Models.EventFolder;
+
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using EnterpriseDevProj.Models.CartFolder;
@@ -13,7 +13,8 @@ namespace EnterpriseDevProj.Models.EventFolder
 		public string EventName { get; set; } = string.Empty;
 
 		[Required]
-		public DateOnly DateOfEvent { get; set; }
+		[Column(TypeName = "datetime")]
+		public DateTime DateOfEvent { get; set; }
 
 		[Column(TypeName = "datetime")]
 		public DateTime DateCreatedAt { get; set; }

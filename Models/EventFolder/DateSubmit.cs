@@ -12,7 +12,8 @@ namespace EnterpriseDevProj.Models.EventFolder
         public string EventName { get; set; } = string.Empty;
 
         [Required]
-        public DateOnly DateOfEvent { get; set; }
+		[Column(TypeName = "datetime")]
+		public DateTime DateOfEvent { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime DateCreatedAt { get; set; }

@@ -24,14 +24,6 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-        [HttpPost("Dates"), Authorize]
-        [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
-        public IActionResult EventDates([FromBody] EventDTO dto) {
-            try
-            {
-
-            }
-        }
 
         [HttpPost("Applications"), Authorize]
         [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
