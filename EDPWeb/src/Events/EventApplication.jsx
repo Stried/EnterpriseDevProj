@@ -16,7 +16,8 @@ import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
 import MarkdownEditor from './MarkDownEditor';
 import UserContext from "../Users/UserContext";
-
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import ReactMarkdown from 'react-markdown';
 
 import {
@@ -27,12 +28,28 @@ import {
   FormControl,
 } from "@mui/material";
 function ApplyEvent() {
-  function convertDateFormat(dateString) {
-    return dateString.replace(/\//g, "-");
+  const [selectedDates, setSelectedDates] = useState([]);
+  function convertDateTimeToDateOnly(dateTimeString) {
+    const dateTime = new Date(dateTimeString);
+    const year = dateTime.getFullYear();
+    const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+    const day = String(dateTime.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   const { user } = useContext(UserContext);
 
+  const getOneWeekAheadDateTime = () => {
+    const currentDate = new Date();
+    const oneWeekLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    
+    // Set the specific time (e.g., 12:00 PM)
+    oneWeekLater.setHours(12);
+    oneWeekLater.setMinutes(0);
+    oneWeekLater.setSeconds(0);
+
+    return oneWeekLater;
+  };
 
   const formikEvent = useFormik({
     initialValues: {
@@ -47,8 +64,9 @@ function ApplyEvent() {
       ExpiryDate: "",
       RemainingPax: 1,
       AvgRating: 0.0,
-      DateType: "",
+      DateType: "Non-Recurring",
       ContentHTML: "",
+      EventDates: [],
       UserID: 0,
     },
     validationSchema: yup.object().shape({
@@ -96,7 +114,7 @@ function ApplyEvent() {
         .min(5, "Are you sure this is a proper location?")
         .max(50, "Are you sure this is a proper location?")
         .required(),
-      ExpiryDate: yup.date().required(),
+      ExpiryDate: yup.date(),
       RemainingPax: yup
         .number()
         .integer()
@@ -106,6 +124,7 @@ function ApplyEvent() {
       AvgRating: yup.number(),
       DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
+      EventDates: yup.array().of(yup.string()).required(),
       UserID: yup.number().integer(),
     }),
     onSubmit: async (data) => {
@@ -113,10 +132,27 @@ function ApplyEvent() {
       console.log("Form data:", data);
       console.log("User object:", user);
       console.log("User ID:", user.id);
+      
       if (!formikEvent.isValid) {
         console.error("Form is not valid");
         return;
       }
+      const formattedDates = [];
+
+      for (let i = 0; i < selectedDates.length; i++) {
+        const customDate = selectedDates[i];
+      
+        // Check if it's a valid custom date object
+        if (customDate && typeof customDate === 'object') {
+
+          const formattedDate = new Date(customDate);
+          formattedDates.push(formattedDate);
+        } else {
+
+          formattedDates.push(null); // or some default date string
+        }
+      }
+
       const formData = {
         EventName: (data.EventName = data.EventName.trim()),
         EventPrice: (data.EventPrice = data.EventPrice),
@@ -126,15 +162,28 @@ function ApplyEvent() {
         Approval: (data.Approval = data.Approval),
         ActivityType: (data.ActivityType = data.ActivityType.trim()),
         EventLocation: (data.EventLocation = data.EventLocation.trim()),
-        ExpiryDate: (data.ExpiryDate = convertDateFormat(
-          data.ExpiryDate
-        ).trim()),
         RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
         DateType: (data.DateType = data.DateType.trim()),
         ContentHTML: (data.ContentHTML = data.ContentHTML),
+        EventDates: formattedDates,
         UserID: user.id,
+        
       };
+ 
+      if (selectedDates.length > 0) {
+
+        const maxDate = new Date(Math.max(...selectedDates.map((date) => new Date(date))));
+    
+
+        const formattedMaxDate = maxDate.toISOString().split('T')[0];
+        console.log("Formatted Max Date:", formattedMaxDate);
+    
+
+        formData.ExpiryDate = formattedMaxDate;
+      }
+
+
       console.log(formData);
       await 
         http.post("/event/Applications", formData, {
@@ -156,6 +205,18 @@ function ApplyEvent() {
     },
   });
 
+  useEffect(() => {
+    // Log form validation status when the component renders
+    console.log("Is form valid:", formikEvent.isValid);
+
+
+    // Log form errors if any
+    if (!formikEvent.isValid) {
+      console.log("Form errors:", formikEvent.errors);
+    }
+  }, [formikEvent.isValid, formikEvent.errors]);
+
+
   const navigate = useNavigate();
 
   const options = [
@@ -172,6 +233,11 @@ function ApplyEvent() {
   };
 
   const [selectedRadio, setSelectedRadio] = useState("Non-Recurring");
+
+
+  useEffect(() => {
+    console.log("Selected Dates:", selectedDates); // Log selectedDates array
+  }, [selectedDates]);
 
   const handleRadioChange = (event) => {
     setSelectedRadio(event.target.value);
@@ -407,24 +473,24 @@ function ApplyEvent() {
           </div>
 
           <div>
-            <DatePicker
-              placeholder="Enter Event Date.."
-              className="red"
-              inputClass="custom-input"
-              placeholderText="Select a date"
-              value={formikEvent.values.ExpiryDate}
-              onChange={(newDate) =>
-                formikEvent.setFieldValue("ExpiryDate", newDate.format())
-              }
-            />
-            {formikEvent.errors.ExpiryDate ? (
-              <div className="text-red-600">
-                {formikEvent.errors.ExpiryDate}
-              </div>
-            ) : null}
+          <DatePicker
+          name="EventDates"
+          id="eventdates"
+            format="YYYY-MM-DD HH:mm:ss"
+            placeholder="Enter Event Date.."
+            className="red"
+            inputClass="custom-input"
+            placeholderText="Select a date"
+            value={selectedDates}
+            onChange={(dates) => setSelectedDates(dates)
+            }
+            multiple
+            minDate={getOneWeekAheadDateTime()}
+            plugins={[
+              <TimePicker position="bottom" />, // Close the TimePicker tag here
+          ]}
+          />
           </div>
-
-
           <div className="my-4">
   <label htmlFor="eventcontent">Content of your webpage</label>
   <p className="opacity-70 italic">
@@ -441,8 +507,6 @@ function ApplyEvent() {
     />
   </div>
 </div>
-
-
           <button
             type="submit"
             className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"

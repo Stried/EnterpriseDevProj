@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 namespace EnterpriseDevProj.Controllers
 {
     [ApiController]
@@ -24,67 +25,20 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-
-
-
-[HttpPost("Datess"), Authorize]
-[ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
-public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
-{
-    try
-    {
-        List<string> processedDates = new List<string>();
-
-        foreach (var dateString in dateStrings)
-        {
-            // Process the single date string directly
-            if (DateTime.TryParse(dateString, out DateTime dateValue))
-            {
-                // Assuming you have a Date entity with a foreign key to Event
-                var dateEntity = new Date
-                {
-                    EventId = eventId, // Associate the date with the specified event ID
-                    DateOfEvent = dateValue, // Store the parsed DateTime
-                    DateCreatedAt = DateTime.Now, // Set the creation date
-                    DateUpdatedAt = DateTime.Now, // Set the update date
-                };
-
-                // Your database logic here to add the dateEntity to the database
-                dbContext.Dates.Add(dateEntity);
-                dbContext.SaveChanges();
-
-                // Add the processed date string to the list
-                processedDates.Add(dateString);
-            }
-            else
-            {
-                // Handle the case where the date string cannot be parsed.
-                // For example, log an error or take appropriate action.
-                logger.LogWarning($"Invalid date string: {dateString}");
-            }
-        }
-
-        return Ok(processedDates);
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Error processing event dates. ERRCODE 1012");
-        return StatusCode(500);
-    }
-}
         [HttpPost("Applications"), Authorize]
-        [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
-        public IActionResult AddEvents(EventApplication data)
+[ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
+public IActionResult AddEvents(EventApplication data)
+{
+    using (var transaction = dbContext.Database.BeginTransaction())
+    {
+        try
         {
-            try
+            int userId = GetUserID();
+            logger.LogInformation($"Received Event Application from User {userId}");
+            var now = DateTime.Now;
+            var myEvent = new Event()
             {
-                
-                int userId = GetUserID();
-                logger.LogInformation($"Received Event Application from User {userId}");
-                var now = DateTime.Now;
-                var myEvent = new Event()
-                {
-                    EventName = data.EventName.Trim(),
+                                    EventName = data.EventName.Trim(),
                     EventPrice = data.EventPrice,
                     FriendPrice = data.FriendPrice,
                     NTUCPrice = data.NTUCPrice,
@@ -100,22 +54,48 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
                     UserID = userId,
                     EventCreatedAt = now,
                     EventUpdatedAt = now,
+            };
+
+            dbContext.Events.Add(myEvent);
+            dbContext.SaveChanges();
+
+            // Retrieve the eventId after saving the event
+            int eventId = myEvent.EventId;
+
+            // Create dates associated with the event
+            for (int i = 0; i < data.EventDates.Count; i++)
+            {
+                DateTime currentDate = data.EventDates[i];
+                var myDate = new Date()
+                {
+                                            EventName=data.EventName.Trim(),
+                        DateOfEvent=currentDate,
+                        DateCreatedAt=now,
+                        DateUpdatedAt=now,
+                        EventId=eventId
                 };
 
-                dbContext.Events.Add(myEvent);
+                dbContext.Dates.Add(myDate);
                 dbContext.SaveChanges();
+            }
 
-                Event? newEvent = dbContext.Events.Include(t => t.User)
-                .FirstOrDefault(t => t.EventId == myEvent.EventId);
-                EventDTO eventDTO = mapper.Map<EventDTO>(newEvent);
-                return Ok(eventDTO);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error Creating Event Application. ERRCODE 100007");
-                return StatusCode(500);
-            }
+            // Commit the transaction if everything is successful
+            transaction.Commit();
+
+            // Return the response
+            EventDTO eventDTO = mapper.Map<EventDTO>(myEvent);
+            return Ok(eventDTO);
         }
+        catch (Exception ex)
+        {
+            // Rollback the transaction in case of an exception
+            transaction.Rollback();
+
+            logger.LogError(ex, "Error Creating Event Application. ERRCODE 100007");
+            return StatusCode(500);
+        }
+    }
+}
 
         [HttpGet("GetAllApplications")]
         public IActionResult GetAllEventApplication(string? search)
@@ -129,7 +109,7 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
                     result = result.Where(x => x.EventName.Contains(search)
                     );
                 }
-                
+
                 var listofEvents = result.OrderByDescending(x => x.EventCreatedAt).ToList();
                 var data = listofEvents.Select(t => new
                 {
@@ -166,7 +146,7 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
             try
             {
                 Event? eventModel = dbContext.Events.Include(t => t.User)
-                    .FirstOrDefault(t => t.EventId == EventId); 
+                    .FirstOrDefault(t => t.EventId == EventId);
                 if (eventModel == null)
                 {
                     return NotFound();
@@ -197,7 +177,7 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
                 };
                 return Ok(data);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, $"Error Retrieving Event Application {EventId}, ERRCODE 1009");
                 return StatusCode(500);
@@ -233,15 +213,17 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
         [HttpDelete("{EventId}"), Authorize]
         public IActionResult DeleteEventApplication(int EventId)
         {
-            try { 
-            var eventmodel = dbContext.Events.FirstOrDefault(x => x.EventId == EventId);
-            if (eventmodel != null)
+            try
             {
-                dbContext.Events.Remove(eventmodel);
-                dbContext.SaveChanges();
+                var eventmodel = dbContext.Events.FirstOrDefault(x => x.EventId == EventId);
+                if (eventmodel != null)
+                {
+                    dbContext.Events.Remove(eventmodel);
+                    dbContext.SaveChanges();
+                }
+                return Ok(dbContext.Events.ToList());
             }
-            return Ok(dbContext.Events.ToList());
-        } catch (Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, $"Error Deleting Event Application {EventId}, ERRCODE 1011");
                 return StatusCode(500);
@@ -255,7 +237,7 @@ public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
                             .Select(c => c.Value).SingleOrDefault());
         }
 
-        }
     }
+}
 
 

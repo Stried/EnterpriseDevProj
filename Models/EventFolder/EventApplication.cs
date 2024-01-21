@@ -44,7 +44,8 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         [Required, MaxLength(3000)]
         public string ContentHTML { get; set; } = string.Empty;
-
+        [Required]
+        public List<DateTime>? EventDates {get; set;} 
 
     }
 }
