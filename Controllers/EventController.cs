@@ -25,6 +25,53 @@ namespace EnterpriseDevProj.Controllers
         }
 
 
+
+
+[HttpPost("Datess"), Authorize]
+[ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
+public IActionResult AddEventDates(int eventId, IEnumerable<string> dateStrings)
+{
+    try
+    {
+        List<string> processedDates = new List<string>();
+
+        foreach (var dateString in dateStrings)
+        {
+            // Process the single date string directly
+            if (DateTime.TryParse(dateString, out DateTime dateValue))
+            {
+                // Assuming you have a Date entity with a foreign key to Event
+                var dateEntity = new Date
+                {
+                    EventId = eventId, // Associate the date with the specified event ID
+                    DateOfEvent = dateValue, // Store the parsed DateTime
+                    DateCreatedAt = DateTime.Now, // Set the creation date
+                    DateUpdatedAt = DateTime.Now, // Set the update date
+                };
+
+                // Your database logic here to add the dateEntity to the database
+                dbContext.Dates.Add(dateEntity);
+                dbContext.SaveChanges();
+
+                // Add the processed date string to the list
+                processedDates.Add(dateString);
+            }
+            else
+            {
+                // Handle the case where the date string cannot be parsed.
+                // For example, log an error or take appropriate action.
+                logger.LogWarning($"Invalid date string: {dateString}");
+            }
+        }
+
+        return Ok(processedDates);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error processing event dates. ERRCODE 1012");
+        return StatusCode(500);
+    }
+}
         [HttpPost("Applications"), Authorize]
         [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
         public IActionResult AddEvents(EventApplication data)

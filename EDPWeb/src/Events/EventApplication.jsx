@@ -171,7 +171,7 @@ function ApplyEvent() {
     formikEvent.setFieldValue('ContentHTML', content);
   };
 
-  const [selectedRadio, setSelectedRadio] = useState("");
+  const [selectedRadio, setSelectedRadio] = useState("Non-Recurring");
 
   const handleRadioChange = (event) => {
     setSelectedRadio(event.target.value);
@@ -179,7 +179,7 @@ function ApplyEvent() {
   };
 
   const controlProps = (item) => ({
-    checked: selectedValue === item,
+    checked: selectedRadio === item,
     onChange: handleChange,
     value: item,
     name: "size-radio-button-demo",
