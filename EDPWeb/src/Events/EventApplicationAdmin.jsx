@@ -39,26 +39,28 @@ const EventApplications = () => {
       return formattedDate;
     }
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(`/event/GetAllApplications?search=${search}`);
-      
+    const handleSearch = async () => {
+      try {
+        const response = await http.get(`/event/GetAllApplications?search=${search}`);
+        
+        let data;
+        if (response.data) {
 
-      if (!response.ok) {
-        console.error('Error fetching data. Status:', response.status);
-        return;
-      }
+          data = response.data;
+        } else {
+          
+          data = JSON.parse(response);
+        }
   
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
+    const handleSearchChange = (event) => {
+      setSearch(event.target.value);
+    };
 
 
 
@@ -70,6 +72,7 @@ const EventApplications = () => {
         <h1 className="text-center text-5xl mt-10 text-black">
           Event Application Records
         </h1>
+
         <br></br>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-7 ">
           <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">

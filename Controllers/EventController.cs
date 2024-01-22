@@ -38,7 +38,7 @@ public IActionResult AddEvents(EventApplication data)
             var now = DateTime.Now;
             var myEvent = new Event()
             {
-                                    EventName = data.EventName.Trim(),
+                    EventName = data.EventName.Trim(),
                     EventPrice = data.EventPrice,
                     FriendPrice = data.FriendPrice,
                     NTUCPrice = data.NTUCPrice,
@@ -59,10 +59,8 @@ public IActionResult AddEvents(EventApplication data)
             dbContext.Events.Add(myEvent);
             dbContext.SaveChanges();
 
-            // Retrieve the eventId after saving the event
             int eventId = myEvent.EventId;
 
-            // Create dates associated with the event
             for (int i = 0; i < data.EventDates.Count; i++)
             {
                 DateTime currentDate = data.EventDates[i];
@@ -79,16 +77,13 @@ public IActionResult AddEvents(EventApplication data)
                 dbContext.SaveChanges();
             }
 
-            // Commit the transaction if everything is successful
             transaction.Commit();
 
-            // Return the response
             EventDTO eventDTO = mapper.Map<EventDTO>(myEvent);
             return Ok(eventDTO);
         }
         catch (Exception ex)
         {
-            // Rollback the transaction in case of an exception
             transaction.Rollback();
 
             logger.LogError(ex, "Error Creating Event Application. ERRCODE 100007");

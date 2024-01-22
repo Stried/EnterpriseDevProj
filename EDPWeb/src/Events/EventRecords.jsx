@@ -83,38 +83,61 @@ const EventRecords = () => {
         return givenDate < today;
       }
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(`/event/GetAllApplications?search=${search}`);
-      
+      const handleSearch = async () => {
+        try {
+          const response = await http.get(`/event/GetAllApplications?search=${search}`);
+          
+          let data;
+          if (response.data) {
 
-      if (!response.ok) {
-        console.error('Error fetching data. Status:', response.status);
-        return;
-      }
+            data = response.data;
+          } else {
+            
+            data = JSON.parse(response);
+          }
+    
+          setEvents(data);
+        } catch (error) {
+          console.error('Error fetching events:', error);
+        }
+      };
   
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
+      const handleSearchChange = (event) => {
+        setSearch(event.target.value);
+      };
 
 
 
   return (
 
 <div className="relative min-h-screen ">
-      <Box>
+      <Box className="mb-10 ">
 
         <h1 className="text-center text-5xl mt-10 text-black">
           Event Application Records
         </h1>
-        <br></br>
+        <div className="text-center mt-5 mb-5">
+            <input
+              type="text"
+              id="search"
+              onChange={handleSearchChange}
+              value={search}
+              placeholder="Search by Event Title..."
+              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+            />
+
+            <button
+              onClick={handleSearch}
+              className="bg-gradient-to-br ml-5 from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+            >
+              Search
+            </button>
+            </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-7 ">
           <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs uppercase bg-gradient-to-br from-orange-400 to-red-500 text-black">
@@ -261,7 +284,6 @@ const EventRecords = () => {
                     >
                       {event.eventName}
                     </th>
-
                     <td class="px-6 py-4">{event.userID}</td>
                     <td class="px-6 py-4">{event.eventId}</td>
                     <td class="px-6 py-4">{event.activityType}</td>

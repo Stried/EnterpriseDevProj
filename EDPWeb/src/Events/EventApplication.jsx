@@ -43,11 +43,8 @@ function ApplyEvent() {
     const currentDate = new Date();
     const oneWeekLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
     
-    // Set the specific time (e.g., 12:00 PM)
-    oneWeekLater.setHours(12);
-    oneWeekLater.setMinutes(0);
-    oneWeekLater.setSeconds(0);
-
+    oneWeekLater.setHours(0, 0, 0, 0);
+  
     return oneWeekLater;
   };
 
@@ -124,7 +121,7 @@ function ApplyEvent() {
       AvgRating: yup.number(),
       DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
-      EventDates: yup.array().of(yup.string()).required(),
+      EventDates: yup.array().of(yup.date()).required(),
       UserID: yup.number().integer(),
     }),
     onSubmit: async (data) => {
@@ -149,7 +146,7 @@ function ApplyEvent() {
           formattedDates.push(formattedDate);
         } else {
 
-          formattedDates.push(null); // or some default date string
+          formattedDates.push(null); 
         }
       }
 
@@ -190,7 +187,7 @@ function ApplyEvent() {
           headers: {
               Authorization: `Bearer ${localStorage.getItem(
                   "accessToken"
-              )}`, // This is needed for mine for some reason, not part of the practical
+              )}`, 
           },
       })
         .then((res) => {
@@ -206,11 +203,8 @@ function ApplyEvent() {
   });
 
   useEffect(() => {
-    // Log form validation status when the component renders
     console.log("Is form valid:", formikEvent.isValid);
 
-
-    // Log form errors if any
     if (!formikEvent.isValid) {
       console.log("Form errors:", formikEvent.errors);
     }
@@ -236,7 +230,7 @@ function ApplyEvent() {
 
 
   useEffect(() => {
-    console.log("Selected Dates:", selectedDates); // Log selectedDates array
+    console.log("Selected Dates:", selectedDates); 
   }, [selectedDates]);
 
   const handleRadioChange = (event) => {
@@ -487,7 +481,7 @@ function ApplyEvent() {
             multiple
             minDate={getOneWeekAheadDateTime()}
             plugins={[
-              <TimePicker position="bottom" />, // Close the TimePicker tag here
+              <TimePicker position="bottom" />, 
           ]}
           />
           </div>
