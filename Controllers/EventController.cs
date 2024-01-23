@@ -25,10 +25,14 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-        [HttpPost("Applications"), Authorize]
+[HttpPost("Applications"), Authorize]
 [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
 public IActionResult AddEvents(EventApplication data)
 {
+        if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
     using (var transaction = dbContext.Database.BeginTransaction())
     {
         try
@@ -66,7 +70,7 @@ public IActionResult AddEvents(EventApplication data)
                 DateTime currentDate = data.EventDates[i];
                 var myDate = new Date()
                 {
-                                            EventName=data.EventName.Trim(),
+                        EventName=data.EventName.Trim(),
                         DateOfEvent=currentDate,
                         DateCreatedAt=now,
                         DateUpdatedAt=now,

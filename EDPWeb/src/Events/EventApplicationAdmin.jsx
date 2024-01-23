@@ -23,7 +23,6 @@ const EventApplications = () => {
     }, []);
 
 
-  
     function convertDateFormat(dateStr) {
       // Parse the input date string using Date object
       const date = new Date(dateStr);
@@ -62,7 +61,30 @@ const EventApplications = () => {
       setSearch(event.target.value);
     };
 
+    const sortEventApplications = (field, direction) => {
+      const sortedList = [...events];
+      sortedList.sort((a, b) => {
+        if (direction === "asc") {
+          return a[field].localeCompare(b[field], undefined, { numeric: true });
+        } else {
+          return b[field].localeCompare(a[field], undefined, { numeric: true });
+        }
+      });
+      setEvents(sortedList);
+    };
 
+    const onSortChange = (field) => {
+      const newDirection = sortDirection === "asc" ? "desc" : "asc";
+      setSortField(field);
+      setSortDirection(newDirection);
+      sortEventRecords(field, newDirection);
+    };
+  
+    const onUnsortClick = () => {
+      setSortField("eventId");
+      setSortDirection("asc");
+      getEventRecords();
+    };
 
   return (
 

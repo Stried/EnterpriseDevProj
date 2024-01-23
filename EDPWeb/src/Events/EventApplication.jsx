@@ -19,7 +19,7 @@ import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import ReactMarkdown from 'react-markdown';
-
+import dayjs from "dayjs";
 import {
   Box,
   RadioGroup,
@@ -139,10 +139,10 @@ function ApplyEvent() {
       for (let i = 0; i < selectedDates.length; i++) {
         const customDate = selectedDates[i];
       
-        // Check if it's a valid custom date object
         if (customDate && typeof customDate === 'object') {
 
           const formattedDate = new Date(customDate);
+          
           formattedDates.push(formattedDate);
         } else {
 
