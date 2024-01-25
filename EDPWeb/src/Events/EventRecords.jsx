@@ -19,7 +19,7 @@ const EventRecords = () => {
   const [sortDirection, setSortDirection] = useState("asc");
 
   const getEventRecords = () => {
-    http.get('/event/GetAllApplications').then((res) => {
+    http.get('/event/GetAllEvents').then((res) => {
       console.log(res.data);
       setEvents(res.data);
     });
@@ -114,7 +114,7 @@ const EventRecords = () => {
       <Box className="mb-10 ">
 
         <h1 className="text-center text-5xl mt-10 text-black">
-          Event Application Records
+          Event Records
         </h1>
         <div className="text-center mt-5 mb-5">
             <input

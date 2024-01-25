@@ -15,16 +15,20 @@ import { Box, IconButton } from "@mui/material";
 const EventApplications = () => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
-  useEffect(() => {
+  const [sortField, setSortField] = useState("eventId");
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const getEventApplications = () => {
     http.get('/event/GetAllApplications').then((res) => {
-    console.log(res.data);
-    setEvents(res.data);
+      console.log(res.data);
+      setEvents(res.data);
     });
-    }, []);
+  };
 
-
+  useEffect(() => {
+    getEventApplications();
+  }, []);
     function convertDateFormat(dateStr) {
-      // Parse the input date string using Date object
       const date = new Date(dateStr);
     
 
@@ -77,13 +81,13 @@ const EventApplications = () => {
       const newDirection = sortDirection === "asc" ? "desc" : "asc";
       setSortField(field);
       setSortDirection(newDirection);
-      sortEventRecords(field, newDirection);
+      sortEventApplications(field, newDirection);
     };
   
     const onUnsortClick = () => {
       setSortField("eventId");
       setSortDirection("asc");
-      getEventRecords();
+      getEventApplications();
     };
 
   return (
@@ -95,7 +99,29 @@ const EventApplications = () => {
           Event Application Records
         </h1>
 
-        <br></br>
+        <div className="text-center mt-5 mb-5">
+            <input
+              type="text"
+              id="search"
+              onChange={handleSearchChange}
+              value={search}
+              placeholder="Search by Event Title or User ID..."
+              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+            />
+
+            <button
+              onClick={handleSearch}
+              className="bg-gradient-to-br ml-5 from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+            >
+              Search
+            </button>
+            </div>
+
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-7 ">
           <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs uppercase bg-gradient-to-br from-orange-400 to-red-500 text-black">
@@ -106,6 +132,7 @@ const EventApplications = () => {
                 <th scope="col" class="px-6 py-3">
                   <div
                     class="flex items-center"
+                    onClick={() => onSortChange("userID")}
                   >
                     User ID of creator
                     <a href="#">
@@ -143,7 +170,9 @@ const EventApplications = () => {
                   scope="col"
                   class="px-6 py-3"
                 >
-                  <div class="flex items-center">
+                  <div class="flex items-center"
+                  onClick={() => onSortChange("activityType")}
+                  >
                     Activity Type
                     <a href="#">
                       <svg
@@ -179,6 +208,7 @@ const EventApplications = () => {
                 </th>
                 <th className="pl-20">
                   <div
+                  onClick={onUnsortClick}
                     className="w-5 h-5 cursor-pointer"
                   >
                     <svg
