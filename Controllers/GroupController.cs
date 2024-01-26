@@ -76,6 +76,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        // TODO: Fix
         [HttpPost("joinGroup/{groupId}"), Authorize(Roles = "User")]
         public IActionResult JoinUserGroup(int groupId)
         {
@@ -179,6 +180,17 @@ namespace EnterpriseDevProj.Controllers
                 logger.LogError(ex, "Error in Retrieving User Groups. ERRCODE 1011");
                 return StatusCode(500);
             }
+        }
+
+        [HttpGet("groupDetails/{groupID}"), Authorize]
+        public IActionResult GetGroupDetails(int groupID)
+        {
+            var id = groupID;
+            IQueryable<UserGroupLink> groupUsers = dbContext.UserGroupLinks;
+            groupUsers = groupUsers.Where(group => group.GroupID == id);
+
+            var returnedGroupUsers = groupUsers.OrderBy(x => x.CreatedAt).ToList();
+            return Ok(returnedGroupUsers);
         }
 
         private int GetUserID()

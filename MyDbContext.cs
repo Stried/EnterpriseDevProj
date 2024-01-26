@@ -6,6 +6,7 @@ using EnterpriseDevProj.Models.EventFolder;
 using EnterpriseDevProj.Models.Miscellaneous;
 using EnterpriseDevProj.Models.CartFolder;
 using EnterpriseDevProj.Models.VoucherFolder;
+using EnterpriseDevProj.Models.TicketFolder;
 namespace EnterpriseDevProj
 {
     public class MyDbContext : DbContext    
@@ -48,6 +49,8 @@ namespace EnterpriseDevProj
         public DbSet<CartParticipant> CartParticipants { get; set; }
 
         public DbSet<Voucher> Vouchers { get; set; }
+
+        public DbSet<Ticket> Tickets { get; set; }
     }
 }
 

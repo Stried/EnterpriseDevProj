@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using EnterpriseDevProj.Models.TicketFolder;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EnterpriseDevProj.Controllers
 {
@@ -54,6 +55,12 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             }
         }
+
+        //[HttpGet("getAllTickets")]
+        //public IActionResult GetAllTickets()
+        //{
+            
+        //}
 
         // TODO: 
         // GET Endpoint (Get ALL)
