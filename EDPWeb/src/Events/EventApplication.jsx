@@ -27,7 +27,6 @@ import {
   FormControl,
 } from "@mui/material";
 function ApplyEvent() {
-  const [selectedDates, setSelectedDates] = useState([]);
   function convertDateTimeToDateOnly(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const year = dateTime.getFullYear();
@@ -120,7 +119,8 @@ function ApplyEvent() {
       AvgRating: yup.number(),
       DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
-      EventDates: yup.array().of(yup.date()).min(1, 'The error message if length === 0 | 1').required(),
+      // EventDates: yup.array().of(yup.date()).min(1, "test error message").required(),
+      EventDates: yup.array().min(1, "test error message"),
       UserID: yup.number().integer(),
     }),
     onSubmit: async (data) => {
@@ -135,8 +135,8 @@ function ApplyEvent() {
       }
       const formattedDates = [];
 
-      for (let i = 0; i < selectedDates.length; i++) {
-        const customDate = selectedDates[i];
+      for (let i = 0; i < data.EventDates.length; i++) {
+        const customDate = data.EventDates[i];
       
         if (customDate && typeof customDate === 'object') {
 
@@ -167,9 +167,9 @@ function ApplyEvent() {
         
       };
  
-      if (selectedDates.length > 0) {
+      if (data.EventDates.length > 0) {
 
-        const maxDate = new Date(Math.max(...selectedDates.map((date) => new Date(date))));
+        const maxDate = new Date(Math.max(...data.EventDates.map((date) => new Date(date))));
     
 
         const formattedMaxDate = maxDate.toISOString().split('T')[0];
@@ -228,9 +228,7 @@ function ApplyEvent() {
   const [selectedRadio, setSelectedRadio] = useState("Non-Recurring");
 
 
-  useEffect(() => {
-    console.log("Selected Dates:", selectedDates); 
-  }, [selectedDates]);
+
 
   const handleRadioChange = (event) => {
     setSelectedRadio(event.target.value);
@@ -474,15 +472,20 @@ function ApplyEvent() {
             className="red"
             inputClass="custom-input"
             placeholderText="Select a date"
-            value={selectedDates}
-            onChange={(dates) => setSelectedDates(dates)
-            }
+            value={formikEvent.values.EventDates}
+            onChange={(dates) => formikEvent.setFieldValue('EventDates', dates)}
             multiple
             minDate={getOneWeekAheadDateTime()}
             plugins={[
               <TimePicker position="bottom" />, 
+              <DatePanel />
           ]}
           />
+                      {formikEvent.errors.EventDates ? (
+              <div className="text-red-400">
+                *{formikEvent.errors.EventDates}
+              </div>
+            ) : null}
           </div>
           <div className="my-4">
   <label htmlFor="eventcontent">Content of your webpage</label>

@@ -94,10 +94,7 @@ namespace EnterpriseDevProj.Controllers
 
                 dbContext.Vouchers.Remove(voucherToDelete);
                 dbContext.SaveChanges();
-<<<<<<< HEAD
-=======
 
->>>>>>> fda27273bcdd7fea1b531518264fc7ebc3024ba8
                 return Ok();
             }
             catch (Exception e)
