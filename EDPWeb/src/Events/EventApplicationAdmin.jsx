@@ -15,52 +15,80 @@ import { Box, IconButton } from "@mui/material";
 const EventApplications = () => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
-  useEffect(() => {
+  const [sortField, setSortField] = useState("eventId");
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const getEventApplications = () => {
     http.get('/event/GetAllApplications').then((res) => {
-    console.log(res.data);
-    setEvents(res.data);
+      console.log(res.data);
+      setEvents(res.data);
     });
-    }, []);
+  };
 
-
-  
+  useEffect(() => {
+    getEventApplications();
+  }, []);
     function convertDateFormat(dateStr) {
-      // Parse the input date string using Date object
       const date = new Date(dateStr);
     
-      // Extract year, month, and day components
+
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, add 1 and pad with leading zero if needed
-      const day = String(date.getDate()).padStart(2, '0'); // Pad day with leading zero if needed
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const day = String(date.getDate()).padStart(2, '0'); 
     
-      // Construct the output date string in the desired format
+
       const formattedDate = `${day}/${month}/${year}`;
     
       return formattedDate;
     }
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(`/event/GetAllApplications?search=${search}`);
-      
-      // Check the response status
-      if (!response.ok) {
-        console.error('Error fetching data. Status:', response.status);
-        return;
-      }
+    const handleSearch = async () => {
+      try {
+        const response = await http.get(`/event/GetAllApplications?search=${search}`);
+        
+        let data;
+        if (response.data) {
+
+          data = response.data;
+        } else {
+          
+          data = JSON.parse(response);
+        }
   
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
+    const handleSearchChange = (event) => {
+      setSearch(event.target.value);
+    };
 
+    const sortEventApplications = (field, direction) => {
+      const sortedList = [...events];
+      sortedList.sort((a, b) => {
+        if (direction === "asc") {
+          return a[field].localeCompare(b[field], undefined, { numeric: true });
+        } else {
+          return b[field].localeCompare(a[field], undefined, { numeric: true });
+        }
+      });
+      setEvents(sortedList);
+    };
 
+    const onSortChange = (field) => {
+      const newDirection = sortDirection === "asc" ? "desc" : "asc";
+      setSortField(field);
+      setSortDirection(newDirection);
+      sortEventApplications(field, newDirection);
+    };
+  
+    const onUnsortClick = () => {
+      setSortField("eventId");
+      setSortDirection("asc");
+      getEventApplications();
+    };
 
   return (
 
@@ -70,7 +98,30 @@ const EventApplications = () => {
         <h1 className="text-center text-5xl mt-10 text-black">
           Event Application Records
         </h1>
-        <br></br>
+
+        <div className="text-center mt-5 mb-5">
+            <input
+              type="text"
+              id="search"
+              onChange={handleSearchChange}
+              value={search}
+              placeholder="Search by Event Title or User ID..."
+              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+            />
+
+            <button
+              onClick={handleSearch}
+              className="bg-gradient-to-br ml-5 from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+            >
+              Search
+            </button>
+            </div>
+
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-7 ">
           <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs uppercase bg-gradient-to-br from-orange-400 to-red-500 text-black">
@@ -81,6 +132,7 @@ const EventApplications = () => {
                 <th scope="col" class="px-6 py-3">
                   <div
                     class="flex items-center"
+                    onClick={() => onSortChange("userID")}
                   >
                     User ID of creator
                     <a href="#">
@@ -118,7 +170,9 @@ const EventApplications = () => {
                   scope="col"
                   class="px-6 py-3"
                 >
-                  <div class="flex items-center">
+                  <div class="flex items-center"
+                  onClick={() => onSortChange("activityType")}
+                  >
                     Activity Type
                     <a href="#">
                       <svg
@@ -154,6 +208,7 @@ const EventApplications = () => {
                 </th>
                 <th className="pl-20">
                   <div
+                  onClick={onUnsortClick}
                     className="w-5 h-5 cursor-pointer"
                   >
                     <svg
@@ -206,7 +261,7 @@ const EventApplications = () => {
                     <td>
                       <Link
                         to={`/eventapplicationdetailed/Details/${event.eventId}`}
-                        className="bg-orange-400 p-2 px-5 rounded-md text-black hover:bg-green-600 hover:text-white "
+                        className="bg-orange-400 p-2 px-5 rounded-md text-black hover:bg-red-600 hover:text-white "
                       >
                         View Details
                       </Link>

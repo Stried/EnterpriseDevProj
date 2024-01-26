@@ -4,6 +4,9 @@ import { GrGroup } from "react-icons/gr";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import './MarkdownEditor.css';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import http from "../../http";
 import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -120,7 +123,7 @@ function ApproveEvent() {
               className={`w-4/12 bg-gray-700 rounded-md absolute bottom-0 left-8.5 border-2 border-red-600 ${
                 isCardShifted ? "transform translate-x-[370px]" : ""
               }`}
-              style={{ width: "23.630rem", borderRadius: "8px", height: "23.25em", backgroundColor:"RGB(53, 63, 78)", transition: "transform 110ms ease-in-out", }}
+              style={{ width: "23.630rem", borderRadius: "8px", height: "33.25em", backgroundColor:"RGB(53, 63, 78)", transition: "transform 110ms ease-in-out", }}
             >
               <CardContent className="px-12">
                 <Typography
@@ -176,9 +179,11 @@ function ApproveEvent() {
                   </p>
                   <p>
                     Posted by:{" "}
-                    <span className="text-orange-400">
 
-                    </span>
+                    {selectedevent.user && (
+                                <span className="text-orange-400"> {selectedevent.user.name}</span>
+          )}
+
                   </p>
                 </div>
               </CardContent>
@@ -238,7 +243,7 @@ function ApproveEvent() {
             >
 
               <div className="w-2/3 grid grid-cols- columns-2">
-              <Card className="w-96 relative rounded-md z-20 border-2 border-red-600" style={{height:"23.25em"}}>
+              <Card className="w-96 relative rounded-md z-20 border-2 border-red-600" style={{height:"33.25em"}}>
         <CardContent className="px-12 ">
         <Typography
                   variant="h4"
@@ -251,12 +256,12 @@ function ApproveEvent() {
                 <br />
                 <div className=" border-2 border-orange-400 rounded-md ">
                   <div className="p-2 max-h-96 overflow-auto ">
-                    <p
-                      className="overflow-hidden text-black"
-                      style={{ overflowWrap: "break-word"}}
-                    >
-                  {selectedevent.contentHTML}
-                    </p>
+
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose h-96">
+            {selectedevent.contentHTML}
+          </ReactMarkdown>
+
+<br></br>
                   </div>
                 </div>
         </CardContent>

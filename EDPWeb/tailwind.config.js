@@ -6,6 +6,6 @@ export default {
           sans: ['sans-serif']
         },
   },
-    plugins: [ require('flowbite/plugin') ],
+    plugins: [ require('flowbite/plugin'), require('@tailwindcss/typography'), ],
 }
 

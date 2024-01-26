@@ -10,33 +10,33 @@ function Cart() {
     const [cartItemList, setCartItemList] = useState([]);
     let quantityMessage;
     if (cartItemList.length <= 1) {
-        quantityMessage = <p>{cartList.length} item</p>
+        quantityMessage = <p>{cartItemList.length} item</p>
     }
     else {
-        quantityMessage = <p>{cartList.length} items</p>
+        quantityMessage = <p>{cartItemList.length} items</p>
     }
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (localStorage.getItem("accessToken")) {
                     // First GET request
-                    http.get(`GetCartItem/${id}`, {
+                    http.get(`GetCart/${id}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     })
                     .then((res) => {
                         console.log(res.data);
-                        setCartItemList(res.data);
+                        setCartList(res.data);
                     })
     
                     // Second GET request
-                    const cartListResponse = await http.get(`GetCart/${id}`, {
+                    const cartListResponse = await http.get(`GetCartItem/${id}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     });
-                    setCartList(cartListResponse.data);
+                    setCartItemList(cartListResponse.data);
                     console.log(cartListResponse.data);
                 }
             } catch (error) {
@@ -61,15 +61,22 @@ function Cart() {
 
             </div>
             <div className='px-5'>
-                {cartList.map((cart, i) => {
-                    return (
-                        <div>                            
-                            {cartItemList.map((cartItem, i) => {
-                                cartItem.event
-                            })}
+            <div>
+                    {cartItemList && cartItemList.map((cartItem, i) => (
+                        <div key={i}>
+                            ID:
+                            {cartItem.eventId}
+                            <br></br>
+                            Name:
+                            {cartItem.event.eventName}
+                            <br></br>
+                            Price:
+                            {cartItem.event.eventPrice}
+                            <br></br>
+<hr/>
                         </div>
-                    );
-                })}
+                    ))}
+                </div>
             </div>
         </div>
     )

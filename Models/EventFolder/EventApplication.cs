@@ -44,7 +44,8 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         [Required, MaxLength(3000)]
         public string ContentHTML { get; set; } = string.Empty;
-
+        [Required(ErrorMessage = "EventDates is required")]
+        public List<DateTime> EventDates { get; set; } = new List<DateTime>();
 
     }
 }

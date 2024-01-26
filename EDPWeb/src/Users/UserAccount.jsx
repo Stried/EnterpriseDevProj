@@ -62,24 +62,25 @@ function UserAccount() {
         }
     }, []);
 
-    useEffect(() => {
-        http.get("/theme/1", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                setTheme(res.data);
-            })
-            .catch(function (err) {
-                console.log(err);
-        })
-    }, [])
+    // useEffect(() => {
+    //     http.get("/theme/1", {
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //         },
+    //     })
+    //         .then((res) => {
+    //             console.log(res.data);
+    //             setTheme(res.data);
+    //         })
+    //         .catch(function (err) {
+    //             console.log(err);
+    //     })
+    // }, [])
     
     return (
         <div className="">
-            {themeSetting && (
+            {/* change to theme */}
+            {user && (
                 <div
                     className={`min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400`}
                 >
@@ -264,7 +265,7 @@ function UserAccount() {
                                             {groupsList.length != 0 ? (
                                                 groupsList.map((groups) => {
                                                     return (
-                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg">
+                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
                                                             <h1 className="text-xl font-semibold">
                                                                 {
                                                                     groups.groupName
@@ -294,7 +295,7 @@ function UserAccount() {
                                                     <p>
                                                         Join a group?{" "}
                                                         <a
-                                                            href="/"
+                                                            href="/joinGroup"
                                                             className="text-blue-500 visited:text-purple-500 font-medium"
                                                         >
                                                             Find One Today

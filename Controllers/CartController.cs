@@ -12,6 +12,7 @@ namespace EnterpriseDevProj.Controllers
     public class CartController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly ILogger<EventController> logger;
         private readonly IMapper _mapper;
         private int GetUserId()
         {
@@ -19,9 +20,10 @@ namespace EnterpriseDevProj.Controllers
                             .Where(c => c.Type == ClaimTypes.NameIdentifier)
                             .Select(c => c.Value).SingleOrDefault());
         }
-        public CartController(MyDbContext context, IMapper mapper)
+        public CartController(MyDbContext context, ILogger<EventController> logger,IMapper mapper)
         {
             _context = context;
+            this.logger = logger;
             _mapper = mapper;
         }
 
@@ -37,7 +39,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 var myCart = new Cart()
                 {
-                    CartId = userId,
+
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
@@ -103,14 +105,39 @@ namespace EnterpriseDevProj.Controllers
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
             return Ok(cartItemDTO);
         }
+
+
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpGet("/GetCartItem/{id}"), Authorize]
-        public IActionResult GetCartItems(int cartId)
+        [HttpGet("GetCartItem/{id}"), Authorize]
+        public IActionResult GetCartItems(int id)
         {
-            IQueryable<CartItem> result = _context.CartItems.Where(t => t.CartId == cartId).Include(t => t.Event).Include(t => t.Participants).Include(t => t.Cart);
-            IEnumerable<CartItemDTO> data = result.Select(t => _mapper.Map<CartItemDTO>(t));
+            try{
+            int userId = GetUserId();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                IQueryable<CartItem> result = _context.CartItems.Include(t => t.Event);
+            var listofCarts = result.OrderByDescending(x => x.EventId).ToList();
+
+            var data = listofCarts.Select(t => new{
+                    t.EventId,
+                    Event = new {
+                        t.Event?.EventPrice,
+                        t.Event?.EventName
+                    }
+            });
             return Ok(data);
         }
+                    catch(Exception ex)
+            {
+                logger.LogError(ex, $"Error Reving Ent Application {id}, ERRCODE 1009");
+                return StatusCode(500);
+            }
+        } 
+
+
+
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         [HttpPut("/UpdateCartItem"), Authorize]
         public IActionResult UpdateCartItem(int cartItemId, UpdateCartItemRequest cartItem)
