@@ -19,7 +19,6 @@ import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import ReactMarkdown from 'react-markdown';
-import dayjs from "dayjs";
 import {
   Box,
   RadioGroup,
@@ -121,7 +120,7 @@ function ApplyEvent() {
       AvgRating: yup.number(),
       DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
-      EventDates: yup.array().of(yup.date()).required(),
+      EventDates: yup.array().of(yup.date()).min(1, 'The error message if length === 0 | 1').required(),
       UserID: yup.number().integer(),
     }),
     onSubmit: async (data) => {
