@@ -1,4 +1,5 @@
 using EnterpriseDevProj.Models.UserFolder;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnterpriseDevProj.Models.CartFolder
@@ -6,7 +7,8 @@ namespace EnterpriseDevProj.Models.CartFolder
     public class Cart
     {
         public int CartId { get; set; }
-        public int UserId {  get; set; }
+        public int CartRoute { get; set; }
+        public int UserId { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }

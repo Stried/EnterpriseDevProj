@@ -39,7 +39,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 var myCart = new Cart()
                 {
-
+                    CartRoute = userId,
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
@@ -58,15 +58,17 @@ namespace EnterpriseDevProj.Controllers
                 return BadRequest("Cart Already Exists");
             }
         }
-        [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
-        [HttpGet("/GetCart/{id}"), Authorize]
-        public IActionResult GetCart()
-        {
-            int userId = GetUserId();
-            IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId).Include(t => t.User).Include(t => t.CartItems).ThenInclude(cartItem => cartItem.Event);
-            IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
-            return Ok(data);
-        }
+        //[ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
+        //[HttpGet("/GetCart/{id}"), Authorize]
+        //public IActionResult GetCart()
+        //{
+        //    int userId = GetUserId();
+        //    IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId)
+        //                        .Include(t => t.User).Include(t => t.CartItems)
+        //                        .ThenInclude(cartItem => cartItem.Event);
+        //    IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
+        //    return Ok(data);
+        //}
         [HttpDelete("/DeleteCart"), Authorize]
         public IActionResult DeleteCart(int cartId)
         {
@@ -87,13 +89,16 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult AddCartItem(AddCartItemRequest cartItem)
         {
             var now = DateTime.Now;
-            var myCartItem = new CartItem()
+            var userId = GetUserId;
+			var result = _context.Carts.Where(t => t.CartRoute == userId()).Select(t => t.CartId).FirstOrDefault();
+
+			var myCartItem = new CartItem()
             {
                 SubTotal = cartItem.SubTotal,
                 Quantity = cartItem.Quantity,
                 CreatedAt = now,
                 UpdatedAt = now,
-                CartId = cartItem.CartId,
+                CartId = result,
                 EventId = cartItem.EventId
             };
 
@@ -111,25 +116,25 @@ namespace EnterpriseDevProj.Controllers
         [HttpGet("GetCartItem/{id}"), Authorize]
         public IActionResult GetCartItems(int id)
         {
-            try{
-            int userId = GetUserId();
+            try {
+                int userId = GetUserId();
                 if (id == null)
                 {
                     return NotFound();
                 }
                 IQueryable<CartItem> result = _context.CartItems.Include(t => t.Event);
-            var listofCarts = result.OrderByDescending(x => x.EventId).ToList();
+                var listofCarts = result.OrderByDescending(x => x.EventId).ToList();
 
-            var data = listofCarts.Select(t => new{
-                    t.EventId,
-                    Event = new {
-                        t.Event?.EventPrice,
-                        t.Event?.EventName
-                    }
-            });
-            return Ok(data);
-        }
-                    catch(Exception ex)
+                var data = listofCarts.Select(t => new{
+                        t.EventId,
+                        Event = new {
+                            t.Event?.EventPrice,
+                            t.Event?.EventName
+                        }
+                });
+                return Ok(data);
+            }
+            catch(Exception ex)
             {
                 logger.LogError(ex, $"Error Reving Ent Application {id}, ERRCODE 1009");
                 return StatusCode(500);
