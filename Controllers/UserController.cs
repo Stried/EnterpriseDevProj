@@ -150,22 +150,6 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpGet("getAllUsers"), Authorize(Roles = "Staff")]
-        public IActionResult getAllUsers(string? search)
-        {
-            IQueryable<User> userList = dbContext.Users;
-            if (search != null)
-            {
-                userList = userList.Where(x => x.Name.Contains(search) 
-                || x.Email.Contains(search) 
-                || x.NRIC.Contains(search)
-                || x.PhoneNumber.ToString().Contains(search));
-            }
-
-            var returnedUserList = userList.OrderBy(x => x.Name).ToList();
-            return Ok(returnedUserList);
-        }
-
         [HttpGet, Authorize]
         [ProducesResponseType(typeof (IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult getUserDetailsSelf()
