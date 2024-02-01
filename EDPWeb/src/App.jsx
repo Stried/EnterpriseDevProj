@@ -157,7 +157,7 @@ function App() {
                             element={<AddVoucher />}
                         />
                         <Route
-                            path="/vouchers/updateVouchers"
+                            path="/vouchers/updateVouchers/:voucherID"
                             element={<UpdateVoucher />}
                         />
                     </Routes>

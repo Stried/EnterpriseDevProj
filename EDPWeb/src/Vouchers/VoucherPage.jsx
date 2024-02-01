@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import backgroundMain1 from "./../../src/assets/backgroundMain1.jpg";
 import http from "../../http";
 import UserContext from "../Users/UserContext";
+import { Link } from "react-router-dom";
 
 function VoucherPage() {
     const [vouchersList, setVouchersList] = useState([]);
-    const user = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         http.get("/voucher/VoucherGetAll")
@@ -76,7 +77,10 @@ function VoucherPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {vouchersList.map((vouchers, i) => (
-                    <div key={i} className="mb-4 flex">
+                    <div
+                        key={i}
+                        className="mb-4 flex"
+                    >
                         <div
                             className="ml-5 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-tl 
                                         lg:rounded-bl lg:rounded-tr-none text-center overflow-hidden"
@@ -85,7 +89,15 @@ function VoucherPage() {
                             }}
                         />
                         <div className="w-64 border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
-                            <div className="mb-8">
+                            <div className="relative mb-8">
+                                {user && user.userRole === "Administrator" && (
+                                    <Link
+                                        to={`/vouchers/updateVouchers/${vouchers.id}`}
+                                        className="absolute top-1 right-1 text-blue-500"
+                                    >
+                                        Edit
+                                    </Link>
+                                )}
                                 <div className="text-gray-900 font-bold text-xl mb-2">
                                     ${vouchers.voucherValue} Voucher
                                 </div>
@@ -98,34 +110,6 @@ function VoucherPage() {
                             <button className="bg-white text-black text-l font-semibold">
                                 Claim
                             </button>
-                            {user && user.userRole === "Administrator" && (
-                            //     <Link
-                            //     to={`/vouchers/updateVouchers/`}
-                            //     className="absolute top-2 right-8 text-blue-500"
-                            // >
-                            //     <svg
-                            //         xmlns="http://www.w3.org/2000/svg"
-                            //         fill="none"
-                            //         viewBox="0 0 24 24"
-                            //         stroke="currentColor"
-                            //         className="h-6 w-6"
-                            //     >
-                            //         <path
-                            //             stroke-linecap="round"
-                            //             stroke-linejoin="round"
-                            //             stroke-width="2"
-                            //             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            //         ></path>
-                            //         <path
-                            //             stroke-linecap="round"
-                            //             stroke-linejoin="round"
-                            //             stroke-width="2"
-                            //             d="M12 21v-2M12 18v-6M12 9L12 9"
-                            //         ></path>
-                            //     </svg>
-                            // </Link>
-                                <p>You're an admin!</p>
-                            )}
                         </div>
                     </div>
                 ))}
