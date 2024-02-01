@@ -154,7 +154,7 @@ function AddVoucher() {
                             </label>
                             <input
                                 id="VoucherExpiry"
-                                type="text"
+                                type="date"
                                 onChange={formik.handleChange}
                                 value={formik.values.VoucherExpiry}
                                 className="block w-full border-1 rounded-md bg-transparent py-1 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"

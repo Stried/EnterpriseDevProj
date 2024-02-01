@@ -25,8 +25,6 @@ function UserAccount() {
             })
                 .then((res) => {
                     setGroupsList(res.data);
-                    console.log(res.data);
-                    console.log(res.data.length);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -54,7 +52,7 @@ function UserAccount() {
                 },
             })
                 .then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                 })
                 .catch(function (err) {
                     console.log(err);

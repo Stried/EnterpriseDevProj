@@ -51,7 +51,8 @@ function UserSettings() {
 
             setImgAfterCrop(dataURL);
             setImageFile(dataURL);
-            console.log(imageFile)
+            console.log("Data URL " + dataURL);
+            console.log("Image File Here" + imageFile)
             setCurrentPage("img-cropped");
         };
     };
@@ -129,21 +130,23 @@ function UserSettings() {
                 .required("Phone Number is required."),
         }),
         onSubmit: async (data) => {
-            if (imageFile) {
-                const formData = {
-                    Name: (data.Name = data.Name.trim()),
-                    Email: (data.Email = data.Email.trim()),
-                    PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
-                    imageFile: imageFile,
-                };
-            }
-
-            const formData = {
+            var formData = {
                 Name: (data.Name = data.Name.trim()),
                 Email: (data.Email = data.Email.trim()),
                 PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
-                imageFile: userAcc.imageFile
+                ImageFile: userAcc.imageFile,
             };
+
+            if (imageFile) {
+                formData = {
+                    Name: (data.Name = data.Name.trim()),
+                    Email: (data.Email = data.Email.trim()),
+                    PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
+                    ImageFile: imageFile,
+                };
+            }
+
+            console.log(imageFile);
 
             await http
                 .put("/user/updateUser", formData, {

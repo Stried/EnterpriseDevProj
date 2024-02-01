@@ -4,7 +4,7 @@ import http from "../../http";
 import UserContext from "../Users/UserContext";
 
 function VoucherPage() {
-    const [ vouchersList, setVouchersList ] = useState([]);
+    const [vouchersList, setVouchersList] = useState([]);
     const user = useContext(UserContext);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ function VoucherPage() {
     const deleteVoucher = (id) => {
         http.delete(`/deleteVoucher/${id}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
@@ -74,50 +74,61 @@ function VoucherPage() {
                     </div>
                 </div>
             </div>
-            <div className="space-x-4 flex">
-                {vouchersList.map((vouchers, i) => {
-                    return (
-                        <div className="max-w-sm w-full lg:max-w-full lg:flex mb-4 flex">
-                            <div
-                                className="ml-5 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-tl 
-                                            lg:rounded-bl lg:rounded-tr-none text-center overflow-hidden"
-                                style={{
-                                    backgroundImage: `url(${backgroundMain1})`,
-                                }}
-                            />
-                            <div className="w-64 border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
-                                <div className="mb-8">
-                                    <p className="text-sm text-gray-600 flex items-center">
-                                        <svg
-                                            className="fill-current text-gray-500 w-3 h-3 mr-2"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
-                                        </svg>
-                                        Members only
-                                    </p>
-                                    <div className="text-gray-900 font-bold text-xl mb-2">
-                                        ${vouchers.voucherValue} Voucher
-                                    </div>
-                                    <p className="text-gray-700 text-base w-64">
-                                        {vouchers.voucherName}
-                                    </p>
-                                    <p>Expiry Date: {vouchers.voucherExpiry}</p>
-                                    <p>Uses: {vouchers.voucherUses}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {vouchersList.map((vouchers, i) => (
+                    <div key={i} className="mb-4 flex">
+                        <div
+                            className="ml-5 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-tl 
+                                        lg:rounded-bl lg:rounded-tr-none text-center overflow-hidden"
+                            style={{
+                                backgroundImage: `url(${backgroundMain1})`,
+                            }}
+                        />
+                        <div className="w-64 border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+                            <div className="mb-8">
+                                <div className="text-gray-900 font-bold text-xl mb-2">
+                                    ${vouchers.voucherValue} Voucher
                                 </div>
-                                <button className="bg-white text-black text-l font-semibold">
-                                    Claim
-                                </button>
-                                { user && user.userRole == "Administrator" && (
-                                    <button onClick={() => deleteVoucher(vouchers.id)} className="bg-red-400 px=3 py-2 rounded-md">
-                                        Delete 
-                                    </button>
-                                )}
+                                <p className="text-gray-700 text-base w-64">
+                                    {vouchers.voucherName}
+                                </p>
+                                <p>Expiry Date: {vouchers.voucherExpiry}</p>
+                                <p>Uses: {vouchers.voucherUses}</p>
                             </div>
+                            <button className="bg-white text-black text-l font-semibold">
+                                Claim
+                            </button>
+                            {user && user.userRole === "Administrator" && (
+                            //     <Link
+                            //     to={`/vouchers/updateVouchers/`}
+                            //     className="absolute top-2 right-8 text-blue-500"
+                            // >
+                            //     <svg
+                            //         xmlns="http://www.w3.org/2000/svg"
+                            //         fill="none"
+                            //         viewBox="0 0 24 24"
+                            //         stroke="currentColor"
+                            //         className="h-6 w-6"
+                            //     >
+                            //         <path
+                            //             stroke-linecap="round"
+                            //             stroke-linejoin="round"
+                            //             stroke-width="2"
+                            //             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            //         ></path>
+                            //         <path
+                            //             stroke-linecap="round"
+                            //             stroke-linejoin="round"
+                            //             stroke-width="2"
+                            //             d="M12 21v-2M12 18v-6M12 9L12 9"
+                            //         ></path>
+                            //     </svg>
+                            // </Link>
+                                <p>You're an admin!</p>
+                            )}
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
             </div>
         </div>
     );

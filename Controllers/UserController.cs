@@ -214,7 +214,7 @@ namespace EnterpriseDevProj.Controllers
                 userAccCheck.Name = request.Name.Trim();
                 userAccCheck.Email = request.Email.Trim();
                 userAccCheck.PhoneNumber = request.PhoneNumber;
-                userAccCheck.ImageFile = request.imageFile;
+                userAccCheck.ImageFile = request.ImageFile;
 
                 dbContext.Users.Update(userAccCheck);
                 dbContext.SaveChanges();
