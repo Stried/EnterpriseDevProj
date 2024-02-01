@@ -11,6 +11,8 @@ using static System.Net.WebRequestMethods;
 
 namespace EnterpriseDevProj.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class AdminController : ControllerBase
     {
         private readonly MyDbContext dbContext;
@@ -30,7 +32,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetAllUsers(string? search)
         {
             IQueryable<User> userList = dbContext.Users;
-            if (search == null) 
+            if (search != null) 
             {
                 userList = userList.Where(x => x.Name.Contains(search)
                 || x.Email.Contains(search)

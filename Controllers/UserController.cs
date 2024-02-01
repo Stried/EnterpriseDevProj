@@ -107,6 +107,7 @@ namespace EnterpriseDevProj.Controllers
                     Email = userAccCheck.Email,
                     PhoneNumber = userAccCheck.PhoneNumber,
                     ImageFile = userAccCheck.ImageFile,
+                    UserRole = userAccCheck.UserRole
                 };
 
                 UserDTO userDTO = mapper.Map<UserDTO>(user);

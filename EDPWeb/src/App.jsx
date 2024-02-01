@@ -46,19 +46,15 @@ function App() {
         const handleLocationChange = () => {
             if (window.location.pathname === "/") {
                 setNavbarVis(true);
-                console.log("Changed True " + navbarVis);
+                
             } else {
                 setNavbarVis(false);
-                console.log("Changed False " + navbarVis);
+
             }
         };
 
         handleLocationChange();
     }, [location.pathname, navbarVis]);
-
-    useEffect(() => {
-        console.log(user);
-    });
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -72,28 +68,12 @@ function App() {
             })
                 .then((res) => {
                     setUser(res.data);
-                    console.log(user);
                 })
                 .catch(function (err) {
                     console.log(err);
                 });
         }
     }, []);
-
-    // useEffect(() => {
-    //     http.get("/theme/1", {
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    //         },
-    //     })
-    //         .then((res) => {
-    //             console.log(res.data);
-    //             setTheme(res.data);
-    //         })
-    //         .catch(function (err) {
-    //             console.log(err);
-    //         });
-    // }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

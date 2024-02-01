@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../Users/UserContext";
+import AdminAllUsers from "./AdminAllUsers";
 
 function AdminPanel() {
     const { user } = useContext(UserContext);
@@ -119,7 +120,7 @@ function AdminPanel() {
                     </div>
                 </div>
                 <div className="mx-5 px-2 w-5/6 bg-white rounded-md">
-                    
+                    <AdminAllUsers />
                 </div>
             </div>
         </div>
