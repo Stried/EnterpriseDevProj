@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import backgroundMain1 from "./../../src/assets/backgroundMain1.jpg";
 import http from "../../http";
+import UserContext from "../Users/UserContext";
 
 function VoucherPage() {
     const [ vouchersList, setVouchersList ] = useState([]);
+    const user = useContext(UserContext);
 
     useEffect(() => {
         http.get("/voucher/VoucherGetAll")
@@ -13,8 +15,22 @@ function VoucherPage() {
             })
             .catch(function (err) {
                 console.log(err);
-            }) 
-    })
+            });
+    }, []);
+
+    const deleteVoucher = (id) => {
+        http.delete(`/deleteVoucher/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
 
     return (
         <div className="p-10 space-x-4">
@@ -63,8 +79,8 @@ function VoucherPage() {
                     return (
                         <div className="max-w-sm w-full lg:max-w-full lg:flex mb-4 flex">
                             <div
-                                className="ml-5 lg:h-auto lg:w-40 flex-none bg-cover rounded-t
-                    lg:rounded-tl lg:rounded-bl lg:rounded-tr-none text-center overflow-hidden"
+                                className="ml-5 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-tl 
+                                            lg:rounded-bl lg:rounded-tr-none text-center overflow-hidden"
                                 style={{
                                     backgroundImage: `url(${backgroundMain1})`,
                                 }}
@@ -87,16 +103,17 @@ function VoucherPage() {
                                     <p className="text-gray-700 text-base w-64">
                                         {vouchers.voucherName}
                                     </p>
-                                    <p>
-                                        Expiry Date: {vouchers.voucherExpiry}
-                                    </p>
-                                    <p>
-                                        Uses: {vouchers.voucherUses}
-                                    </p>
+                                    <p>Expiry Date: {vouchers.voucherExpiry}</p>
+                                    <p>Uses: {vouchers.voucherUses}</p>
                                 </div>
                                 <button className="bg-white text-black text-l font-semibold">
                                     Claim
                                 </button>
+                                { user && user.userRole == "Administrator" && (
+                                    <button onClick={() => deleteVoucher(vouchers.id)} className="bg-red-400 px=3 py-2 rounded-md">
+                                        Delete 
+                                    </button>
+                                )}
                             </div>
                         </div>
                     );

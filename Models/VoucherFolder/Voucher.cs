@@ -11,7 +11,7 @@ namespace EnterpriseDevProj.Models.VoucherFolder
         [Required, Range(5, 100)]
         public int VoucherValue { get; set; }
 
-        [Required, StringLength(5, MinimumLength = 5)]
+        [Required, MinLength(5), MaxLength(30)]
         public string VoucherName { get; set; } = string.Empty;
 
         [Required, Range(5, 10000)]

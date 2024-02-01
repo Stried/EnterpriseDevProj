@@ -84,7 +84,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpDelete("deleteVoucher")] // Unsure if 2 delete endpoints are needed
+        [HttpDelete("deleteVoucher/{voucherID}")] // Unsure if 2 delete endpoints are needed
         public IActionResult VoucherDelete(int voucherID)
         {
             try

@@ -27,6 +27,8 @@ import JoinGroup from "./Groups/JoinGroup";
 import GroupMain from "./Groups/GroupMain";
 import AdminPanel from "./Admin/AdminPanel";
 import AdminEditUser from "./Admin/AdminEditUser";
+import AddVoucher from "./Vouchers/AddVoucher";
+import UpdateVoucher from "./Vouchers/UpdateVoucher";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -112,7 +114,7 @@ function App() {
                         />
                         <Route
                             path="/GetCartItem/:id"
-                            element={< GetCartItem/>}
+                            element={<GetCartItem />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
@@ -149,6 +151,14 @@ function App() {
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}
+                        />
+                        <Route
+                            path="/vouchers/addVouchers"
+                            element={<AddVoucher />}
+                        />
+                        <Route
+                            path="/vouchers/updateVouchers"
+                            element={<UpdateVoucher />}
                         />
                     </Routes>
                 </div>

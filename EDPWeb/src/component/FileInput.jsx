@@ -14,7 +14,8 @@ const FileInput = ({ onImageSelected }) => {
         }
     }
     
-    const onChooseImage = () => {
+    const onChooseImage = (e) => {
+        e.preventDefault()
         inputRef.current.click();
     }
 

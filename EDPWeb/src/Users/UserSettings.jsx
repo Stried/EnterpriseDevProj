@@ -6,12 +6,60 @@ import { useFormik } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import http from "../../http";
 import { Spinner, Card, Avatar, Button, Modal } from "flowbite-react";
+import FileInput from "../component/FileInput";
+import ImageCropper from "../component/ImageCropper";
 
 function UserSettings() {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
     const [ userAcc, setUserAcc ] = useState("");
     const [ deleteAccountModal, setOpenDeleteAccountModal ] = useState(false);
+
+    // Crop image functions
+    const [imageFile, setImageFile] = useState(null);
+    const [currentPage, setCurrentPage] = useState("choose-img");
+    const [ imgAfterCrop, setImgAfterCrop ] = useState("");
+    
+    const onImageSelected = (selectedImage) => {
+        setImageFile(selectedImage);
+        setCurrentPage("crop-img");
+    };
+
+    const onCropDone = (imgCroppedArea, e) => {
+        const canvasEle = document.createElement("canvas");
+        canvasEle.width = imgCroppedArea.width;
+        canvasEle.height = imgCroppedArea.height;
+
+        const context = canvasEle.getContext("2d");
+
+        let imageObj1 = new Image();
+        imageObj1.src = imageFile;
+        imageObj1.onload = function () {
+            context.drawImage(
+                imageObj1,
+                imgCroppedArea.x,
+                imgCroppedArea.y,
+                imgCroppedArea.width,
+                imgCroppedArea.height,
+                0,
+                0,
+                imgCroppedArea.width,
+                imgCroppedArea.height
+            );
+
+            const dataURL = canvasEle.toDataURL("image/*");
+
+            setImgAfterCrop(dataURL);
+            setImageFile(dataURL);
+            console.log(imageFile)
+            setCurrentPage("img-cropped");
+        };
+    };
+
+    const onCropCancel = () => {
+        setCurrentPage("choose-img");
+        setImageFile("");
+    };
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -24,11 +72,9 @@ function UserSettings() {
             })
                 .then((res) => {
                     setUserAcc(res.data);
-                    console.log(userAcc);
                 })
                 .catch(function (err) {
                     console.log(err);
-                    console.log(userAcc);
                 });
         }
     }, []);
@@ -48,7 +94,6 @@ function UserSettings() {
             },
         })
             .then((res) => {
-                console.log(res.data);
                 navigate("/")
                 window.location.reload();
             })
@@ -84,10 +129,20 @@ function UserSettings() {
                 .required("Phone Number is required."),
         }),
         onSubmit: async (data) => {
+            if (imageFile) {
+                const formData = {
+                    Name: (data.Name = data.Name.trim()),
+                    Email: (data.Email = data.Email.trim()),
+                    PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
+                    imageFile: imageFile,
+                };
+            }
+
             const formData = {
                 Name: (data.Name = data.Name.trim()),
                 Email: (data.Email = data.Email.trim()),
                 PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
+                imageFile: userAcc.imageFile
             };
 
             await http
@@ -153,6 +208,46 @@ function UserSettings() {
                     <h1 className="text-xl font-semibold">
                         Change Account Details
                     </h1>
+                    
+                    <div className="my-4">
+                        {currentPage === "choose-img" ? (
+                            <FileInput onImageSelected={onImageSelected} />
+                        ) : currentPage === "crop-img" ? (
+                            <ImageCropper
+                                image={imageFile}
+                                onCropDone={onCropDone}
+                                onCropCancel={onCropCancel}
+                                className="h-40"
+                            />
+                        ) : (
+                            <div className="">
+                                <img
+                                    src={imgAfterCrop}
+                                    className="cropped-img"
+                                />
+
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage("crop-img");
+                                    }}
+                                    className="px-3 py-2 bg-red-400 mr-2 rounded-md"
+                                >
+                                    Crop
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setCurrentPage("choose-img");
+                                        setImageFile("");
+                                    }}
+                                    className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
+                                >
+                                    New Image
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
                     <form
                         action=""
                         onSubmit={formikAccount.handleSubmit}
@@ -310,17 +405,6 @@ function UserSettings() {
 
                     <hr className="my-10 mx-auto border-2 border-gray-400" />
 
-                    <div className="">
-                        <h1 className="text-xl font-semibold">
-                            Change Colour Theme
-                        </h1>
-                        <div className="py-5">
-                            <p>TO BE CONTINUED</p>
-                        </div>
-                    </div>
-
-                    <hr className="my-10 mx-auto border-2 border-gray-400" />
-
                     <h1 className="text-xl font-semibold mb-10">
                         Logout/Account Deletion
                     </h1>
@@ -332,7 +416,10 @@ function UserSettings() {
                             Logout
                         </button>
                         <div className="grow"></div>
-                        <button onClick={() => setOpenDeleteAccountModal(true)} className="bg-red-400 px-4 py-3 rounded-md font-semibold hover:brightness-90 transition ease-in-out duration-300">
+                        <button
+                            onClick={() => setOpenDeleteAccountModal(true)}
+                            className="bg-red-400 px-4 py-3 rounded-md font-semibold hover:brightness-90 transition ease-in-out duration-300"
+                        >
                             Delete Account
                         </button>
                     </div>
@@ -353,7 +440,7 @@ function UserSettings() {
                                 <p className="text-base font-medium leading-relaxed text-gray-500 dark:text-gray-400">
                                     This action is{" "}
                                     <span className="text-red-400 font-bold">
-                                        IRREVERSIBLE. {" "}
+                                        IRREVERSIBLE.{" "}
                                     </span>
                                     Membership status, points cannot be
                                     regained. Your account will be kicked from

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import http from "../../http";
-import { useState, useEffect } from "react";
-import http from "../../http";
 import "./../App.css";
 import { AiOutlineMenu } from "react-icons/ai";
 
