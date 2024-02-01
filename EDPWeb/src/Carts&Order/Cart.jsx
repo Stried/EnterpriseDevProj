@@ -2,34 +2,57 @@ import React, { useContext, useEffect, useState } from 'react'
 import http from "../../http";
 import UserContext from '../Users/UserContext';
 import { useNavigate, useParams } from "react-router-dom";
+import *  as yup from "yup";
+import { useFormik, validateYupSchema } from 'formik';
 
 function Cart() {
     let { id } = useParams();
     const { user } = useContext(UserContext);
-    const [cartList, setCartList] = useState([]);
     const [cartItemList, setCartItemList] = useState([]);
     let quantityMessage;
     if (cartItemList.length <= 1) {
-        quantityMessage = <p>{cartItemList.length} item</p>
+        quantityMessage = `Item: ${cartItemList.length}`
     }
     else {
-        quantityMessage = <p>{cartItemList.length} items</p>
+        quantityMessage = `Items: ${cartItemList.length}`
     }
+
+    const formik = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            Quantity: ""
+        },
+        validationSchema: yup.object().shape({
+            Quantity: yup.number(),
+        }),
+        onSubmit: async (data) => {
+            await http
+                .put(`/UpdateCartItem/${6}`, data, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "accessToken"
+                        )}`, // This is needed for mine for some reason, not part of the practical
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data);
+                })
+        }
+    })
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (localStorage.getItem("accessToken")) {
-
-                    http.get(`GetCart/${id}`, {
+                    http.get(`GetCartItem/${id}`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },
                     })
-                    .then((res) => {
-                        console.log(res.data);
-                        setCartList(res.data);
-                    })
-    
+                        .then((res) => {
+                            setCartItemList(res.data);
+                        })
+
 
                     const cartListResponse = await http.get(`GetCartItem/${id}`, {
                         headers: {
@@ -43,98 +66,68 @@ function Cart() {
                 console.error('Error fetching data:', error);
             }
         };
-    
+
         fetchData();
-    }, [id]); 
-    
+    }, [id]);
+
 
     return (
-        <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
+        <div className="bg-gradient-to-br from-gray-300 to-gray-400 pb-10">
             <div className='relative'>
                 <img src="../src/assets/u-sports-banner.jpg" className='w-full' />
                 <div class="absolute inset-0 flex items-center justify-center">
                     <h1 className='text-white font-bold text-8xl'>Your Cart</h1>
                 </div>
             </div>
-
-<div className="flex h-screen justify-center items-center">
-
-  <div className=" bg-gray-200 p-4 flex drop-shadow-2xl"style={{ width: '97%', height:'80%' }} >
-
-  <div className="bg-blue-500 p-4" style={{ width: '80%', marginRight: '1%' }}>
-  <div className="text-4xl font-semibold flex items" style={{marginBottom: '2.4%'}} >
-    <div style={{  marginLeft: '0.5%' }}>
-    Cart Items
-    </div>
-    <span className="text-4xl " style={{ marginLeft: '65%' }}>
-    {quantityMessage}
-  </span>
-  </div>
-
-
-  <hr className="mx-auto text-center border-t-2"style={{ width: '98.3%', marginBottom:'5%'}}/>
-</div>
-
-
-    <div className=" bg-gray-500 p-4" style={{ width: '40%'}}>
-<div className="text-4xl font-semibold "style={{ marginTop: '2%', marginBottom: '3%', marginLeft: '3%'}}>Order Summary</div>
-<hr className="mx-auto text-center border-t-2"style={{ width: '92%'}}/>
-<div style={{ marginTop: '5%', marginLeft: '4%'}}>
-    <div className="text-2xl " style={{ marginBottom: '5%'}}>
-    {quantityMessage}
-    </div>
-    <form style={{ marginBottom: '5%'}}>
-        <div className="text-2xl font-semibold">
-            Promo Code:
-        </div>
-        <input 
-        placeholder="Enter Promo Code"
-        className="bg-white border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400" style={{ marginRight:'5%'}}
-        />
-        <button
-        className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
-        >
-        Apply
-        </button>
-    </form>
-    <hr className="mx-auto text-center border-t-2"style={{ width: '96.3%', marginRight:'5%', marginBottom:'5%'}}/>
-    <div className="text-2xl font-semibold" style={{ marginBottom: '5%'}}>
-    Total Price:
-    <span style={{ marginLeft: '15%', marginBottom: '5%'}}>
-    Some Number
-    </span>
-    </div>
-    <button
-        className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
-        style={{ width: '96.3%'}}
-        >
-        Checkout
-        </button>
-</div>
-
-    </div>
-  </div>
-</div>
-            <div className='px-5'>
-            <div>
-                    {cartItemList && cartItemList.map((cartItem, i) => (
-                        <div key={i}>
-                            ID:
-                            {cartItem.eventId}
-                            <br></br>
-                            Name:
-                            {cartItem.event.eventName}
-                            <br></br>
-                            Price:
-                            {cartItem.event.eventPrice}
-                            <br></br>
-<hr/>
-                        </div>
-                    ))}
+            <div className='grid grid-col-2'>
+                <div className='text-2xl font-bold ml-5 my-2.5'>{quantityMessage}</div>
+                <div className='justify-self-end float-right'>
+                    test
                 </div>
+            </div>
+            <div className='flex justify-left items-center'>
+                {
+                    cartItemList.map((cartItem, i) => {
+                        return (
+                            <div key={cartItem.cartItemId} className='m-5 border rounded-md bg-zinc-300 w-3/4'>
+                                <div className='m-5 flex'>
+                                    <img src='../src/assets/backgroundMain1.jpg' className='w-96 h-64 rounded-lg'></img>
+                                    <div className='pl-5 content-between grid grid-col-2 w-auto'>
+                                        <div className=''           >
+                                            <div className='text-3xl font-bold pb-3'>
+                                                {cartItem.event.eventName}
+                                            </div>
+                                            <div className='text-3xl'>
+                                                ${cartItem.event.eventPrice * cartItem.quantity}
+                                            </div>
+                                            <div className='text-xl text-zinc-600'>
+                                                ${cartItem.event.eventPrice} each
+                                            </div>
+                                        </div>
+                                        <form onSubmit={formik.handleSubmit} className=''>
+                                            <button
+                                                className='border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12'>-</button>
+                                            <input
+                                                id='Quantity'
+                                                name='Quantity'
+                                                onChange={formik.handleChange}
+                                                value={formik.values.Quantity}
+                                                type="number"
+                                                className='p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-300 focus:border-orange-400 focus:ring-orange-400'
+                                            />
+                                            <button className='border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12'>+</button>
+                                            <input type="submit"></input>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
+                }
             </div>
         </div>
     )
 }
+
 
 export default Cart

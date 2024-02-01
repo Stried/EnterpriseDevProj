@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import http from "../../http";
 import "./../App.css";
 import { AiOutlineMenu } from "react-icons/ai";
 
@@ -15,6 +16,27 @@ function MainPage() {
             setPosition({ x: e.pageX, y: e.pageY });
         }, 100);
     };
+
+    useEffect(() => {
+        console.log(localStorage.getItem("accessToken"))
+        try {
+            if (localStorage.getItem("accessToken")) {
+                http.post("/NewCart", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                })
+                    .then((res) => {
+                        console.log(res.data);
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }, []);
 
     return (
         <div
