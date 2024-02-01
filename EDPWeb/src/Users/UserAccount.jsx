@@ -25,8 +25,6 @@ function UserAccount() {
             })
                 .then((res) => {
                     setGroupsList(res.data);
-                    console.log(res.data);
-                    console.log(res.data.length);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -54,7 +52,7 @@ function UserAccount() {
                 },
             })
                 .then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -98,6 +96,7 @@ function UserAccount() {
                                             rounded
                                             size={"lg"}
                                             className=""
+                                            img={user.imageFile}
                                         />
                                     </div>
                                     <div className="w-2/3">
@@ -272,7 +271,10 @@ function UserAccount() {
                                                                 }
                                                             </h1>
                                                             <p className="flex mt-4">
-                                                                <FaRegUser className="my-auto" /> <span className="mx-2">1</span>
+                                                                <FaRegUser className="my-auto" />{" "}
+                                                                <span className="mx-2">
+                                                                    1
+                                                                </span>
                                                             </p>
                                                         </div>
                                                     );

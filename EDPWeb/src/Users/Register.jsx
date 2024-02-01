@@ -7,9 +7,56 @@ import * as yup from "yup";
 import http from "../../http";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
+import FileInput from "../component/FileInput";
+import ImageCropper from "../component/ImageCropper";
 
 function Register() {
     const navigate = useNavigate();
+    const [imageFile, setImageFile] = useState(null);
+    const [currentPage, setCurrentPage] = useState("choose-img");
+    const [imgAfterCrop, setImgAfterCrop] = useState("");
+
+    // Crop stuff guide: https://timetoprogram.com/crop-image-reactjs/
+    const onImageSelected = (selectedImage) => {
+        setImageFile(selectedImage);
+        setCurrentPage("crop-img");
+    };
+
+    const onCropDone = (imgCroppedArea) => {
+        const canvasEle = document.createElement("canvas");
+        canvasEle.width = imgCroppedArea.width;
+        canvasEle.height = imgCroppedArea.height;
+
+        const context = canvasEle.getContext("2d");
+
+        let imageObj1 = new Image();
+        imageObj1.src = imageFile;
+        imageObj1.onload = function () {
+            context.drawImage(
+                imageObj1,
+                imgCroppedArea.x,
+                imgCroppedArea.y,
+                imgCroppedArea.width,
+                imgCroppedArea.height,
+                0,
+                0,
+                imgCroppedArea.width,
+                imgCroppedArea.height
+            );
+
+            const dataURL = canvasEle.toDataURL("image/*");
+
+            setImgAfterCrop(dataURL);
+            setImageFile(dataURL);
+            setCurrentPage("img-cropped");
+        };
+    };
+
+    const onCropCancel = () => {
+        setCurrentPage("choose-img");
+        setImageFile("");
+    };
 
     const formikIndiv = useFormik({
         initialValues: {
@@ -53,13 +100,18 @@ function Register() {
                 .required(),
         }),
         onSubmit: async (data) => {
+            if (imageFile) {
+                data.imageFile = imageFile;
+            }
+
             const formData = {
                 Name: (data.Name = data.Name.trim()),
                 NRIC: (data.NRIC = data.NRIC.trim()),
                 Email: (data.Email = data.Email.trim()),
                 PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
                 Password: (data.Password = data.Password.trim()),
-                UserRole: "User"
+                imageFile: data.imageFile,
+                UserRole: "User",
             };
 
             await http
@@ -118,12 +170,12 @@ function Register() {
         }),
         onSubmit: async (data) => {
             const formData = {
-                Name: data.Name = data.Name.trim(),
-                NRIC: data.NRIC = data.NRIC.trim(),
-                Email: data.Email = data.Email.trim(),
-                PhoneNumber: data.PhoneNumber = data.PhoneNumber,
-                Password: data.Password = data.Password.trim(),
-                UserRole: "Corporate"
+                Name: (data.Name = data.Name.trim()),
+                NRIC: (data.NRIC = data.NRIC.trim()),
+                Email: (data.Email = data.Email.trim()),
+                PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
+                Password: (data.Password = data.Password.trim()),
+                UserRole: "Corporate",
             };
 
             await http
@@ -243,6 +295,71 @@ function Register() {
                                         </div>
                                     ) : null}
                                 </div>
+                                {/* <div className="my-4">
+                                    <label htmlFor="PhoneNumber">
+                                        Profile Image
+                                    </label>
+                                    <p className="opacity-70 italic">
+                                        Image used for your profile picture.
+                                    </p>
+                                    <input
+                                        className=""
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={onFileChange}
+                                    />
+                                    {imageFile && (
+                                        <div className="image-preview">
+                                            <img
+                                                src={`${
+                                                    import.meta.env
+                                                        .VITE_FILE_BASE_URL
+                                                }${imageFile}`}
+                                                alt="Uploaded"
+                                            />
+                                        </div>
+                                    )}
+                                </div> */}
+
+                                {currentPage === "choose-img" ? (
+                                    <FileInput
+                                        onImageSelected={onImageSelected}
+                                    />
+                                ) : currentPage === "crop-img" ? (
+                                    <ImageCropper
+                                        image={imageFile}
+                                        onCropDone={onCropDone}
+                                        onCropCancel={onCropCancel}
+                                        className="w-screen h-screen"
+                                    />
+                                ) : (
+                                    <div className="">
+                                        <img
+                                            src={imgAfterCrop}
+                                            className="cropped-img"
+                                        />
+
+                                        <button
+                                            onClick={() => {
+                                                setCurrentPage("crop-img");
+                                            }}
+                                            className="px-3 py-2 bg-red-400 mr-2 rounded-md"
+                                        >
+                                            Crop
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                setCurrentPage("choose-img");
+                                                setImageFile("");
+                                            }}
+                                            className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
+                                        >
+                                            New Image
+                                        </button>
+                                    </div>
+                                )}
+
                                 <div className="my-4">
                                     <label htmlFor="Password">Password</label>
                                     <p className="opacity-70 italic">

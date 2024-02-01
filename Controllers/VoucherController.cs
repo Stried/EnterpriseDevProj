@@ -58,6 +58,19 @@ namespace EnterpriseDevProj.Controllers
             return Ok(allVouchers);
         }
 
+        [HttpGet("VoucherGetOne/{voucherID}")]
+        public IActionResult VoucherGetOne(int voucherID)
+        {
+            var voucher = dbContext.Vouchers.Find(voucherID);
+            if (voucher == null)
+            {
+                logger.LogError("Voucher is null");
+                return StatusCode(500);
+            }
+
+            return Ok(voucher);
+        }
+
         [HttpPut("{voucherID}")]
         public IActionResult VoucherUpdate(int voucherID, CreateVoucherRequest req)
         {
@@ -84,7 +97,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpDelete("deleteVoucher")] // Unsure if 2 delete endpoints are needed
+        [HttpDelete("deleteVoucher/{voucherID}")] // Unsure if 2 delete endpoints are needed
         public IActionResult VoucherDelete(int voucherID)
         {
             try

@@ -57,6 +57,7 @@ namespace EnterpriseDevProj.Controllers
                     NRIC = registerRequest.NRIC,
                     PhoneNumber = registerRequest.PhoneNumber,
                     Password = passwordEncrypt,
+                    ImageFile = registerRequest.ImageFile,
                     UserRole = registerRequest.UserRole,
                     CreatedAt = now,
                     UpdatedAt = now,
@@ -105,6 +106,8 @@ namespace EnterpriseDevProj.Controllers
                     NRIC = userAccCheck.NRIC,
                     Email = userAccCheck.Email,
                     PhoneNumber = userAccCheck.PhoneNumber,
+                    ImageFile = userAccCheck.ImageFile,
+                    UserRole = userAccCheck.UserRole
                 };
 
                 UserDTO userDTO = mapper.Map<UserDTO>(user);
@@ -168,6 +171,7 @@ namespace EnterpriseDevProj.Controllers
                 NRIC = userAccCheck.NRIC,
                 Email = userAccCheck.Email,
                 PhoneNumber = userAccCheck.PhoneNumber,
+                ImageFile = userAccCheck.ImageFile,
                 UserRole = userAccCheck.UserRole
             };
 
@@ -210,6 +214,7 @@ namespace EnterpriseDevProj.Controllers
                 userAccCheck.Name = request.Name.Trim();
                 userAccCheck.Email = request.Email.Trim();
                 userAccCheck.PhoneNumber = request.PhoneNumber;
+                userAccCheck.ImageFile = request.ImageFile;
 
                 dbContext.Users.Update(userAccCheck);
                 dbContext.SaveChanges();
@@ -269,25 +274,6 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             }
         }
-
-        [HttpPut("updateUserRole/{NRIC}"), Authorize(Roles = "Administrator")]
-        public IActionResult updateUserRole(string NRIC, UpdateUserRoleRequest roleUpdate)
-        {
-            var user = dbContext.Users.FirstOrDefault(x => x.NRIC == NRIC);
-            if (user == null)
-            {
-                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1007");
-                return StatusCode(500);
-            }
-
-            user.UserRole = roleUpdate.UserRole.Trim();
-
-            dbContext.Users.Update(user);
-            dbContext.SaveChanges();
-
-            return Ok();
-        }
-
 
         private string CreateToken(User user)
         {

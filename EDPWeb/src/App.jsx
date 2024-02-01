@@ -22,18 +22,23 @@ import EventRecords from "./Events/EventRecords";
 import EventOverview from "./Events/EventOverviewUser";
 import EventDetails from "./Events/EventDetails";
 import EventUpdate  from "./Events/EventRecordUpdate";
-import GetCart from "./Carts&Order/Cart";
+
+import GetCartItem from "./Carts&Order/Cart";
 
 import VoucherPage from "./Vouchers/VoucherPage";
 import AddGroup from "./Groups/AddGroup";
 import JoinGroup from "./Groups/JoinGroup";
 import GroupMain from "./Groups/GroupMain";
+import AdminPanel from "./Admin/AdminPanel";
+import AdminEditUser from "./Admin/AdminEditUser";
+import AddVoucher from "./Vouchers/AddVoucher";
+import UpdateVoucher from "./Vouchers/UpdateVoucher";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [menuClicks, setMenuClicks] = useState(0);
     const [navbarVis, setNavbarVis] = useState(null);
-    const [ user, setUser ] = useState(null);
+    const [user, setUser] = useState(null);
     const [themeSetting, setTheme] = useState("");
 
     const handleMouseMove = (e) => {
@@ -48,19 +53,13 @@ function App() {
         const handleLocationChange = () => {
             if (window.location.pathname === "/") {
                 setNavbarVis(true);
-                console.log("Changed True " + navbarVis);
             } else {
                 setNavbarVis(false);
-                console.log("Changed False " + navbarVis);
             }
         };
 
         handleLocationChange();
     }, [location.pathname, navbarVis]);
-
-    useEffect(() => {
-        console.log(user);
-    });
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -74,28 +73,12 @@ function App() {
             })
                 .then((res) => {
                     setUser(res.data);
-                    console.log(user);
                 })
                 .catch(function (err) {
                     console.log(err);
                 });
         }
     }, []);
-
-    // useEffect(() => {
-    //     http.get("/theme/1", {
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    //         },
-    //     })
-    //         .then((res) => {
-    //             console.log(res.data);
-    //             setTheme(res.data);
-    //         })
-    //         .catch(function (err) {
-    //             console.log(err);
-    //         });
-    // }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
@@ -135,11 +118,7 @@ function App() {
                         />
                         <Route
                             path="/GetCartItem/:id"
-                            element={< GetCart/>}
-                        />
-                        <Route
-                            path="/GetCart/:id"
-                            element={< GetCart/>}
+                            element={<GetCartItem />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
@@ -173,12 +152,30 @@ function App() {
                             path="/joinGroup"
                             element={<JoinGroup />}
                         />
-                        <Route path="/group/:grpId" element={<GroupMain />} />
+                        <Route
+                            path="/group/:grpId"
+                            element={<GroupMain />}
+                        />
+                        <Route
+                            path="/adminPanel"
+                            element={<AdminPanel />}
+                        />
+                        <Route
+                            path="/adminPanel/editUser/:id"
+                            element={<AdminEditUser />}
+                        />
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}
                         />
-
+                        <Route
+                            path="/vouchers/addVouchers"
+                            element={<AddVoucher />}
+                        />
+                        <Route
+                            path="/vouchers/updateVouchers/:voucherID"
+                            element={<UpdateVoucher />}
+                        />
                     </Routes>
                 </div>
             </div>

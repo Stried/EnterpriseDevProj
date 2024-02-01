@@ -12,5 +12,7 @@ namespace EnterpriseDevProj.Models.UserFolder
 
         [Required, Range(80000000, 99999999)]
         public int PhoneNumber { get; set; }
+
+        public string ImageFile { get; set; } = string.Empty;
     }
 }

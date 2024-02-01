@@ -6,7 +6,7 @@ namespace EnterpriseDevProj.Models.VoucherFolder
 {
     public class CreateVoucherRequest
     {
-        [Required, StringLength(5, MinimumLength = 5)]
+        [Required, MinLength(5), MaxLength(30)]
         public string VoucherName { get; set; } = string.Empty;
 
         [Required, Range(5, 100)]

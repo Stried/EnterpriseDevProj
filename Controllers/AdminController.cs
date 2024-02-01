@@ -11,6 +11,8 @@ using static System.Net.WebRequestMethods;
 
 namespace EnterpriseDevProj.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class AdminController : ControllerBase
     {
         private readonly MyDbContext dbContext;
@@ -30,7 +32,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetAllUsers(string? search)
         {
             IQueryable<User> userList = dbContext.Users;
-            if (search == null) 
+            if (search != null) 
             {
                 userList = userList.Where(x => x.Name.Contains(search)
                 || x.Email.Contains(search)
@@ -43,12 +45,11 @@ namespace EnterpriseDevProj.Controllers
         }
 
         [HttpGet("{userID}"), Authorize(Roles = "Administrator")]
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>),StatusCodes.Status200OK)]
-        public IActionResult GetUser(string id)
+        public IActionResult GetUser(int userID)
         {
             try
             {
-                var userId = id;
+                var userId = userID;
                 var userAccCheck = dbContext.Users.Find(userId);
                 if (userAccCheck == null)
                 {
@@ -56,12 +57,11 @@ namespace EnterpriseDevProj.Controllers
                     return StatusCode(500);
                 }
 
-                var userDTO = mapper.Map<UserDTO>(userAccCheck);
-                return Ok(userDTO);
+                return Ok(userAccCheck);
             }
             catch (Exception ex)
             {
-                logger.LogError("User account not found");
+                logger.LogError(ex, "User account not found");
                 return StatusCode(500);
             }
         }
@@ -90,9 +90,43 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Unable to Admin Update user information.");
+                logger.LogError(ex, "Unable to Admin Update user information.");
                 return StatusCode(500);
             }
+        }
+        
+        [HttpPut("updateUserRole/{NRIC}"), Authorize(Roles = "Administrator")]
+        public IActionResult updateUserRole(string NRIC, UpdateUserRoleRequest roleUpdate)
+        {
+            var user = dbContext.Users.FirstOrDefault(x => x.NRIC == NRIC);
+            if (user == null)
+            {
+                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1007");
+                return StatusCode(500);
+            }
+
+            user.UserRole = roleUpdate.UserRole.Trim();
+
+            dbContext.Users.Update(user);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpDelete("deleteUser/{userID}"), Authorize(Roles = "Administrator")]
+        public IActionResult deleteUser(int userID)
+        {
+            var userAccCheck = dbContext.Users.Find(userID);
+            if (userAccCheck == null) 
+            {
+                logger.LogError("User not found");
+                return StatusCode(500);
+            }
+
+            dbContext.Users.Remove(userAccCheck);
+            dbContext.SaveChanges();
+
+            return Ok();
         }
     }
 }

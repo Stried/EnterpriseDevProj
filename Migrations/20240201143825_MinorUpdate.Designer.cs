@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240201143825_MinorUpdate")]
+    partial class MinorUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,37 +222,6 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
-                {
-                    b.Property<int>("ImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ImageCreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("ImageUpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ImageId");
-
-                    b.HasIndex("CartItemId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.Miscellaneous.Theme", b =>
@@ -530,23 +502,6 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemId");
-
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>
