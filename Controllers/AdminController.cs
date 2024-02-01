@@ -112,5 +112,21 @@ namespace EnterpriseDevProj.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("deleteUser/{userID}"), Authorize(Roles = "Administrator")]
+        public IActionResult deleteUser(int userID)
+        {
+            var userAccCheck = dbContext.Users.Find(userID);
+            if (userAccCheck == null) 
+            {
+                logger.LogError("User not found");
+                return StatusCode(500);
+            }
+
+            dbContext.Users.Remove(userAccCheck);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
     }
 }

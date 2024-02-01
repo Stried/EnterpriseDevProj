@@ -7,7 +7,8 @@ import * as yup from "yup";
 function AdminEditUser() {
     let { id } = useParams();
     var navigate = useNavigate();
-    const [selectedUser, setSelectedUser] = useState("");
+    const [ selectedUser, setSelectedUser ] = useState("");
+    
 
     useEffect(() => {
         http.get(`/admin/${id}`, {
