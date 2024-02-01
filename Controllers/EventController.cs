@@ -35,6 +35,7 @@ public IActionResult AddEvents(EventApplication data)
     }
     using (var transaction = dbContext.Database.BeginTransaction())
     {
+
         try
         {
             int userId = GetUserID();
@@ -226,6 +227,32 @@ public IActionResult AddEvents(EventApplication data)
 
         [HttpPut("Approval/{EventId}"), Authorize]
         public IActionResult UpdateTutorial(int EventId)
+        {
+            try
+            {
+                Event? eventModel = dbContext.Events.Include(t => t.User).FirstOrDefault(t => t.EventId == EventId);
+
+                if (eventModel == null)
+                {
+                    return NotFound();
+                }
+
+
+                eventModel.Approval = true;
+                eventModel.EventUpdatedAt = DateTime.Now;
+
+                dbContext.SaveChanges();
+                return Ok(dbContext.Events.ToList());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error Approving Event Application , ERRCODE 1010");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("UpdateEvent/{EventId}"), Authorize]
+        public IActionResult UpdateEvent(int EventId)
         {
             try
             {
