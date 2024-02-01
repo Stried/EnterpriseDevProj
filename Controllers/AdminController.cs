@@ -45,12 +45,11 @@ namespace EnterpriseDevProj.Controllers
         }
 
         [HttpGet("{userID}"), Authorize(Roles = "Administrator")]
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>),StatusCodes.Status200OK)]
-        public IActionResult GetUser(string id)
+        public IActionResult GetUser(int userID)
         {
             try
             {
-                var userId = id;
+                var userId = userID;
                 var userAccCheck = dbContext.Users.Find(userId);
                 if (userAccCheck == null)
                 {
@@ -58,8 +57,7 @@ namespace EnterpriseDevProj.Controllers
                     return StatusCode(500);
                 }
 
-                var userDTO = mapper.Map<UserDTO>(userAccCheck);
-                return Ok(userDTO);
+                return Ok(userAccCheck);
             }
             catch (Exception ex)
             {

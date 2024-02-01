@@ -26,12 +26,13 @@ import AddGroup from "./Groups/AddGroup";
 import JoinGroup from "./Groups/JoinGroup";
 import GroupMain from "./Groups/GroupMain";
 import AdminPanel from "./Admin/AdminPanel";
+import AdminEditUser from "./Admin/AdminEditUser";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [menuClicks, setMenuClicks] = useState(0);
     const [navbarVis, setNavbarVis] = useState(null);
-    const [ user, setUser ] = useState(null);
+    const [user, setUser] = useState(null);
     const [themeSetting, setTheme] = useState("");
 
     const handleMouseMove = (e) => {
@@ -46,10 +47,8 @@ function App() {
         const handleLocationChange = () => {
             if (window.location.pathname === "/") {
                 setNavbarVis(true);
-                
             } else {
                 setNavbarVis(false);
-
             }
         };
 
@@ -113,11 +112,11 @@ function App() {
                         />
                         <Route
                             path="/GetCartItem/:id"
-                            element={< GetCart/>}
+                            element={<GetCart />}
                         />
                         <Route
                             path="/GetCart/:id"
-                            element={< GetCart/>}
+                            element={<GetCart />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
@@ -139,13 +138,22 @@ function App() {
                             path="/joinGroup"
                             element={<JoinGroup />}
                         />
-                        <Route path="/group/:grpId" element={ <GroupMain /> } />
-                        <Route path="/adminPanel" element={ <AdminPanel /> } />
+                        <Route
+                            path="/group/:grpId"
+                            element={<GroupMain />}
+                        />
+                        <Route
+                            path="/adminPanel"
+                            element={<AdminPanel />}
+                        />
+                        <Route
+                            path="/adminPanel/editUser/:id"
+                            element={<AdminEditUser />}
+                        />
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}
                         />
-
                     </Routes>
                 </div>
             </div>

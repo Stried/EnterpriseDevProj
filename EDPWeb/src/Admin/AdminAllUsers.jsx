@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import http from "../../http";
 import { Spinner, Card, Avatar, theme } from "flowbite-react";
+import { useNavigate } from "react-router-dom";
 
 function AdminAllUsers() {
+    var navigate = useNavigate();
     const [ userList, setUserList ] = useState([]);
 
     useEffect(() => {
@@ -33,6 +35,15 @@ function AdminAllUsers() {
                         />
                         <p className="text-lg font-medium">{user.name}</p>
                         <p className="">{user.email}</p>
+
+                        <div className="pt-4 space-x-2">
+                            <button className="px-2 py-1 bg-blue-300 text-md font-medium rounded" onClick={() => navigate(`/adminPanel/editUser/${user.id}`)}>
+                                Edit
+                            </button>
+                            <button className="px-2 py-1 bg-red-300 text-md font-medium rounded">
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 );
             })}
