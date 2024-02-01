@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EnterpriseDevProj.Models.CartFolder;
+using EnterpriseDevProj.Models.EventFolder;
 using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,8 +29,8 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // Cart
+        [HttpPost("/NewCart")]
         [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
-        [HttpPost("/NewCart"), Authorize]
         public IActionResult AddCart()
         {
             int userId = GetUserId();   
@@ -64,8 +65,9 @@ namespace EnterpriseDevProj.Controllers
         //{
         //    int userId = GetUserId();
         //    IQueryable<Cart> result = _context.Carts.Where(t => t.UserId == userId)
-        //                        .Include(t => t.User).Include(t => t.CartItems)
-        //                        .ThenInclude(cartItem => cartItem.Event);
+        //                                            .Include(t => t.User)
+        //                                            .Include(t => t.CartItems);
+
         //    IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
         //    return Ok(data);
         //}
@@ -84,8 +86,8 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // CartItem
+        [HttpPost("/AddCartItem"), Authorize]  // who lives in a pineapple under the sea?
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpPost("/AddCartItem"), Authorize]
         public IActionResult AddCartItem(AddCartItemRequest cartItem)
         {
             var now = DateTime.Now;
@@ -94,13 +96,14 @@ namespace EnterpriseDevProj.Controllers
 
 			var myCartItem = new CartItem()
             {
-                SubTotal = cartItem.SubTotal,
                 Quantity = cartItem.Quantity,
                 CreatedAt = now,
                 UpdatedAt = now,
                 CartId = result,
                 EventId = cartItem.EventId
             };
+            var eventPrice = _context.Events.Where(t => t.EventId == cartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
+            myCartItem.SubTotal = myCartItem.Quantity * eventPrice;
 
             _context.CartItems.Add(myCartItem);
             _context.SaveChanges();
@@ -123,15 +126,24 @@ namespace EnterpriseDevProj.Controllers
                     return NotFound();
                 }
                 IQueryable<CartItem> result = _context.CartItems.Include(t => t.Event);
-                var listofCarts = result.OrderByDescending(x => x.EventId).ToList();
+                var listofCarts = result.OrderByDescending(x => x.CreatedAt).ToList();
 
-                var data = listofCarts.Select(t => new{
-                        t.EventId,
-                        Event = new {
-                            t.Event?.EventPrice,
-                            t.Event?.EventName
-                        }
+                //var data = listofCarts.Select(t => new{
+                //        t.EventId,
+                //        Event = new {
+                //            t.Event?.EventPrice,
+                //            t.Event?.EventName
+                //        }
+                //});
+                IEnumerable<CartItemDTO> data = result.Select(t => new CartItemDTO
+                {
+                    CartItemId = t.CartItemId,
+                    Quantity = t.Quantity,
+                    SubTotal = t.Quantity * t.Event.EventPrice,
+                    Cart = _mapper.Map<CartDTO>(t.Cart),
+                    Event = _mapper.Map<EventDTO>(t.Event)
                 });
+
                 return Ok(data);
             }
             catch(Exception ex)
@@ -141,30 +153,26 @@ namespace EnterpriseDevProj.Controllers
             }
         } 
 
-
-
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpPut("/UpdateCartItem"), Authorize]
-        public IActionResult UpdateCartItem(int cartItemId, UpdateCartItemRequest cartItem)
+        [HttpPut("/UpdateCartItem/{id}"), Authorize]
+        public IActionResult UpdateCartItem(int id, UpdateCartItemRequest cartItem)
         {
-            var myCartItem = _context.CartItems.Find(cartItemId);
+            var myCartItem = _context.CartItems.Find(id);
             if (myCartItem == null)
             {
                 return NotFound();
             }
             int userId = GetUserId();
             int cartId = _context.Carts.Where(t => t.UserId == userId).Select(t => t.CartId).FirstOrDefault();
+            var eventPrice = _context.Events.Where(t => t.EventId == myCartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
             if (myCartItem.CartId != userId)
             {
                 return Forbid();
             }
-            if (cartItem.SubTotal != null)
-            {
-                myCartItem.SubTotal = cartItem.SubTotal;
-            }
-            if (cartItem.Quantity != null)
+            if (myCartItem.Quantity != null)
             {
                 myCartItem.Quantity = cartItem.Quantity;
+                myCartItem.SubTotal = cartItem.Quantity * eventPrice;
             }
             myCartItem.UpdatedAt = DateTime.Now;
 
@@ -215,7 +223,10 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetCartParticipants(int cartItemId)
         {
             IQueryable<CartParticipant> result = _context.CartParticipants.Where(t => t.CartItemId == cartItemId).Include(t => t.CartItem);
-            IEnumerable<CartParticipantDTO> data = result.Select(t => _mapper.Map<CartParticipantDTO>(t));
+            IEnumerable<CartParticipantDTO> data = result.Select(t => new CartParticipantDTO
+            {
+                CartItem = _mapper.Map<CartItemDTO>(t)
+            });
             return Ok(data);
         }
         [ProducesResponseType(typeof(IEnumerable<CartParticipantDTO>), StatusCodes.Status200OK)]
