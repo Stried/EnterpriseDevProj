@@ -10,6 +10,8 @@ using System.Security.Claims;
 
 namespace EnterpriseDevProj.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class CartController : ControllerBase
     {
         private readonly MyDbContext _context;
@@ -29,7 +31,7 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // Cart
-        [HttpPost("/NewCart")]
+        [HttpPost("NewCart"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
         public IActionResult AddCart()
         {

@@ -18,10 +18,9 @@ function MainPage() {
     };
 
     useEffect(() => {
-        console.log(localStorage.getItem("accessToken"))
         try {
             if (localStorage.getItem("accessToken")) {
-                http.post("/NewCart", {
+                http.post("/cart/NewCart", null, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                     },
