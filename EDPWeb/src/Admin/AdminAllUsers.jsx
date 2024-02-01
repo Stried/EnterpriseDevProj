@@ -24,7 +24,7 @@ function AdminAllUsers() {
         <div className="grid grid-cols-3 px-3 py-4">
             { userList.map((user, i) => {
                 return (
-                    <div className="bg-stone-100 rounded-md px-3 py-2 drop-shadow-lg">
+                    <div className="bg-stone-100 rounded-md px-3 py-2 drop-shadow-lg mr-3 mb-3">
                         <Avatar
                             rounded
                             size={"lg"}

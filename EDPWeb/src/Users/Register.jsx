@@ -17,24 +17,7 @@ function Register() {
     const [currentPage, setCurrentPage] = useState("choose-img");
     const [imgAfterCrop, setImgAfterCrop] = useState("");
 
-    const onFileChange = (e) => {
-        let file = imgAfterCrop;
-
-        let formData = new FormData();
-        formData.append("file", file);
-        http.post("/file/upload", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
-            .then((res) => {
-                setImageFile(res.data.fileName);
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
-    };
-
+    // Crop stuff guide: https://timetoprogram.com/crop-image-reactjs/
     const onImageSelected = (selectedImage) => {
         setImageFile(selectedImage);
         setCurrentPage("crop-img");
@@ -62,9 +45,10 @@ function Register() {
                 imgCroppedArea.height
             );
 
-            const dataURL = canvasEle.toDataURL("image/jpeg");
+            const dataURL = canvasEle.toDataURL("image/*");
 
             setImgAfterCrop(dataURL);
+            setImageFile(dataURL);
             setCurrentPage("img-cropped");
         };
     };
@@ -358,8 +342,8 @@ function Register() {
                                         <button
                                             onClick={() => {
                                                 setCurrentPage("crop-img");
-                                                    } }
-                                                    className="px-3 py-2 bg-red-400 mr-2 rounded-md"
+                                            }}
+                                            className="px-3 py-2 bg-red-400 mr-2 rounded-md"
                                         >
                                             Crop
                                         </button>
@@ -368,8 +352,8 @@ function Register() {
                                             onClick={() => {
                                                 setCurrentPage("choose-img");
                                                 setImageFile("");
-                                                    } }
-                                                    className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
+                                            }}
+                                            className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
                                         >
                                             New Image
                                         </button>
