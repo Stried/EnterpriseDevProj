@@ -98,10 +98,7 @@ function UserAccount() {
                                             rounded
                                             size={"lg"}
                                             className=""
-                                            img={`${
-                                                import.meta.env
-                                                    .VITE_FILE_BASE_URL
-                                            }${user.imageFile}`}
+                                            img={user.imageFile}
                                         />
                                     </div>
                                     <div className="w-2/3">

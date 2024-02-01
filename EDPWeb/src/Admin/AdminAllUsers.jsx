@@ -29,9 +29,7 @@ function AdminAllUsers() {
                             rounded
                             size={"lg"}
                             className=""
-                            img={`${import.meta.env.VITE_FILE_BASE_URL}${
-                                user.imageFile
-                            }`}
+                            img={user.imageFile}
                         />
                         <p className="text-lg font-medium">{user.name}</p>
                         <p className="">{user.email}</p>
