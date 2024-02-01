@@ -7,9 +7,35 @@ import * as yup from "yup";
 import http from "../../http";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
 
 function Register() {
     const navigate = useNavigate();
+    const [ imageFile, setImageFile ] = useState(null);
+
+    const onFileChange = (e) => {
+        let file = e.target.files[ 0 ];
+        if (file) {
+            if (file.size > 1024 * 1024) {
+                toast.error("Maximum file size is 1MB");
+                return;
+            }
+        }
+
+        let formData = new FormData();
+        formData.append("file", file);
+        http.post("/file/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            },
+        })
+            .then((res) => {
+                setImageFile(res.data.fileName);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }
 
     const formikIndiv = useFormik({
         initialValues: {
@@ -53,12 +79,17 @@ function Register() {
                 .required(),
         }),
         onSubmit: async (data) => {
+            if (imageFile) {
+                data.imageFile = imageFile;
+            }
+
             const formData = {
                 Name: (data.Name = data.Name.trim()),
                 NRIC: (data.NRIC = data.NRIC.trim()),
                 Email: (data.Email = data.Email.trim()),
                 PhoneNumber: (data.PhoneNumber = data.PhoneNumber),
                 Password: (data.Password = data.Password.trim()),
+                imageFile: data.imageFile,
                 UserRole: "User"
             };
 
@@ -242,6 +273,31 @@ function Register() {
                                             *{formikIndiv.errors.PhoneNumber}
                                         </div>
                                     ) : null}
+                                </div>
+                                <div className="my-4">
+                                    <label htmlFor="PhoneNumber">
+                                        Profile Image
+                                    </label>
+                                    <p className="opacity-70 italic">
+                                        Image used for your profile picture.
+                                    </p>
+                                    <input
+                                        className=""
+                                        accept="image/*"
+                                        type="file"
+                                        onChange={onFileChange}
+                                    />
+                                    {imageFile && (
+                                        <div className="image-preview">
+                                            <img
+                                                src={`${
+                                                    import.meta.env
+                                                        .VITE_FILE_BASE_URL
+                                                }${imageFile}`}
+                                                alt="Uploaded"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="my-4">
                                     <label htmlFor="Password">Password</label>

@@ -15,7 +15,7 @@ namespace EnterpriseDevProj.Controllers
             this.environment = environment;
         }
 
-        [HttpPost("upload"), Authorize]
+        [HttpPost("upload")]
         public IActionResult Upload(IFormFile file)
         {
             if (file.Length > 2048 * 2048)

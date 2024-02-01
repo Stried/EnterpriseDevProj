@@ -25,6 +25,7 @@ import VoucherPage from "./Vouchers/VoucherPage";
 import AddGroup from "./Groups/AddGroup";
 import JoinGroup from "./Groups/JoinGroup";
 import GroupMain from "./Groups/GroupMain";
+import AdminPanel from "./Admin/AdminPanel";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -158,7 +159,8 @@ function App() {
                             path="/joinGroup"
                             element={<JoinGroup />}
                         />
-                        <Route path="/group/:grpId" element={<GroupMain />} />
+                        <Route path="/group/:grpId" element={ <GroupMain /> } />
+                        <Route path="/adminPanel" element={ <AdminPanel /> } />
                         <Route
                             path="/vouchers"
                             element={<VoucherPage />}

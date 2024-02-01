@@ -12,6 +12,8 @@
 
         public int PhoneNumber { get; set; }
 
+        public string imageFile { get; set; } = string.Empty;
+
         public string UserRole { get; set; } = string.Empty;
     }
 }

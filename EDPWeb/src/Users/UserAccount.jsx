@@ -98,6 +98,10 @@ function UserAccount() {
                                             rounded
                                             size={"lg"}
                                             className=""
+                                            img={`${
+                                                import.meta.env
+                                                    .VITE_FILE_BASE_URL
+                                            }${user.imageFile}`}
                                         />
                                     </div>
                                     <div className="w-2/3">
@@ -272,7 +276,10 @@ function UserAccount() {
                                                                 }
                                                             </h1>
                                                             <p className="flex mt-4">
-                                                                <FaRegUser className="my-auto" /> <span className="mx-2">1</span>
+                                                                <FaRegUser className="my-auto" />{" "}
+                                                                <span className="mx-2">
+                                                                    1
+                                                                </span>
                                                             </p>
                                                         </div>
                                                     );

@@ -61,7 +61,7 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("User account not found");
+                logger.LogError(ex, "User account not found");
                 return StatusCode(500);
             }
         }
@@ -90,9 +90,27 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Unable to Admin Update user information.");
+                logger.LogError(ex, "Unable to Admin Update user information.");
                 return StatusCode(500);
             }
+        }
+        
+        [HttpPut("updateUserRole/{NRIC}"), Authorize(Roles = "Administrator")]
+        public IActionResult updateUserRole(string NRIC, UpdateUserRoleRequest roleUpdate)
+        {
+            var user = dbContext.Users.FirstOrDefault(x => x.NRIC == NRIC);
+            if (user == null)
+            {
+                logger.LogError($"User's NRIC {NRIC} not found!. ERRCODE 1007");
+                return StatusCode(500);
+            }
+
+            user.UserRole = roleUpdate.UserRole.Trim();
+
+            dbContext.Users.Update(user);
+            dbContext.SaveChanges();
+
+            return Ok();
         }
     }
 }
