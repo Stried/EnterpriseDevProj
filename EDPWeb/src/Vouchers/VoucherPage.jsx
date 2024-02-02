@@ -11,7 +11,6 @@ function VoucherPage() {
     useEffect(() => {
         http.get("/voucher/VoucherGetAll")
             .then((res) => {
-                console.log(res.data);
                 setVouchersList(res.data);
             })
             .catch(function (err) {
