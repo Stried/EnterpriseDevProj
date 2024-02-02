@@ -78,9 +78,11 @@ function AdminPanel() {
                         }
                         onClick={() => setCurrentOption("optionFive")}
                     >
+                        <Link to="/eventrecords">
                         <button className="text-lg font-medium">
                             Event Records
                         </button>
+                        </Link>
                     </div>
 
                     <div
@@ -90,9 +92,11 @@ function AdminPanel() {
                         }
                         onClick={() => setCurrentOption("optionSix")}
                     >
+                        <Link t0="/eventapplications">
                         <button className="text-lg font-medium">
-                            Event Application
+                            Event Applications
                         </button>
+                        </Link>
                     </div>
 
                     <div

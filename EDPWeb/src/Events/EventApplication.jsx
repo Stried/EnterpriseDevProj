@@ -183,7 +183,7 @@ function ApplyEvent() {
         .post("/event/Applications", formData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         })
         .then((res) => {
@@ -197,40 +197,9 @@ function ApplyEvent() {
         });
     },
   });
-  const onFileChange = (e) => {
-    const files = e.target.files;
-  
-    if (files && files.length > 0) {
-      // If only one file is selected, use the single-file upload logic
-      if (files.length === 1) {
-        const file = files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-  
-        http.post('/file/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch(function (error) {
-          console.log(error.response);
-        });
-      } else {
-        // If multiple files are selected, add them to the imageFiles state
-        const newFiles = Array.from(files);
-        setImageFiles([...imageFiles, ...newFiles]);
-      }
-    }
-  };
 
-  const removeImage = (index) => {
-    const newFiles = [...imageFiles];
-    newFiles.splice(index, 1);
-    setImageFiles(newFiles);
-  };
+
+;
   useEffect(() => {
     console.log("Is form valid:", formikEvent.isValid);
 
@@ -281,7 +250,6 @@ function ApplyEvent() {
     setSelectedValue(event.target.value);
   };
 
-  const [imageFiles, setImageFiles] = useState([]);
 
 
   return (
@@ -516,22 +484,7 @@ function ApplyEvent() {
               </div>
             ) : null}
           </div>
-          <div className="my-4">
-          <label htmlFor="eventimages">Event Images</label>
-          <p className="opacity-70 italic">Select images for your event</p>
-          <Button variant="contained" component="label">
-            Upload Image
-            <input hidden accept="image/*" multiple type="file" onChange={onFileChange} />
-          </Button>
-          {imageFiles.map((file, index) => (
-            <div key={index} className="aspect-ratio-container mt-2">
-              <img alt={`event-${index}`} src={URL.createObjectURL(file)} />
-              <button onClick={() => removeImage(index)} className="remove-image-button">
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
+
           <div className="my-4">
             <label htmlFor="eventcontent">Content of your webpage</label>
             <p className="opacity-70 italic ">
