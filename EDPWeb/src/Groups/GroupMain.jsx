@@ -84,35 +84,37 @@ function GroupMain() {
         <div className="min-h-screen max-h-full">
             {groupUserList && (
                 <div className="">
-                    <div className="h-1/4">
-                        <p>Image goes here</p>
-                    </div>
                     <div className="my-5 mx-12">
                         <h1 className="text-2xl font-medium tracking-wider">
                             {groupInfo.groupName}
                         </h1>
                         <h2>
                             Group Leader:{" "}
-                            <span className="font-medium">
+                            <span className="font-semibold">
                                 {groupLeader.name}
                             </span>
                         </h2>
-                        <h2>No. of Members: {groupDetails.length}</h2>
+                        <h2>
+                            No. of Members: <span className="font-semibold">{groupDetails.length}</span>
+                        </h2>
 
-                        <p className="mt-5 text-xl font-semibold">Members:</p>
+                        <p className="mt-5 text-xl font-semibold py-1">Members:</p>
                         <div className="grid grid-cols-3">
                             {groupUserList.map((user, i) => {
                                 return (
-                                    <div className="mb-2 mr-2 bg-slate-200 px-3 py-2 rounded">
+                                    <div className="mb-2 mr-2 bg-slate-200 px-3 py-4 rounded">
                                         <Avatar
                                             rounded
                                             size={"lg"}
                                             className=""
                                             img={user.imageFile}
                                         />
-                                        <h1 className="text-center py-1">
+                                        <h1 className="text-center py-1 font-semibold">
                                             {user.name}
                                         </h1>
+                                        <p className="text-center">
+                                            {user.email}
+                                        </p>
                                     </div>
                                 );
                             })}

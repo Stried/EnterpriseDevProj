@@ -270,8 +270,23 @@ function UserAccount() {
                                         <h1 className="text-3xl font-light">
                                             Groups
                                         </h1>
+                                        <p className="flex space-x-3">
+                                            <Link
+                                                to={"/createGroup"}
+                                                className="text-blue-400 visited:text-purple-400 underline"
+                                            >
+                                                Create Group
+                                            </Link>
+                                            <Link
+                                                to={"/joinGroup"}
+                                                className="text-blue-400 visited:text-purple-400 underline"
+                                            >
+                                                Join Group
+                                            </Link>
+                                        </p>
                                         <div className="my-5 grid grid-cols-3">
-                                            {groupsLengthList && groupsList.length != 0 ? (
+                                            {groupsLengthList &&
+                                            groupsList.length != 0 ? (
                                                 groupsList.map((groups, i) => {
                                                     return (
                                                         <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
@@ -292,7 +307,10 @@ function UserAccount() {
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex-end">
-                                                                    <Link to={`/group/${groups.id}`}>
+                                                                    <Link
+                                                                        to={ `/group/${groups.id}` }
+                                                                        className="px-3 py-2 bg-orange-400 rounded-md"
+                                                                    >
                                                                         View
                                                                     </Link>
                                                                 </div>
