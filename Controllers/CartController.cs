@@ -31,21 +31,25 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // Cart
-        [HttpPost("NewCart"), Authorize]
+        [HttpPost("NewCart/{userEmail}")]
         [ProducesResponseType(typeof(IEnumerable<CartDTO>), StatusCodes.Status200OK)]
-        public IActionResult AddCart()
+        public IActionResult AddCart(string userEmail)
         {
-            int userId = GetUserId();   
+            var userAcc = _context.Users.FirstOrDefault(x => x.Email == userEmail);
+            if (userAcc == null)
+            {
+                return StatusCode(500);
+            }
             var now = DateTime.Now;
-            var result = _context.Carts.FirstOrDefault(c => c.UserId == userId);
+            var result = _context.Carts.FirstOrDefault(c => c.UserId == userAcc.Id);
             if (result == null) 
             {
                 var myCart = new Cart()
                 {
-                    CartRoute = userId,
+                    CartRoute = userAcc.Id,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    UserId = userId
+                    UserId = userAcc.Id
                 };
 
                 _context.Carts.Add(myCart);

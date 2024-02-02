@@ -15,8 +15,8 @@ function Register() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
     const [currentPage, setCurrentPage] = useState("choose-img");
-    const [imgAfterCrop, setImgAfterCrop] = useState("");
-
+    const [ imgAfterCrop, setImgAfterCrop ] = useState("");
+    
     // Crop stuff guide: https://timetoprogram.com/crop-image-reactjs/
     const onImageSelected = (selectedImage) => {
         setImageFile(selectedImage);
@@ -57,6 +57,20 @@ function Register() {
         setCurrentPage("choose-img");
         setImageFile("");
     };
+
+    const createNewCart = (id) => {
+        http.post(`/cart/NewCart/${id}`, null, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
 
     const formikIndiv = useFormik({
         initialValues: {
@@ -116,8 +130,8 @@ function Register() {
 
             await http
                 .post("/user/Register", formData)
-                .then((res) => {
-                    console.log(res.data); //TODO: Remove b4 presentation
+                .then((res) => { //TODO: Remove b4 presentation
+                    createNewCart(data.Email);
                     navigate("/login");
                 })
                 .catch(function (err) {

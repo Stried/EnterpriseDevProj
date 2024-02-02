@@ -17,26 +17,6 @@ function MainPage() {
         }, 100);
     };
 
-    useEffect(() => {
-        try {
-            if (localStorage.getItem("accessToken")) {
-                http.post("/cart/NewCart", null, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                })
-                    .then((res) => {
-                        console.log(res.data);
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                    });
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    }, []);
-
     return (
         <div
             id="content-body"
