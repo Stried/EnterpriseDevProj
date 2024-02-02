@@ -1,6 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NanoidDotNet;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace EnterpriseDevProj.Controllers
 {
@@ -15,22 +21,30 @@ namespace EnterpriseDevProj.Controllers
             this.environment = environment;
         }
 
-        [HttpPost("upload")]
-        public IActionResult Upload(IFormFile file)
+        [HttpPost("upload"), Authorize]
+        public IActionResult Upload(List<IFormFile> files)
         {
-            if (file.Length > 2048 * 2048)
+            var uploadedFiles = new List<string>();
+
+            foreach (var file in files)
             {
-                var message = "Maximum file size is 2MB";
-                return BadRequest(new { message });
+                if (file.Length > 2048 * 2048)
+                {
+                    var message = "Maximum file size is 2MB";
+                    return BadRequest(new { message });
+                }
+
+                var id = Nanoid.Generate(size: 10);
+                var fileName = id + Path.GetExtension(file.FileName);
+                var imagePath = Path.Combine(environment.ContentRootPath, @"/EDPWeb", fileName);
+
+                using var fileStream = new FileStream(imagePath, FileMode.Create);
+                file.CopyTo(fileStream);
+
+                uploadedFiles.Add(fileName);
             }
 
-            var id = Nanoid.Generate(size: 10);
-            var fileName = id + Path.GetExtension(file.FileName);
-            var imagePath = Path.Combine(environment.ContentRootPath, @"wwwroot/images", fileName);
-            using var fileStream = new FileStream(imagePath, FileMode.Create);
-            file.CopyTo(fileStream);
-
-            return Ok(new { fileName });
+            return Ok(new { files = uploadedFiles });
         }
     }
 }

@@ -43,6 +43,7 @@ namespace EnterpriseDevProj
         public DbSet<Event> Events { get; set; }
 
 		public DbSet<Date> Dates { get; set; }
+        public DbSet<Image> Images {get; set;}
 
 		public DbSet<Cart> Carts { get; set; }
 

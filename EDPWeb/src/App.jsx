@@ -19,6 +19,10 @@ import EventApplications from "./Events/EventApplicationAdmin";
 import MembershipMain from "./Membership/MembershipMain";
 import EventApplicationDetailed from "./Events/EventApplicationDetailed";
 import EventRecords from "./Events/EventRecords";
+import EventOverview from "./Events/EventOverviewUser";
+import EventDetails from "./Events/EventDetails";
+import EventUpdate  from "./Events/EventRecordUpdate";
+
 import GetCartItem from "./Carts&Order/Cart";
 
 import VoucherPage from "./Vouchers/VoucherPage";
@@ -123,6 +127,18 @@ function App() {
                         <Route
                             path="/eventapplicationdetailed/Approval/:EventId"
                             element={<EventApplicationDetailed />}
+                        />
+                        <Route
+                            path="/eventoverviewuser/Details/:EventId"
+                            element={<EventDetails />}
+                        />
+                        <Route
+                            path="/eventRecordUpdate/UpdateEvent/:EventId"
+                            element={<EventUpdate />}
+                        />
+                        <Route
+                            path="/eventoverviewuser"
+                            element={<EventOverview />}
                         />
                         <Route
                             path="/account"

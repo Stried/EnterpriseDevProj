@@ -1,11 +1,11 @@
-import { Button, Tabs } from "flowbite-react";
+
 import { AiOutlineUser } from "react-icons/ai";
 import { GrGroup } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import http from "../../http";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { red } from "@mui/material/colors";
@@ -14,15 +14,16 @@ import DatePicker from "react-multi-date-picker";
 import "react-multi-date-picker/styles/colors/red.css";
 import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
-import MarkdownEditor from './MarkDownEditor';
+import MarkdownEditor from "./MarkDownEditor";
 import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from "react-markdown";
 import {
   Box,
   RadioGroup,
   FormControlLabel,
+  Button,
   Radio,
   FormControl,
 } from "@mui/material";
@@ -30,8 +31,8 @@ function ApplyEvent() {
   function convertDateTimeToDateOnly(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const year = dateTime.getFullYear();
-    const month = String(dateTime.getMonth() + 1).padStart(2, '0');
-    const day = String(dateTime.getDate()).padStart(2, '0');
+    const month = String(dateTime.getMonth() + 1).padStart(2, "0");
+    const day = String(dateTime.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 
@@ -39,10 +40,12 @@ function ApplyEvent() {
 
   const getOneWeekAheadDateTime = () => {
     const currentDate = new Date();
-    const oneWeekLater = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-    
+    const oneWeekLater = new Date(
+      currentDate.getTime() + 7 * 24 * 60 * 60 * 1000
+    );
+
     oneWeekLater.setHours(0, 0, 0, 0);
-  
+
     return oneWeekLater;
   };
 
@@ -119,16 +122,16 @@ function ApplyEvent() {
       AvgRating: yup.number(),
       DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
-      // EventDates: yup.array().of(yup.date()).min(1, "test error message").required(),
-      EventDates: yup.array().min(1, "test error message"),
+      EventDates: yup.array().min(1, "Please set a date"),
       UserID: yup.number().integer(),
     }),
+
     onSubmit: async (data) => {
       console.log("Submit button clicked");
       console.log("Form data:", data);
       console.log("User object:", user);
       console.log("User ID:", user.id);
-      
+
       if (!formikEvent.isValid) {
         console.error("Form is not valid");
         return;
@@ -137,15 +140,13 @@ function ApplyEvent() {
 
       for (let i = 0; i < data.EventDates.length; i++) {
         const customDate = data.EventDates[i];
-      
-        if (customDate && typeof customDate === 'object') {
 
+        if (customDate && typeof customDate === "object") {
           const formattedDate = new Date(customDate);
-          
+
           formattedDates.push(formattedDate);
         } else {
-
-          formattedDates.push(null); 
+          formattedDates.push(null);
         }
       }
 
@@ -164,31 +165,27 @@ function ApplyEvent() {
         ContentHTML: (data.ContentHTML = data.ContentHTML),
         EventDates: formattedDates,
         UserID: user.id,
-        
       };
- 
+
       if (data.EventDates.length > 0) {
+        const maxDate = new Date(
+          Math.max(...data.EventDates.map((date) => new Date(date)))
+        );
 
-        const maxDate = new Date(Math.max(...data.EventDates.map((date) => new Date(date))));
-    
-
-        const formattedMaxDate = maxDate.toISOString().split('T')[0];
+        const formattedMaxDate = maxDate.toISOString().split("T")[0];
         console.log("Formatted Max Date:", formattedMaxDate);
-    
 
         formData.ExpiryDate = formattedMaxDate;
       }
 
-
       console.log(formData);
-      await 
-        http.post("/event/Applications", formData, {
+      await http
+        .post("/event/Applications", formData, {
           headers: {
-              Authorization: `Bearer ${localStorage.getItem(
-                  "accessToken"
-              )}`, 
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "multipart/form-data",
           },
-      })
+        })
         .then((res) => {
           console.log(res.data);
           navigate("/");
@@ -200,7 +197,40 @@ function ApplyEvent() {
         });
     },
   });
+  const onFileChange = (e) => {
+    const files = e.target.files;
+  
+    if (files && files.length > 0) {
+      // If only one file is selected, use the single-file upload logic
+      if (files.length === 1) {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+  
+        http.post('/file/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+      } else {
+        // If multiple files are selected, add them to the imageFiles state
+        const newFiles = Array.from(files);
+        setImageFiles([...imageFiles, ...newFiles]);
+      }
+    }
+  };
 
+  const removeImage = (index) => {
+    const newFiles = [...imageFiles];
+    newFiles.splice(index, 1);
+    setImageFiles(newFiles);
+  };
   useEffect(() => {
     console.log("Is form valid:", formikEvent.isValid);
 
@@ -208,7 +238,6 @@ function ApplyEvent() {
       console.log("Form errors:", formikEvent.errors);
     }
   }, [formikEvent.isValid, formikEvent.errors]);
-
 
   const navigate = useNavigate();
 
@@ -222,13 +251,10 @@ function ApplyEvent() {
   ];
 
   const handleContentChange = (content) => {
-    formikEvent.setFieldValue('ContentHTML', content);
+    formikEvent.setFieldValue("ContentHTML", content);
   };
 
   const [selectedRadio, setSelectedRadio] = useState("Non-Recurring");
-
-
-
 
   const handleRadioChange = (event) => {
     setSelectedRadio(event.target.value);
@@ -255,6 +281,9 @@ function ApplyEvent() {
     setSelectedValue(event.target.value);
   };
 
+  const [imageFiles, setImageFiles] = useState([]);
+
+
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
       <div className="p-5 text-center bg-stone-100 w-7/12 mx-auto rounded-lg drop-shadow-lg shadow-lg">
@@ -262,6 +291,7 @@ function ApplyEvent() {
         <form
           onSubmit={formikEvent.handleSubmit}
           className="text-lg font-medium"
+          encType="multipart/form-data"
         >
           <div className="my-4">
             <label htmlFor="eventname">Event Name</label>
@@ -354,7 +384,7 @@ function ApplyEvent() {
           </div>
           <div className="my-4 custom-select-container">
             <label htmlFor="activitytype">Activity Type</label>
-
+            <p className="opacity-70 italic">What type of event is this?</p>
             <div className="custom-select">
               <CustomSelect
                 value={formikEvent.values.ActivityType}
@@ -464,45 +494,67 @@ function ApplyEvent() {
           </div>
 
           <div>
-          <DatePicker
-          name="EventDates"
-          id="eventdates"
-            format="YYYY-MM-DD HH:mm:ss"
-            placeholder="Enter Event Date.."
-            className="red"
-            inputClass="custom-input"
-            placeholderText="Select a date"
-            value={formikEvent.values.EventDates}
-            onChange={(dates) => formikEvent.setFieldValue('EventDates', dates)}
-            multiple
-            minDate={getOneWeekAheadDateTime()}
-            plugins={[
-              <TimePicker position="bottom" />, 
-              <DatePanel />
-          ]}
-          />
-                      {formikEvent.errors.EventDates ? (
+            <DatePicker
+              name="EventDates"
+              id="eventdates"
+              format="YYYY-MM-DD HH:mm:ss"
+              placeholder="Enter Event Date.."
+              className="red"
+              inputClass="custom-input"
+              placeholderText="Select a date"
+              value={formikEvent.values.EventDates}
+              onChange={(dates) =>
+                formikEvent.setFieldValue("EventDates", dates)
+              }
+              multiple
+              minDate={getOneWeekAheadDateTime()}
+              plugins={[<TimePicker position="bottom" />, <DatePanel />]}
+            />
+            {formikEvent.errors.EventDates ? (
               <div className="text-red-400">
                 *{formikEvent.errors.EventDates}
               </div>
             ) : null}
           </div>
           <div className="my-4">
-  <label htmlFor="eventcontent">Content of your webpage</label>
-  <p className="opacity-70 italic">
-    Create how the content of your webpage would be shown
-  </p>
-  <div className="flex justify-center"> {/* Updated here */}
-    <MarkdownEditor 
-      type="text"
-      name="ContentHTML"
-      id="eventcontent"
-      onChange={formikEvent.handleChange}
-      value={formikEvent.values.ContentHTML}
-      onContentChange={handleContentChange}
-    />
-  </div>
-</div>
+          <label htmlFor="eventimages">Event Images</label>
+          <p className="opacity-70 italic">Select images for your event</p>
+          <Button variant="contained" component="label">
+            Upload Image
+            <input hidden accept="image/*" multiple type="file" onChange={onFileChange} />
+          </Button>
+          {imageFiles.map((file, index) => (
+            <div key={index} className="aspect-ratio-container mt-2">
+              <img alt={`event-${index}`} src={URL.createObjectURL(file)} />
+              <button onClick={() => removeImage(index)} className="remove-image-button">
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+          <div className="my-4">
+            <label htmlFor="eventcontent">Content of your webpage</label>
+            <p className="opacity-70 italic ">
+              Create how the content of your webpage would be shown
+            </p>
+            <div className="flex justify-center">
+              {" "}
+              {/* Updated here */}
+              <MarkdownEditor
+                type="text"
+                name="ContentHTML"
+                id="eventcontent"
+                onChange={formikEvent.handleChange}
+                value={formikEvent.values.ContentHTML}
+                onContentChange={handleContentChange}
+              />
+            </div>
+            {formikEvent.errors.ContentHTML ? (
+              <div className="text-red-400 mt-3 ">
+                *{formikEvent.errors.ContentHTML}
+              </div>
+            ) : null}
+          </div>
           <button
             type="submit"
             className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
