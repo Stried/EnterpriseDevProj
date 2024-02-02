@@ -76,8 +76,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        // TODO: Fix
-        [HttpPost("joinGroup/{groupId}"), Authorize(Roles = "User")]
+        [HttpPost("joinGroup/{groupId}"), Authorize]
         public IActionResult JoinUserGroup(int groupId)
         {
             try
@@ -112,7 +111,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPut("editGroupName/{grpId}"), Authorize(Roles = "User")]
+        [HttpPut("editGroupName/{grpId}"), Authorize]
         public IActionResult ChangeGroupName(int grpId ,string userGrpName)
         {
             try
@@ -133,7 +132,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpDelete("deleteGroup/{grpId}"), Authorize(Roles = "User")]
+        [HttpDelete("deleteGroup/{grpId}"), Authorize]
         public IActionResult DeleteGroup(int grpId)
         {
             try
@@ -159,7 +158,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpGet("getUserGroups"), Authorize(Roles = "User")]
+        [HttpGet("getUserGroups"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserGroup>), StatusCodes.Status200OK)]
         public IActionResult GetUserGroups(string? search)
         {
@@ -191,6 +190,24 @@ namespace EnterpriseDevProj.Controllers
 
             var returnedGroupUsers = groupUsers.OrderBy(x => x.CreatedAt).ToList();
             return Ok(returnedGroupUsers);
+        }
+
+        [HttpGet("getAllUsers/{listOfUsers}")]
+        public IActionResult AllGroupUsers(string listOfUsers)
+        {
+            logger.LogInformation(listOfUsers);
+            var userIdList = listOfUsers.Split(',');
+            var finalUserList = new List<User>();
+
+            IQueryable<User> users = dbContext.Users;
+            for (int i = 0; i < userIdList.Length; i++)
+            {
+                var userId = Convert.ToInt32(userIdList[i]);
+                var userDetails = users.First(x => x.Id == userId);
+                finalUserList.Add(userDetails);
+            }
+
+            return Ok(finalUserList);
         }
 
         private int GetUserID()

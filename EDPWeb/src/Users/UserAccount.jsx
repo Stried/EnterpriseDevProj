@@ -14,6 +14,7 @@ function UserAccount() {
     const { user } = useContext(UserContext);
     const [ currentOption, setCurrentOption ] = useState("optionOne");
     const [ groupsList, setGroupsList ] = useState([]);
+    const [ groupsLengthList, setGroupsLengthList ] = useState([]);
     const [ themeSetting, setTheme ] = useState("");
 
     useEffect(() => {
@@ -60,20 +61,29 @@ function UserAccount() {
         }
     }, []);
 
-    // useEffect(() => {
-    //     http.get("/theme/1", {
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    //         },
-    //     })
-    //         .then((res) => {
-    //             console.log(res.data);
-    //             setTheme(res.data);
-    //         })
-    //         .catch(function (err) {
-    //             console.log(err);
-    //     })
-    // }, [])
+    const getUserLength = (groupID) => {
+        http.get(`/group/groupDetails/${groupID}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                // creates a list to store the lengths of all the grps in the list
+                var listLength = res.data.length;
+                console.log(listLength)
+                groupsLengthList.push(listLength);
+                console.log(groupsLengthList)
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }
+
+    useEffect(() => {
+        groupsList.map((groups, i) => {
+            getUserLength(groups.id);
+        })
+    }, [groupsList])
     
     return (
         <div className="">
@@ -261,8 +271,8 @@ function UserAccount() {
                                             Groups
                                         </h1>
                                         <div className="my-5 grid grid-cols-3">
-                                            {groupsList.length != 0 ? (
-                                                groupsList.map((groups) => {
+                                            {groupsLengthList && groupsList.length != 0 ? (
+                                                groupsList.map((groups, i) => {
                                                     return (
                                                         <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
                                                             <h1 className="text-xl font-semibold">
@@ -270,11 +280,22 @@ function UserAccount() {
                                                                     groups.groupName
                                                                 }
                                                             </h1>
-                                                            <p className="flex mt-4">
-                                                                <FaRegUser className="my-auto" />{" "}
-                                                                <span className="mx-2">
-                                                                    1
-                                                                </span>
+                                                            <p className="flex justify-between mt-4">
+                                                                <div className="flex">
+                                                                    <FaRegUser className="my-auto" />{" "}
+                                                                    <span className="mx-2">
+                                                                        {
+                                                                            groupsLengthList[
+                                                                                i
+                                                                            ]
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex-end">
+                                                                    <Link to={`/group/${groups.id}`}>
+                                                                        View
+                                                                    </Link>
+                                                                </div>
                                                             </p>
                                                         </div>
                                                     );
