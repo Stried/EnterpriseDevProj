@@ -9,7 +9,7 @@ function Cart() {
     let { id } = useParams();
     const { user } = useContext(UserContext);
     const [ cartItemList, setCartItemList ] = useState([]);
-    const [ cartItemQuantity, setCartItemQuantity ] = useState(0);
+    const [ cartItemQuantity, setCartItemQuantity ] = useState(98);
 
     let quantityMessage;
     if (cartItemList.length <= 1) {
@@ -20,17 +20,19 @@ function Cart() {
     }
 
     const updateQuantity = (id, currentItemQuantity) => {
-        setCartItemQuantity(currentItemQuantity);
-        console.log("Current Item Quantity " + cartItemQuantity);
+        // Quantity update is passed in correctly
+        console.log("CurrentItemQuantity: " + currentItemQuantity);
 
-        http.put(`/cart/updateCartItem/${id}`, cartItemQuantity, {
+        http.put(`/cart/updateCartItem/${id}`, currentItemQuantity, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
             },
         })
             .then((res) => {
                 console.log(res.data);
+                console.log("CurrentItemQuantity: " + currentItemQuantity);
                 window.location.reload();
+                // create a function to recall
             })
             .catch(function (err) {
                 console.log(err);
@@ -94,20 +96,6 @@ function Cart() {
                                                 each
                                             </div>
                                         </div>
-                                        {/* <form onSubmit={formik.handleSubmit} className=''>
-                                            <button
-                                                className='border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12'>-</button>
-                                            <input
-                                                id='Quantity'
-                                                name='Quantity'
-                                                onChange={formik.handleChange}
-                                                value={formik.values.Quantity}
-                                                type="number"
-                                                className='p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-300 focus:border-orange-400 focus:ring-orange-400'
-                                            />
-                                            <button className='border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12' onClick={() => {formik.values.Quantity += 1}}>+</button>
-                                            <input type="submit"></input>
-                                        </form> */}
 
                                         <div className="flex">
                                             <button className="border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12">

@@ -154,6 +154,7 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             }
 
+            logger.LogInformation(cartItemQuantity.ToString());
             findCartItem.Quantity = cartItemQuantity;
 
             _context.CartItems.Update(findCartItem);
@@ -162,32 +163,6 @@ namespace EnterpriseDevProj.Controllers
             return Ok(findCartItem);
         }
 
-        [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpPut("/UpdateCartItem/{id}"), Authorize]
-        public IActionResult UpdateCartItem(int id, UpdateCartItemRequest cartItem)
-        {
-            var myCartItem = _context.CartItems.Find(id);
-            if (myCartItem == null)
-            {
-                return NotFound();
-            }
-            int userId = GetUserId();
-            int cartId = _context.Carts.Where(t => t.UserId == userId).Select(t => t.CartId).FirstOrDefault();
-            var eventPrice = _context.Events.Where(t => t.EventId == myCartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
-            if (myCartItem.CartId != userId)
-            {
-                return Forbid();
-            }
-            if (myCartItem.Quantity != null)
-            {
-                myCartItem.Quantity = cartItem.Quantity;
-                myCartItem.SubTotal = cartItem.Quantity * eventPrice;
-            }
-            myCartItem.UpdatedAt = DateTime.Now;
-
-            _context.SaveChanges();
-            return Ok();
-        }
         [HttpDelete("/DeleteCartItem"), Authorize]
         public IActionResult DeleteCartItem(int cartItemId)
         {
