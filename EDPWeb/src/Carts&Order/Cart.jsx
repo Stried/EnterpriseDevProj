@@ -44,7 +44,7 @@ function Cart() {
         const fetchData = async () => {
             try {
                 if (localStorage.getItem("accessToken")) {
-                    http.get(`GetCartItem/${id}`, {
+                    http.get(`/cart/GetCartItems`, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                         },

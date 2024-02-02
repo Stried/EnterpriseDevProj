@@ -122,15 +122,12 @@ namespace EnterpriseDevProj.Controllers
 
 
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpGet("GetCartItem/{id}"), Authorize]
-        public IActionResult GetCartItems(int id)
+        [HttpGet("GetCartItem"), Authorize]
+        public IActionResult GetCartItems()
         {
             try {
                 int userId = GetUserId();
-                if (id == null)
-                {
-                    return NotFound();
-                }
+                
                 IQueryable<CartItem> result = _context.CartItems.Include(t => t.Event);
                 var listofCarts = result.OrderByDescending(x => x.CreatedAt).ToList();
 
@@ -154,7 +151,7 @@ namespace EnterpriseDevProj.Controllers
             }
             catch(Exception ex)
             {
-                logger.LogError(ex, $"Error Reving Ent Application {id}, ERRCODE 1009");
+                logger.LogError(ex, $"Error Reving Ent Application, ERRCODE 1009");
                 return StatusCode(500);
             }
         } 

@@ -117,7 +117,7 @@ function App() {
                             element={<MembershipMain />}
                         />
                         <Route
-                            path="/GetCartItem/:id"
+                            path="/myCart"
                             element={<GetCartItem />}
                         />
                         <Route

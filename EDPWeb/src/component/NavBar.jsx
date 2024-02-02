@@ -51,7 +51,7 @@ function NavBar() {
           MEMBERSHIP
         </Link>
         <Link
-          to={`/GetCartItem/${user}`} // Don't touch this unless it's a security issue
+          to={`/myCart`} // Don't touch this unless it's a security issue
           className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
         >
           CART
