@@ -192,10 +192,18 @@ namespace EnterpriseDevProj.Controllers
             return Ok(returnedGroupUsers);
         }
 
+        [HttpGet("getGroupInfo/{groupID}"), Authorize]
+        public IActionResult GetGroupInformation(int groupID)
+        {
+            var id = groupID;
+            var groupGet = dbContext.UserGroups.Find(groupID);
+
+            return Ok(groupGet);
+        }
+
         [HttpGet("getAllUsers/{listOfUsers}")]
         public IActionResult AllGroupUsers(string listOfUsers)
         {
-            logger.LogInformation(listOfUsers);
             var userIdList = listOfUsers.Split(',');
             var finalUserList = new List<User>();
 

@@ -1,13 +1,29 @@
 import { useEffect, useState } from "react";
 import http from "./../../http";
 import { useParams } from "react-router-dom";
+import { Spinner, Card, Avatar } from "flowbite-react";
 
 function GroupMain() {
     let { grpId } = useParams();
 
-    const [groupDetails, setGroupDetails] = useState([]);
-    const [groupLeader, setGroupLeader] = useState([]);
-    const [groupUserList, setGroupUserList] = useState([]);
+    const [ groupDetails, setGroupDetails ] = useState([]);
+    const [ groupLeader, setGroupLeader ] = useState([]);
+    const [ groupUserList, setGroupUserList ] = useState([]);
+    const [ groupInfo, setGroupInfo ] = useState("");
+
+    useEffect(() => {
+        http.get(`/group/getGroupInfo/${grpId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setGroupInfo(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    })
 
     useEffect(() => {
         http.get(`group/groupDetails/${grpId}`, {
@@ -71,16 +87,36 @@ function GroupMain() {
                     <div className="h-1/4">
                         <p>Image goes here</p>
                     </div>
-                    <h1>
-                        Group Name Goes Here <br />
-                        Group Leader: {groupLeader.name} <br />
-                        No. of Members: {groupDetails.length}
-                    </h1>
-                    <div className="">
-                        <p>Members:</p>
-                        {groupUserList.map((user, i) => {
-                            return <div className="">{user.name}</div>;
-                        })}
+                    <div className="my-5 mx-12">
+                        <h1 className="text-2xl font-medium tracking-wider">
+                            {groupInfo.groupName}
+                        </h1>
+                        <h2>
+                            Group Leader:{" "}
+                            <span className="font-medium">
+                                {groupLeader.name}
+                            </span>
+                        </h2>
+                        <h2>No. of Members: {groupDetails.length}</h2>
+
+                        <p className="mt-5 text-xl font-semibold">Members:</p>
+                        <div className="grid grid-cols-3">
+                            {groupUserList.map((user, i) => {
+                                return (
+                                    <div className="mb-2 mr-2 bg-slate-200 px-3 py-2 rounded">
+                                        <Avatar
+                                            rounded
+                                            size={"lg"}
+                                            className=""
+                                            img={user.imageFile}
+                                        />
+                                        <h1 className="text-center py-1">
+                                            {user.name}
+                                        </h1>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             )}
