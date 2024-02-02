@@ -119,43 +119,7 @@ namespace EnterpriseDevProj.Controllers
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
             return Ok(cartItemDTO);
         }
-
-
-        [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
-        [HttpGet("GetCartItem"), Authorize]
-        public IActionResult GetCartItems()
-        {
-            try {
-                int userId = GetUserId();
-                
-                IQueryable<CartItem> result = _context.CartItems.Include(t => t.Event);
-                var listofCarts = result.OrderByDescending(x => x.CreatedAt).ToList();
-
-                //var data = listofCarts.Select(t => new{
-                //        t.EventId,
-                //        Event = new {
-                //            t.Event?.EventPrice,
-                //            t.Event?.EventName
-                //        }
-                //});
-                IEnumerable<CartItemDTO> data = result.Select(t => new CartItemDTO
-                {
-                    CartItemId = t.CartItemId,
-                    Quantity = t.Quantity,
-                    SubTotal = t.Quantity * t.Event.EventPrice,
-                    Cart = _mapper.Map<CartDTO>(t.Cart),
-                    Event = _mapper.Map<EventDTO>(t.Event)
-                });
-
-                return Ok(data);
-            }
-            catch(Exception ex)
-            {
-                logger.LogError(ex, $"Error Reving Ent Application, ERRCODE 1009");
-                return StatusCode(500);
-            }
-        }
-
+        
         [HttpGet("getMyCartItems"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         public IActionResult GetMyCartItems()
@@ -165,13 +129,8 @@ namespace EnterpriseDevProj.Controllers
                 int userId = GetUserId();
                 // userID from user cart can be found
                 var userCart = _context.Carts.First(x => x.UserId == userId);
-                logger.LogInformation(userCart.UserId.ToString());
 
                 IQueryable<CartItem> userCartItems = _context.CartItems.Include(e => e.Event).Where(u => u.CartId == userCart.CartId);
-                foreach (CartItem s in  userCartItems.ToList())
-                {
-                    logger.LogInformation(s.EventId.ToString());
-                }
 
                 List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).ToList();
                 IEnumerable<CartItemDTO> data = cartItemsList.Select(t => _mapper.Map<CartItemDTO>(t));
@@ -183,6 +142,24 @@ namespace EnterpriseDevProj.Controllers
                 logger.LogError(ex, "Cart item retrieval failed");
                 return StatusCode(500);
             }
+        }
+
+        [HttpPut("updateCartItem/{cartItemId}"), Authorize]
+        public IActionResult UpdateCartItem(int cartItemId, int cartItemQuantity)
+        {
+            var findCartItem = _context.CartItems.Find(cartItemId);
+            if  (findCartItem == null)
+            {
+                logger.LogError("Cart Item is not found");
+                return StatusCode(500);
+            }
+
+            findCartItem.Quantity = cartItemQuantity;
+
+            _context.CartItems.Update(findCartItem);
+            _context.SaveChanges();
+
+            return Ok(findCartItem);
         }
 
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
