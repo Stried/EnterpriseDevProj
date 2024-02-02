@@ -101,7 +101,7 @@ function Cart() {
                                         </div>
 
                                         <div className="flex">
-                                            <button className="border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12">
+                                            <button onClick={() => updateQuantity(cartItem.cartItemId, (cartItem.quantity - 1))} className="border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12">
                                                 -
                                             </button>
                                             <div className="p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-300 focus:border-orange-400 focus:ring-orange-400">
