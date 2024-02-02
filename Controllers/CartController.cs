@@ -154,7 +154,36 @@ namespace EnterpriseDevProj.Controllers
                 logger.LogError(ex, $"Error Reving Ent Application, ERRCODE 1009");
                 return StatusCode(500);
             }
-        } 
+        }
+
+        [HttpGet("getMyCartItems"), Authorize]
+        [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
+        public IActionResult GetMyCartItems()
+        {
+            try
+            {
+                int userId = GetUserId();
+                // userID from user cart can be found
+                var userCart = _context.Carts.First(x => x.UserId == userId);
+                logger.LogInformation(userCart.UserId.ToString());
+
+                IQueryable<CartItem> userCartItems = _context.CartItems.Include(e => e.Event).Where(u => u.CartId == userCart.CartId);
+                foreach (CartItem s in  userCartItems.ToList())
+                {
+                    logger.LogInformation(s.EventId.ToString());
+                }
+
+                List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).ToList();
+                IEnumerable<CartItemDTO> data = cartItemsList.Select(t => _mapper.Map<CartItemDTO>(t));
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Cart item retrieval failed");
+                return StatusCode(500);
+            }
+        }
 
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         [HttpPut("/UpdateCartItem/{id}"), Authorize]

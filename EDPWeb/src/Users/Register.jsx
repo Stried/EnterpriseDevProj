@@ -49,6 +49,7 @@ function Register() {
 
             setImgAfterCrop(dataURL);
             setImageFile(dataURL);
+            console.log(dataURL);
             setCurrentPage("img-cropped");
         };
     };
