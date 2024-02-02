@@ -20,14 +20,14 @@ function Cart() {
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            Quantity: ""
+            Quantity: 0
         },
         validationSchema: yup.object().shape({
             Quantity: yup.number(),
         }),
         onSubmit: async (data) => {
             await http
-                .put(`/UpdateCartItem/${6}`, data, {
+                .put(`/cart/UpdateCartItem/${3}`, data, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem(
                             "accessToken"
@@ -41,35 +41,19 @@ function Cart() {
     })
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (localStorage.getItem("accessToken")) {
-                    http.get(`/cart/GetCartItems`, {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                        },
-                    })
-                        .then((res) => {
-                            setCartItemList(res.data);
-                        })
-
-
-                    const cartListResponse = await http.get(`GetCartItem/${id}`, {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                        },
-                    });
-                    setCartItemList(cartListResponse.data);
-                    console.log(cartListResponse.data);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, [id]);
-
+        http.get("/cart/getMyCartItems", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.data);
+                setCartItemList(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    }, []);
 
     return (
         <div className="bg-gradient-to-br from-gray-300 to-gray-400 pb-10">
@@ -115,7 +99,7 @@ function Cart() {
                                                 type="number"
                                                 className='p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-300 focus:border-orange-400 focus:ring-orange-400'
                                             />
-                                            <button className='border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12'>+</button>
+                                            <button className='border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12' onClick={() => {formik.values.Quantity += 1}}>+</button>
                                             <input type="submit"></input>
                                         </form>
                                     </div>
