@@ -1,15 +1,31 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import http from "./../../http";
 import { useParams } from "react-router-dom";
 import { Spinner, Card, Avatar } from "flowbite-react";
+import UserContext from "../Users/UserContext";
 
 function GroupMain() {
     let { grpId } = useParams();
 
+    const [ currentUser, setCurrentUser ] = useState("");
     const [ groupDetails, setGroupDetails ] = useState([]);
     const [ groupLeader, setGroupLeader ] = useState([]);
     const [ groupUserList, setGroupUserList ] = useState([]);
     const [ groupInfo, setGroupInfo ] = useState("");
+
+    useEffect(() => {
+        http.get("/user", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setCurrentUser(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    })
 
     useEffect(() => {
         http.get(`/group/getGroupInfo/${grpId}`, {
@@ -115,6 +131,12 @@ function GroupMain() {
                                         <p className="text-center">
                                             {user.email}
                                         </p>
+
+                                        {groupLeader.id == currentUser.id && (
+                                            <div className="mx-auto text-center mt-4">
+                                                <button className="bg-red-400 hover:bg-red-500 px-3 py-2 rounded-md font-medium">Kick</button>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}

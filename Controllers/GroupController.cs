@@ -218,6 +218,24 @@ namespace EnterpriseDevProj.Controllers
             return Ok(finalUserList);
         }
 
+        [HttpDelete("removeUser/{userGroupID}/{userID}"), Authorize]
+        public IActionResult removeUser(int userGroupID, int userID)
+        {
+            var userGrpId = userGroupID;
+            var userId = userID;
+
+            var checkUserGroupLink = dbContext.UserGroupLinks.Where(x => x.GroupID == userGrpId && x.UserID == userId).FirstOrDefault();
+            if (checkUserGroupLink == null)
+            {
+                return BadRequest("Unable to remove user from group");
+            }
+
+            dbContext.UserGroupLinks.Remove(checkUserGroupLink);
+            dbContext.SaveChanges();
+
+            return Ok();
+        }
+
         private int GetUserID()
         {
             try
