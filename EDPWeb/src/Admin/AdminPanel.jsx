@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../Users/UserContext";
 import AdminAllUsers from "./AdminAllUsers";
+import { Link } from "react-router-dom";
 
 function AdminPanel() {
     const { user } = useContext(UserContext);

@@ -145,7 +145,7 @@ namespace EnterpriseDevProj.Controllers
         }
 
         [HttpPut("updateCartItem/{cartItemId}"), Authorize]
-        public IActionResult UpdateCartItem(int cartItemId, int cartItemQuantity)
+        public IActionResult UpdateCartItem(int cartItemId, UpdateCartItemRequest cartItemQuantity)
         {
             var findCartItem = _context.CartItems.Find(cartItemId);
             if  (findCartItem == null)
@@ -155,7 +155,7 @@ namespace EnterpriseDevProj.Controllers
             }
 
             logger.LogInformation(cartItemQuantity.ToString());
-            findCartItem.Quantity = cartItemQuantity;
+            findCartItem.Quantity = cartItemQuantity.Quantity;
 
             _context.CartItems.Update(findCartItem);
             _context.SaveChanges();

@@ -22,10 +22,13 @@ function Cart() {
     const updateQuantity = (id, currentItemQuantity) => {
         // Quantity update is passed in correctly
         console.log("CurrentItemQuantity: " + currentItemQuantity);
+        var updateQuantityForm = new FormData();
+        updateQuantityForm.append("Quantity", currentItemQuantity)
 
-        http.put(`/cart/updateCartItem/${id}`, currentItemQuantity, {
+        http.put(`/cart/updateCartItem/${id}`, updateQuantityForm, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                "Content-Type": "application/json"
             },
         })
             .then((res) => {

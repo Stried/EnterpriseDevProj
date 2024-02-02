@@ -29,7 +29,7 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-        [HttpPost("addGroup"), Authorize(Roles = "User")]
+        [HttpPost("addGroup"), Authorize]
         public IActionResult AddUserGroup(GroupCreateRequest createRequest)
         {
             try
