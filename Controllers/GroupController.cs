@@ -172,6 +172,8 @@ namespace EnterpriseDevProj.Controllers
                                 where userGroupLinks.UserID == userID
                                 select userGroups;
                 
+                groupings = groupings.OrderByDescending(x => x.CreatedAt);
+
                 return Ok(groupings);
             }
             catch (Exception ex)

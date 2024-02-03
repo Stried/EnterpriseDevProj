@@ -94,7 +94,23 @@ function GroupMain() {
                 console.log(err);
         })
 
-    }, [groupDetails]);
+    }, [ groupDetails ]);
+    
+    const kickUserFromGroup = (userId) => {
+        var groupId = grpId;
+        http.delete(`/group/removeUser/${groupId}/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+                window.location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }
 
     return (
         <div className="min-h-screen max-h-full">
@@ -134,7 +150,7 @@ function GroupMain() {
 
                                         {groupLeader.id == currentUser.id && (
                                             <div className="mx-auto text-center mt-4">
-                                                <button className="bg-red-400 hover:bg-red-500 px-3 py-2 rounded-md font-medium">Kick</button>
+                                                <button onClick={() => kickUserFromGroup(user.id)} className="bg-red-400 hover:bg-red-500 px-3 py-2 rounded-md font-medium">Kick</button>
                                             </div>
                                         )}
                                     </div>
