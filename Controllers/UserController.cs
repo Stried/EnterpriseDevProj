@@ -123,6 +123,49 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpPost("googleRegister")]
+        public IActionResult GoogleRegister(GoogleSessionRequest request)
+        {
+            try
+            {
+                var now = DateTime.Now;
+                logger.LogInformation("Request name: " + request.Name);
+                logger.LogInformation("Request email: " + request.Email);
+                logger.LogInformation("Request picture: " + request.Picture);
+                User user = new()
+                {
+                    Name = request.Name,
+                    NRIC = "NotApplic",
+                    Email = request.Email,
+                    PhoneNumber = 99999999,
+                    ImageFile = request.Picture,
+                    Password = Guid.NewGuid().ToString(),
+                    UserRole = "User",
+                    CreatedAt = now,
+                    UpdatedAt = now 
+                };
+
+                var userAccCheck = dbContext.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+                logger.LogInformation("Reached Check 1");
+                if (userAccCheck != null)
+                {
+                    return BadRequest("User Account already exist!");
+                }
+                logger.LogInformation("Reached Check 2");
+
+                dbContext.Users.Add(user);
+                dbContext.SaveChanges();
+                logger.LogInformation("Reached Check 3");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Google Register Occured");
+                return StatusCode(500);
+            }
+        }
+
         [HttpPost("googleLogin")]
         public IActionResult GoogleLogin(GoogleSessionRequest request)
         {

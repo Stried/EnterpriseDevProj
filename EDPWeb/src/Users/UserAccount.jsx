@@ -11,7 +11,7 @@ import UserSettings from "./UserSettings";
 
 
 function UserAccount() {
-    const { user } = useContext(UserContext);
+    const [ user, setUser ] = useState("");
     const [ currentOption, setCurrentOption ] = useState("optionOne");
     const [ groupsList, setGroupsList ] = useState([]);
     const [ groupsLengthList, setGroupsLengthList ] = useState([]);
@@ -53,11 +53,25 @@ function UserAccount() {
                 },
             })
                 .then((res) => {
-                    // console.log(res.data);
+                    setUser(res.data);
                 })
                 .catch(function (err) {
                     console.log(err);
                 });
+        } else if (localStorage.getItem("googleAccessToken")) {
+            http.get("/user", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`, // This is needed for mine for some reason, not part of the practical
+                },
+            })
+                .then((res) => {
+                    setUser(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+            })
         }
     }, []);
 

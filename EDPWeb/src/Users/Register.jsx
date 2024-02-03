@@ -237,27 +237,37 @@ function Register() {
                 })
                 .then((res) => {
                     console.log(res.data);
-                    setUser(res.data);
+                    
+                    var formData = {
+                        Name: res.data.name,
+                        Email: res.data.email,
+                        Picture: res.data.picture,
+                    };
+
+                    http.post("/user/googleLogin", formData)
+                        .then((res) => {
+                            console.log(formData);
+                            localStorage.setItem("googleAccessToken", res.data);
+                            navigate("/");
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+
+                    http.post("/user/googleRegister", formData)
+                        .then((res) => {
+                            console.log(res.status);
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
                 })
                 .catch(function (err) {
                     console.log(err);
                 });
 
             console.log(user);
-            var formData = {
-                Name: user.name,
-                Email: user.email,
-                Picture: user.picture
-            }
-
-            http.post("/user/googleLogin", formData)
-                .then((res) => {
-                    localStorage.setItem("googleAccessToken", res.data);
-                    navigate("/");
-                })
-                .catch(function (err) {
-                    console.log(err);
-            })
+            
         },
     });
 
