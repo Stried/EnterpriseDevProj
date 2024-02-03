@@ -2,9 +2,29 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import LogoUPlay from "./../assets/logo_uplay.png";
 import UserContext from "../Users/UserContext";
+import http from "./../../http"
 
 function NavBarMainpage() {
     const { user } = useContext(UserContext);
+    const [ googleUser, setGoogleUser ] = useState("");
+
+    useEffect(() => {
+        if (localStorage.getItem("googleAccessToken")) {
+            http.get("/user/googleAuth", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "googleAccessToken"
+                    )}`,      
+                },
+            })
+                .then((res) => {
+                    setGoogleUser(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        }
+    }, []);
 
     return (
         <div
@@ -30,7 +50,7 @@ function NavBarMainpage() {
             </div>
             <div className="flex px-5 space-x-5 text-lg font-[450] my-auto tracking-tight text-white">
                 <Link
-                    to={"/eventapply"}
+                    to={"/eventoverviewuser"}
                     className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     EVENTS
@@ -42,12 +62,24 @@ function NavBarMainpage() {
                     PLUG & PLAY
                 </Link>
                 <Link
+                    to={"/vouchers"}
+                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                >
+                    VOUCHERS
+                </Link>
+                <Link
                     to={"/membership"}
                     className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     MEMBERSHIP
                 </Link>
-                {!user && (
+                <Link
+                    to={`/myCart`} // Don't touch this unless it's a security issue
+                    className="transition-all duration-500 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                >
+                    CART
+                </Link>
+                {!user && !googleUser && (
                     <Link
                         to={"/login"}
                         className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
@@ -55,14 +87,8 @@ function NavBarMainpage() {
                         LOGIN
                     </Link>
                 )}
-                {user && (
-                    <Link
-                        to={"/account"}
-                        className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
-                    >
-                        {user.name}
-                    </Link>
-                )}
+                { user && <Link to={ "/account" }>{ user.name }</Link> }
+                { googleUser && (<Link to={ "/account" }>{ googleUser.name }</Link>) }
             </div>
         </div>
     );

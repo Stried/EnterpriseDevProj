@@ -7,16 +7,17 @@ import * as yup from "yup";
 import http from "../../http";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FileInput from "../component/FileInput";
 import ImageCropper from "../component/ImageCropper";
-
+import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 function Register() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
     const [currentPage, setCurrentPage] = useState("choose-img");
-    const [ imgAfterCrop, setImgAfterCrop ] = useState("");
-    
+    const [imgAfterCrop, setImgAfterCrop] = useState("");
+
     // Crop stuff guide: https://timetoprogram.com/crop-image-reactjs/
     const onImageSelected = (selectedImage) => {
         setImageFile(selectedImage);
@@ -71,7 +72,7 @@ function Register() {
             .catch(function (err) {
                 console.log(err);
             });
-    }
+    };
 
     const formikIndiv = useFormik({
         initialValues: {
@@ -131,7 +132,8 @@ function Register() {
 
             await http
                 .post("/user/Register", formData)
-                .then((res) => { //TODO: Remove b4 presentation
+                .then((res) => {
+                    //TODO: Remove b4 presentation
                     createNewCart(data.Email);
                     navigate("/login");
                 })
@@ -207,6 +209,58 @@ function Register() {
         },
     });
 
+    // Google login
+    // https://stackoverflow.com/questions/75590977/get-token-and-google-id-in-react-oauth-google
+    // https://stackoverflow.com/questions/76451143/cross-origin-opener-policy-policy-would-block-the-window-postmessage-call-error
+    const [user, setUser] = useState([]);
+    const [profile, setProfile] = useState([]);
+
+    const responseMessage = (response) => {
+        console.log(response);
+
+        navigate("/");
+    };
+
+    const errorMessage = (err) => {
+        console.log(err);
+    };
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            // error Cross-Origin-Opener-Policy would block the windows.closed call.
+            const userInfo = await axios
+                .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.access_token}`,
+                        Accept: "application/json"
+                    },
+                })
+                .then((res) => {
+                    console.log(res.data);
+                    setUser(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+
+            console.log(user);
+            var formData = {
+                Name: user.name,
+                Email: user.email,
+                Picture: user.picture
+            }
+
+            http.post("/user/googleLogin", formData)
+                .then((res) => {
+                    localStorage.setItem("googleAccessToken", res.data);
+                    navigate("/");
+                })
+                .catch(function (err) {
+                    console.log(err);
+            })
+        },
+    });
+
     return (
         <div className="bg-gradient-to-br from-orange-400 to-red-500">
             <ToastContainer />
@@ -225,6 +279,19 @@ function Register() {
                             <h1 className="text-xl font-medium">
                                 Individual Account Registration
                             </h1>
+                            <hr className="my-10 mx-auto border-2 border-gray-400" />
+                            <div className="my-3 flex flex-col">
+                                <p className="mb-4 text-xl font-semibold">
+                                    Sign in with Socials?
+                                </p>
+                                <button
+                                    onClick={() => googleLogin()}
+                                    className="px-3 py-2 bg-orange-400 w-1/4 mx-auto rounded font-medium drop-shadow-md"
+                                >
+                                    Login With Google
+                                </button>
+                            </div>
+                            <hr className="my-10 mx-auto border-2 border-gray-400" />
                             <form
                                 onSubmit={formikIndiv.handleSubmit}
                                 className="text-lg font-medium"

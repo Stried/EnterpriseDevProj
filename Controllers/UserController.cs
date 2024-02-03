@@ -123,6 +123,22 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpPost("googleLogin")]
+        public IActionResult GoogleLogin(GoogleSessionRequest request)
+        {
+            try
+            {
+                string googleAccessToken = CreateGoogleToken(request);
+
+                return Ok(googleAccessToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Google Login Failed");
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("auth"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<AuthResponse>), StatusCodes.Status200OK)]
         public IActionResult Auth()
@@ -149,6 +165,35 @@ namespace EnterpriseDevProj.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error authenticating user!");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("googleAuth"), Authorize]
+        [ProducesResponseType(typeof(IEnumerable<GoogleSessionResponse>), StatusCodes.Status200OK)]
+        public IActionResult GoogleAuth()
+        {
+            try
+            {
+                var name = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault();
+                logger.LogInformation(name.ToString());
+                var email = User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
+                var picture = User.Claims.Where(c => c.Type == ClaimTypes.Uri).Select(c => c.Value).SingleOrDefault();
+                var userRole = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).SingleOrDefault();
+
+                GoogleSessionResponse response = new()
+                {
+                    Name = name,
+                    Email = email,
+                    Picture = picture,
+                    UserRole = userRole
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in authenticating Google Account");
                 return StatusCode(500);
             }
         }
@@ -295,6 +340,40 @@ namespace EnterpriseDevProj.Controllers
                     // ClaimTypes give information of what information a particular claim means, e.g. Email = user's Email
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.UserRole)
+                }),
+                Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
+                // Specifies the signing key, signing key identifier, and security algorithms to generate a digital signature for SamlAssertion
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            string token = tokenHandler.WriteToken(securityToken);
+
+            return token;
+        }
+
+        private string CreateGoogleToken(GoogleSessionRequest request)
+        {
+            string secret = configuration.GetValue<string>("Authentication:Secret");
+            int tokenExpiresDays = configuration.GetValue<int>("Authentication:TokenExpiresDays");
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(secret);
+
+            // What kind of information is stored in the token 
+            // Information that is most usually used for authentication/identification
+            // https://learn.microsoft.com/en-us/dotnet/api/system.security.claims.claim?view=net-7.0 (For claims understanding)
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                // Subject is the entity (usually a user requesting access to a resource)
+                // ClaimsIdentity is a collection of claims that describe the properties and attributes of the subject
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    // ClaimTypes give information of what information a particular claim means, e.g. Email = user's Email
+                    new Claim(ClaimTypes.NameIdentifier, request.Name),
+                    new Claim(ClaimTypes.Email, request.Email),
+                    new Claim(ClaimTypes.Uri, request.Picture),
+                    new Claim(ClaimTypes.Role, "User")
                 }),
                 Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
                 // Specifies the signing key, signing key identifier, and security algorithms to generate a digital signature for SamlAssertion

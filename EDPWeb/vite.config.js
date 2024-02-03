@@ -6,5 +6,11 @@ export default defineConfig({
     plugins: [react()],
     server: {
         port: 3000
-    }
+    },
+    headers: [
+        {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+        },
+    ]
 })
