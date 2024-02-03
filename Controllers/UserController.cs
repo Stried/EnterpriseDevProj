@@ -267,6 +267,35 @@ namespace EnterpriseDevProj.Controllers
             return Ok(userDTO);
         }
 
+        [HttpGet("googleAccount"), Authorize]
+        [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
+        public IActionResult getUserDetailsGoogleSelf()
+        {
+            var userEmail = User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
+            logger.LogInformation("This is the Email" + userEmail);
+            var userAccCheck = dbContext.Users.Where(u => u.Email == userEmail).FirstOrDefault();
+            if (userAccCheck == null)
+            {
+                logger.LogInformation(userAccCheck.ToString());
+                return BadRequest("Error encountered");
+            }
+
+            User user = new()
+            {
+                Id = userAccCheck.Id,
+                Name = userAccCheck.Name,
+                NRIC = userAccCheck.NRIC,
+                Email = userAccCheck.Email,
+                PhoneNumber = userAccCheck.PhoneNumber,
+                ImageFile = userAccCheck.ImageFile,
+                UserRole = userAccCheck.UserRole
+            };
+
+            var userDTO = mapper.Map<UserDTO>(user);
+            return Ok(userDTO);
+        }
+
+
         [HttpGet("{userID}"),  Authorize]
         [ProducesResponseType(typeof (IEnumerable<UserDTO>), StatusCodes.Status200OK)] 
         public IActionResult getUserDetailOther(int userID)

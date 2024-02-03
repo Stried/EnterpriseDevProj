@@ -77,6 +77,21 @@ function UserSettings() {
                 .catch(function (err) {
                     console.log(err);
                 });
+        } else if (localStorage.getItem("googleAccessToken")) {
+            http.get("/user/googleAccount", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "googleAccessToken"
+                    )}`, // This is needed for mine for some reason, not part of the practical
+                },
+            })
+                .then((res) => {
+                    setUserAcc(res.data);
+                    console.log(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
         }
     }, []);
 

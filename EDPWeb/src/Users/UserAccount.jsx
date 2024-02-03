@@ -59,15 +59,16 @@ function UserAccount() {
                     console.log(err);
                 });
         } else if (localStorage.getItem("googleAccessToken")) {
-            http.get("/user", {
+            http.get("/user/googleAccount", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
+                        "googleAccessToken"
                     )}`, // This is needed for mine for some reason, not part of the practical
                 },
             })
                 .then((res) => {
                     setUser(res.data);
+                    console.log(res.data);
                 })
                 .catch(function (err) {
                     console.log(err);
