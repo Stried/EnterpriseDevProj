@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useContext } from "react";
 import UserContext from "./UserContext";
+import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function Login() {
     const navigate = useNavigate();
@@ -17,56 +19,103 @@ function Login() {
     const formikIndiv = useFormik({
         initialValues: {
             Email: "",
-            Password: ""
+            Password: "",
         },
         validationSchema: yup.object().shape({
-            Email: yup.string().email("Please enter a valid email address.").required(),
+            Email: yup
+                .string()
+                .email("Please enter a valid email address.")
+                .required(),
             Password: yup.string().required(),
         }),
         onSubmit: async (data) => {
             const formData = {
-                Email: data.Email = data.Email.trim(),
-                Password: data.Password = data.Password.trim()
-            }
+                Email: (data.Email = data.Email.trim()),
+                Password: (data.Password = data.Password.trim()),
+            };
 
-            await http.post("/user/Login", formData)
+            await http
+                .post("/user/Login", formData)
                 .then((res) => {
                     console.log(res.data.user);
-                    localStorage.setItem("accessToken", res.data.accessToken)
+                    localStorage.setItem("accessToken", res.data.accessToken);
                     setUser(res.data.user);
-                    navigate("/")
+                    navigate("/");
                 })
                 .catch(function (err) {
                     console.log(err);
-                    toast.error(`${err.response.data.message}`)
-                })
+                    toast.error(`${err.response.data.message}`);
+                });
         },
     });
 
     const formikCorp = useFormik({
         initialValues: {
             Email: "",
-            Password: ""
+            Password: "",
         },
         validationSchema: yup.object().shape({
-            Email: yup.string().email("Please enter a valid email address.").required(),
-            Password: yup.string().required()
+            Email: yup
+                .string()
+                .email("Please enter a valid email address.")
+                .required(),
+            Password: yup.string().required(),
         }),
         onSubmit: async (data) => {
             const formData = {
-                Email: data.Email = data.Email.trim(),
-                Password: data.Password = data.Password.trim()
-            }
+                Email: (data.Email = data.Email.trim()),
+                Password: (data.Password = data.Password.trim()),
+            };
 
-            await http.post("/user/Login", formData)
+            await http
+                .post("/user/Login", formData)
                 .then((res) => {
                     console.log(res.data);
-                    localStorage.setItem("accessToken", res.data)
+                    localStorage.setItem("accessToken", res.data);
                 })
                 .catch(function (err) {
                     console.log(err);
                     toast.error(`${err.response.data.message}`);
+                });
+        },
+    });
+
+    // Google login
+    // https://stackoverflow.com/questions/75590977/get-token-and-google-id-in-react-oauth-google
+    // https://stackoverflow.com/questions/76451143/cross-origin-opener-policy-policy-would-block-the-window-postmessage-call-error
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            // error Cross-Origin-Opener-Policy would block the windows.closed call.
+            const userInfo = await axios
+                .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.access_token}`,
+                        Accept: "application/json",
+                    },
                 })
+                .then((res) => {
+                    console.log(res.data);
+
+                    var formData = {
+                        Name: res.data.name,
+                        Email: res.data.email,
+                        Picture: res.data.picture,
+                    };
+
+                    http.post("/user/googleLogin", formData)
+                        .then((res) => {
+                            console.log(formData);
+                            localStorage.setItem("googleAccessToken", res.data);
+                            navigate("/");
+                        })  
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
         },
     });
 
@@ -161,6 +210,20 @@ function Login() {
                                     </a>
                                 </p>
                             </div>
+
+                            <hr className="my-10 mx-auto border-2 border-gray-400" />
+                            <div className="my-3 flex flex-col">
+                                <p className="mb-4 text-xl font-semibold">
+                                    Sign in with Socials?
+                                </p>
+                                <button
+                                    onClick={() => googleLogin()}
+                                    className="px-3 py-2 bg-orange-400 w-1/4 mx-auto rounded font-medium drop-shadow-md"
+                                >
+                                    Login With Google
+                                </button>
+                            </div>
+                            <hr className="my-10 mx-auto border-2 border-gray-400" />
                         </div>
                     </div>
                 </Tabs.Item>

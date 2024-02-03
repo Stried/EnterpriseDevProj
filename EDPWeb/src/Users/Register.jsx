@@ -12,6 +12,7 @@ import FileInput from "../component/FileInput";
 import ImageCropper from "../component/ImageCropper";
 import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+
 function Register() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
@@ -212,18 +213,6 @@ function Register() {
     // Google login
     // https://stackoverflow.com/questions/75590977/get-token-and-google-id-in-react-oauth-google
     // https://stackoverflow.com/questions/76451143/cross-origin-opener-policy-policy-would-block-the-window-postmessage-call-error
-    const [user, setUser] = useState([]);
-    const [profile, setProfile] = useState([]);
-
-    const responseMessage = (response) => {
-        console.log(response);
-
-        navigate("/");
-    };
-
-    const errorMessage = (err) => {
-        console.log(err);
-    };
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
@@ -265,9 +254,6 @@ function Register() {
                 .catch(function (err) {
                     console.log(err);
                 });
-
-            console.log(user);
-            
         },
     });
 

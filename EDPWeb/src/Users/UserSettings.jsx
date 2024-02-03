@@ -13,6 +13,7 @@ function UserSettings() {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
     const [ userAcc, setUserAcc ] = useState("");
+    const [ googleUser, setGoogleUser ] = useState(false);
     const [ deleteAccountModal, setOpenDeleteAccountModal ] = useState(false);
 
     // Crop image functions
@@ -87,6 +88,7 @@ function UserSettings() {
             })
                 .then((res) => {
                     setUserAcc(res.data);
+                    setGoogleUser(true);
                     console.log(res.data);
                 })
                 .catch(function (err) {
@@ -98,6 +100,10 @@ function UserSettings() {
     const logout = () => {
         if (localStorage.getItem("accessToken")) {
             localStorage.removeItem("accessToken");
+            navigate("/");
+            window.location.reload();
+        } else if (localStorage.getItem("googleAccessToken")) {
+            localStorage.removeItem("googleAccessToken");
             navigate("/");
             window.location.reload();
         }
@@ -163,23 +169,43 @@ function UserSettings() {
 
             console.log(imageFile);
 
-            await http
-                .put("/user/updateUser", formData, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "accessToken"
-                        )}`, // This is needed for mine for some reason, not part of the practical
-                    },
-                })
-                .then((res) => {
-                    console.log(res.data);
-                    navigate("/account");
-                    window.location.reload();
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    toast.error(`${err.response.data}`);
-                });
+            if (localStorage.getItem("accessToken")) {
+                await http
+                    .put("/user/updateUser", formData, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "accessToken"
+                            )}`, // This is needed for mine for some reason, not part of the practical
+                        },
+                    })
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/account");
+                        window.location.reload();
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        toast.error(`${err.response.data}`);
+                    });
+            } else if (localStorage.getItem("googleAccessToken")) {
+                await http
+                    .put("/user/google/updateUser", formData, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "googleAccessToken"
+                            )}`, // This is needed for mine for some reason, not part of the practical
+                        },
+                    })
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/account");
+                        window.location.reload();
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        toast.error(`${err.response.data}`);
+                    });
+            }
         }
     })
 
@@ -200,22 +226,41 @@ function UserSettings() {
                 .required()
         }),
         onSubmit: async (data) => {
-            await http
-                .put("/user/updatePassword", data, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "accessToken"
-                        )}`, // This is needed for mine for some reason, not part of the practical
-                    },
-                })
-                .then((res) => {
-                    navigate("/account");
-                    window.location.reload();
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    toast.error(`${err.response.data}`);
-                });
+            if (localStorage.getItem("accessToken")) {
+                await http
+                    .put("/user/updatePassword", data, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "accessToken"
+                            )}`, // This is needed for mine for some reason, not part of the practical
+                        },
+                    })
+                    .then((res) => {
+                        navigate("/account");
+                        window.location.reload();
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        toast.error(`${err.response.data}`);
+                    });
+            } else if (localStorage.getItem("googleAccessToken")) {
+                await http
+                    .put("/user/google/updatePassword", data, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "googleAccessToken"
+                            )}`, // This is needed for mine for some reason, not part of the practical
+                        },
+                    })
+                    .then((res) => {
+                        navigate("/account");
+                        window.location.reload();
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        toast.error(`${err.response.data}`);
+                    });
+            }
         }
     });
 
@@ -226,45 +271,47 @@ function UserSettings() {
                     <h1 className="text-xl font-semibold">
                         Change Account Details
                     </h1>
-                    
-                    <div className="my-4">
-                        {currentPage === "choose-img" ? (
-                            <FileInput onImageSelected={onImageSelected} />
-                        ) : currentPage === "crop-img" ? (
-                            <ImageCropper
-                                image={imageFile}
-                                onCropDone={onCropDone}
-                                onCropCancel={onCropCancel}
-                                className="h-40"
-                            />
-                        ) : (
-                            <div className="">
-                                <img
-                                    src={imgAfterCrop}
-                                    className="cropped-img"
+
+                    {!googleUser && (
+                        <div className="my-4">
+                            {currentPage === "choose-img" ? (
+                                <FileInput onImageSelected={onImageSelected} />
+                            ) : currentPage === "crop-img" ? (
+                                <ImageCropper
+                                    image={imageFile}
+                                    onCropDone={onCropDone}
+                                    onCropCancel={onCropCancel}
+                                    className="h-40"
                                 />
+                            ) : (
+                                <div className="">
+                                    <img
+                                        src={imgAfterCrop}
+                                        className="cropped-img"
+                                    />
 
-                                <button
-                                    onClick={() => {
-                                        setCurrentPage("crop-img");
-                                    }}
-                                    className="px-3 py-2 bg-red-400 mr-2 rounded-md"
-                                >
-                                    Crop
-                                </button>
+                                    <button
+                                        onClick={() => {
+                                            setCurrentPage("crop-img");
+                                        }}
+                                        className="px-3 py-2 bg-red-400 mr-2 rounded-md"
+                                    >
+                                        Crop
+                                    </button>
 
-                                <button
-                                    onClick={() => {
-                                        setCurrentPage("choose-img");
-                                        setImageFile("");
-                                    }}
-                                    className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
-                                >
-                                    New Image
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setCurrentPage("choose-img");
+                                            setImageFile("");
+                                        }}
+                                        className="px-3 py-2 bg-blue-400 ml-2 rounded-md"
+                                    >
+                                        New Image
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <form
                         action=""
@@ -280,14 +327,27 @@ function UserSettings() {
                             <p className="opacity-70 italic">
                                 Name as on your NRIC/Birth Certificate
                             </p>
-                            <input
-                                type="text"
-                                name="Name"
-                                id="Name"
-                                onChange={formikAccount.handleChange}
-                                value={formikAccount.values.Name}
-                                className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                            />
+                            {!googleUser && (
+                                <input
+                                    type="text"
+                                    name="Name"
+                                    id="Name"
+                                    onChange={formikAccount.handleChange}
+                                    value={formikAccount.values.Name}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                            )}
+                            {googleUser && (
+                                <input
+                                    type="text"
+                                    name="Name"
+                                    id="Name"
+                                    disabled
+                                    onChange={formikAccount.handleChange}
+                                    value={formikAccount.values.Name}
+                                    className="disabled:bg-gray-200 bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                            )}
                             {formikAccount.errors.Name ? (
                                 <div className="text-red-400">
                                     *{formikAccount.errors.Name}
@@ -306,14 +366,27 @@ function UserSettings() {
                                 Email Address to send receipts and other
                                 important information.
                             </p>
-                            <input
-                                type="email"
-                                name="Email"
-                                id="Email"
-                                onChange={formikAccount.handleChange}
-                                value={formikAccount.values.Email}
-                                className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                            />
+                            {!googleUser && (
+                                <input
+                                    type="email"
+                                    name="Email"
+                                    id="Email"
+                                    onChange={formikAccount.handleChange}
+                                    value={formikAccount.values.Email}
+                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                            )}
+                            {googleUser && (
+                                <input
+                                    type="email"
+                                    name="Email"
+                                    id="Email"
+                                    disabled
+                                    onChange={formikAccount.handleChange}
+                                    value={formikAccount.values.Email}
+                                    className="disabled:bg-gray-200 bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                />
+                            )}
                             {formikAccount.errors.Email ? (
                                 <div className="text-red-400">
                                     *{formikAccount.errors.Email}

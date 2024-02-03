@@ -328,6 +328,11 @@ namespace EnterpriseDevProj.Controllers
                 var userID = GetUserID();
                 var userAccCheck = dbContext.Users.Find(userID);
 
+                if (request.ImageFile == null)
+                {
+                    request.ImageFile = userAccCheck.ImageFile;
+                }
+
                 userAccCheck.Name = request.Name.Trim();
                 userAccCheck.Email = request.Email.Trim();
                 userAccCheck.PhoneNumber = request.PhoneNumber;
@@ -344,6 +349,28 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPut("google/updateUser"), Authorize]
+        public IActionResult updateGoogleUserDetails(UpdateUserRequest request)
+        {
+            try
+            {
+                var userAccCheck = dbContext.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+
+                userAccCheck.PhoneNumber = request.PhoneNumber;
+
+                dbContext.Users.Update(userAccCheck);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in updating user data. ERRCODE 1004");
+                return StatusCode(500);
+            }
+        }
+
 
         [HttpPut("updatePassword"), Authorize]
         public IActionResult updateUserPassword(UpdatePasswordRequest updatePasswordRequest)
@@ -369,6 +396,33 @@ namespace EnterpriseDevProj.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error in updating user password. ERRCODE 1005");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("google/updatePassword"), Authorize]
+        public IActionResult updateGoogleUserPassword(UpdatePasswordRequest updatePasswordRequest)
+        {
+            try
+            {
+                var userEmail = User.Claims.Where(c => c.Type == ClaimTypes.Email).Select(c => c.Value).SingleOrDefault();
+                var userAccCheck = dbContext.Users.Where(u => u.Email == userEmail).FirstOrDefault();
+                if (userAccCheck == null)
+                {
+                    logger.LogInformation(userAccCheck.ToString());
+                    return BadRequest("Error encountered");
+                }
+
+                var passwordEncrypt = BCrypt.Net.BCrypt.HashPassword(updatePasswordRequest.Password.Trim());
+                userAccCheck.Password = passwordEncrypt;
+                dbContext.Users.Update(userAccCheck);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in updating google user password.");
                 return StatusCode(500);
             }
         }
