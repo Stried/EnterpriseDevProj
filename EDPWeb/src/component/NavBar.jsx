@@ -60,22 +60,10 @@ function NavBar() {
                     EVENTS
                 </Link>
                 <Link
-                    to={""}
-                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
-                >
-                    PLUG & PLAY
-                </Link>
-                <Link
                     to={"/vouchers"}
                     className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     VOUCHERS
-                </Link>
-                <Link
-                    to={"/membership"}
-                    className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
-                >
-                    MEMBERSHIP
                 </Link>
                 <Link
                     to={`/myCart`} // Don't touch this unless it's a security issue

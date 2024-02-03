@@ -18,7 +18,7 @@ function AdminPanel() {
                     Admin Panel
                 </h1>
                 <p className="text-center text-xl font-medium">
-                    Welcome back, Username
+                    Welcome back, {user.name}
                 </p>
             </div>
             <div className="flex py-10 px-4 min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400 rounded-xl">
