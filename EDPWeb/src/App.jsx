@@ -33,12 +33,13 @@ import AdminPanel from "./Admin/AdminPanel";
 import AdminEditUser from "./Admin/AdminEditUser";
 import AddVoucher from "./Vouchers/AddVoucher";
 import UpdateVoucher from "./Vouchers/UpdateVoucher";
+import Custom404 from "./ErrorPages/Custom404";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [menuClicks, setMenuClicks] = useState(0);
     const [navbarVis, setNavbarVis] = useState(null);
-    const [user, setUser] = useState(null);
+    const [ user, setUser ] = useState("");
     const [themeSetting, setTheme] = useState("");
 
     const handleMouseMove = (e) => {
@@ -72,6 +73,7 @@ function App() {
                 },
             })
                 .then((res) => {
+                    console.log(res.data);
                     setUser(res.data);
                 })
                 .catch(function (err) {
@@ -79,6 +81,14 @@ function App() {
                 });
         }
     }, []);
+
+    const AdministratorProtected = ({ children }) => {
+        if (user.userRole != "Administrator") {
+            return <Custom404 />;
+        }
+
+        return children;
+    }
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
@@ -158,11 +168,19 @@ function App() {
                         />
                         <Route
                             path="/adminPanel"
-                            element={<AdminPanel />}
+                            element={
+                                <AdministratorProtected>
+                                    <AdminPanel />
+                                </AdministratorProtected>
+                            }
                         />
                         <Route
                             path="/adminPanel/editUser/:id"
-                            element={<AdminEditUser />}
+                            element={
+                                <AdministratorProtected>
+                                    <AdminEditUser />
+                                </AdministratorProtected>
+                            }
                         />
                         <Route
                             path="/vouchers"
@@ -175,6 +193,10 @@ function App() {
                         <Route
                             path="/vouchers/updateVouchers/:voucherID"
                             element={<UpdateVoucher />}
+                        />
+                        <Route
+                            path="/404"
+                            element={<Custom404 />}
                         />
                     </Routes>
                 </div>

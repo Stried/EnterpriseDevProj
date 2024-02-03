@@ -45,6 +45,14 @@ function NavBar() {
                 </Link>
             </div>
             <div className="flex px-5 space-x-5 text-lg font-[450] my-auto tracking-tight text-black">
+                {user && user.userRole == "Administrator" && (
+                    <Link
+                        to={"/adminPanel"}
+                        className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
+                    >
+                        ADMIN
+                    </Link>
+                )}
                 <Link
                     to={"/eventoverviewuser"}
                     className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
