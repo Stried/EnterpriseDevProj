@@ -163,7 +163,7 @@ namespace EnterpriseDevProj.Controllers
             return Ok(findCartItem);
         }
 
-        [HttpDelete("/DeleteCartItem"), Authorize]
+        [HttpDelete("deleteCartItem/{cartItemId}"), Authorize]
         public IActionResult DeleteCartItem(int cartItemId)
         {
             var myCartItem = _context.CartItems.Find(cartItemId);
