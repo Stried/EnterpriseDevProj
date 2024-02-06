@@ -24,6 +24,7 @@ import EventDetails from "./Events/EventDetails";
 import EventUpdate  from "./Events/EventRecordUpdate";
 
 import GetCartItem from "./Carts&Order/Cart";
+import Checkout from "./Carts&Order/Checkout";
 
 import VoucherPage from "./Vouchers/VoucherPage";
 import AddGroup from "./Groups/AddGroup";
@@ -129,6 +130,10 @@ function App() {
                         <Route
                             path="/myCart"
                             element={<GetCartItem />}
+                        />
+                        <Route
+                            path="/checkout"
+                            element={<Checkout />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
