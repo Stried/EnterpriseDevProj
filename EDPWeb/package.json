@@ -28,6 +28,7 @@
         "postcss": "^8.4.31",
         "react": "^18.2.0",
         "react-bootstrap": "^2.9.2",
+        "react-calendar": "^4.8.0",
         "react-dom": "^18.2.0",
         "react-easy-crop": "^5.0.5",
         "react-icons": "^4.11.0",

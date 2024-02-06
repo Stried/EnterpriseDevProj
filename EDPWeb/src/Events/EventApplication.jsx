@@ -198,8 +198,11 @@ function ApplyEvent() {
     },
   });
 
+  useEffect(() => {
+    console.log("List of Dates:", formikEvent.values.EventDates);
+  }, [formikEvent.values.EventDates]);
 
-;
+
   useEffect(() => {
     console.log("Is form valid:", formikEvent.isValid);
 

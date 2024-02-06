@@ -12,7 +12,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "flowbite-react";
-
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import {
   Box,
   RadioGroup,
@@ -33,28 +34,11 @@ function EventDetail() {
     setIsCardShifted(!isCardShifted);
   };
 
-  const [openModals, setOpenModals] = useState([]);
-  const [selectedevent, setevent] = useState("");
-  const toggleModal = (index) => {
-    setOpenModals((prevOpenModals) => {
-      const updatedModals = [...prevOpenModals];
-      updatedModals[index] = !updatedModals[index];
-      return updatedModals;
-    });
-  };
 
-  const declineEventApplication = (EventId) => {
-    http
-      .delete(`/event/${EventId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        navigate("/");
-      });
-  };
+  const [selectedevent, setevent] = useState("");
+  const [dateTimeDates, setDateTimeDates] = useState([]);
+  const [allowedDates, setAllowedDates] = useState([]);
+  const [dateInfoList, setDateInfoList] = useState([]);
 
   useEffect(() => {
     http
@@ -66,13 +50,46 @@ function EventDetail() {
       .then((res) => {
         console.log(res.data);
         setevent(res.data);
+
+        const datesArray = res.data.dates;
+        const dateInfoArray = [];
+
+        const dateTimeDatesList = datesArray.map((dateObj) => dateObj.dateOfEvent);
+        setDateTimeDates(dateTimeDatesList);
+
+        datesArray.forEach((dateObj) => {
+          const datePart = dateObj.dateOfEvent.split('T')[0];
+          const dateTimePart = dateObj.dateOfEvent;
+          
+          dateInfoArray.push({
+            dateOnly: datePart,
+            dateTime: dateTimePart,
+          });
+        });
+
+        setDateInfoList(dateInfoArray);
+        console.log(dateInfoArray)
+        dateInfoArray.forEach((dateInfo) => {
+          console.log("Date Only:", dateInfo.dateOnly);
+          console.log("Date Time:", dateInfo.dateTime);
+        });
+
+        const mappedDates = datesArray.map((dateObj) => {
+          const datePart = dateObj.dateOfEvent.split('T')[0];
+          console.log(datePart);
+          return new Date(datePart);
+        });
+  
+        setAllowedDates(mappedDates);
         console.log("The Event being viewed is " + EventId);
-        window.location.reload;
+        console.log(datesArray);
+        console.log(dateTimeDates)
       })
       .catch(function (err) {
         console.log(err);
       });
   }, [EventId]);
+  
 
   const formikApplication = useFormik({
     initialValues: selectedevent,
@@ -107,9 +124,47 @@ function EventDetail() {
   });
 
   const navigate = useNavigate();
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const onChange = (date) => {
+    setSelectedDate(date);
+
+    const index = allowedDates.findIndex(
+      (allowedDate) =>
+        allowedDate.getFullYear() === date.getFullYear() &&
+        allowedDate.getMonth() === date.getMonth() &&
+        allowedDate.getDate() === date.getDate()
+    );
+
+    if (index !== -1) {
+      const correspondingTime = dateTimeDates[index];
+      const formattedTime = new Date(correspondingTime).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true, 
+      });
+      setSelectedTime(formattedTime);
+    }
+  };
+        const tileDisabled = ({ date }) =>
+        !allowedDates.some(
+          (allowedDate) =>
+            allowedDate.getFullYear() === date.getFullYear() &&
+            allowedDate.getMonth() === date.getMonth() &&
+            allowedDate.getDate() === date.getDate()
+        );
 
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
+<div>
+        <Calendar onChange={onChange} value={selectedDate} tileDisabled={tileDisabled} />
+      </div>
+      {selectedTime && (
+        <div className="text-center text-lg mt-4">
+          Selected Time: {selectedTime}
+        </div>
+      )}
+    
           <div className="relative min-h-screen">
       <div className="relative min-h-screen text-white">
       <h1 className="text-center text-5xl text-black">Event Name:</h1>

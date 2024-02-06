@@ -181,49 +181,64 @@ public IActionResult AddEvents(EventApplication data)
             }
         }
 
-        [HttpGet("Details/{EventId}"), Authorize]
-        public IActionResult GetEvent(int EventId)
+       [HttpGet("Details/{EventId}"), Authorize]
+public IActionResult GetEvent(int EventId)
+{
+    try
+    {
+        Event? eventModel = dbContext.Events.Include(t => t.User)
+            .FirstOrDefault(t => t.EventId == EventId);
+        if (eventModel == null)
         {
-            try
-            {
-                Event? eventModel = dbContext.Events.Include(t => t.User)
-                    .FirstOrDefault(t => t.EventId == EventId);
-                if (eventModel == null)
-                {
-                    return NotFound();
-                }
-                var data = new
-                {
-                    eventModel.EventId,
-                    eventModel.EventName,
-                    eventModel.EventPrice,
-                    eventModel.FriendPrice,
-                    eventModel.NTUCPrice,
-                    eventModel.MaxPax,
-                    eventModel.Approval,
-                    eventModel.ActivityType,
-                    eventModel.EventLocation,
-                    eventModel.ExpiryDate,
-                    eventModel.RemainingPax,
-                    eventModel.AvgRating,
-                    eventModel.DateType,
-                    eventModel.ContentHTML,
-                    eventModel.UserID,
-                    eventModel.EventCreatedAt,
-                    eventModel.EventUpdatedAt,
-                    User = new
-                    {
-                        eventModel.User?.Name
-                    }
-                };
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error Retrieving Event Application {EventId}, ERRCODE 1009");
-                return StatusCode(500);
-            }
+            return NotFound();
         }
+
+        var datesList = dbContext.Dates
+            .Where(d => d.EventId == EventId)
+            .Select(d => new
+            {
+                d.DateId,
+                d.EventName,
+                d.DateOfEvent,
+                d.DateCreatedAt,
+                d.DateUpdatedAt
+            })
+            .ToList();
+
+        var data = new
+        {
+            eventModel.EventId,
+            eventModel.EventName,
+            eventModel.EventPrice,
+            eventModel.FriendPrice,
+            eventModel.NTUCPrice,
+            eventModel.MaxPax,
+            eventModel.Approval,
+            eventModel.ActivityType,
+            eventModel.EventLocation,
+            eventModel.ExpiryDate,
+            eventModel.RemainingPax,
+            eventModel.AvgRating,
+            eventModel.DateType,
+            eventModel.ContentHTML,
+            eventModel.UserID,
+            eventModel.EventCreatedAt,
+            eventModel.EventUpdatedAt,
+            User = new
+            {
+                eventModel.User?.Name
+            },
+            Dates = datesList 
+        };
+
+        return Ok(data);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, $"Error Retrieving Event Application {EventId}, ERRCODE 1009");
+        return StatusCode(500);
+    }
+}
 
         [HttpPut("Approval/{EventId}"), Authorize]
         public IActionResult UpdateTutorial(int EventId)
@@ -251,28 +266,80 @@ public IActionResult AddEvents(EventApplication data)
             }
         }
 
-        [HttpPut("UpdateEvent/{EventId}"), Authorize]
-        public IActionResult UpdateEvent(int EventId)
+        [HttpPut("UpdateEvent/{eventId}")]
+        [Authorize]
+        public IActionResult UpdateEvent(int eventId, UpdateEvent updateModel)
         {
             try
             {
-                Event? eventModel = dbContext.Events.Include(t => t.User).FirstOrDefault(t => t.EventId == EventId);
+                Event eventModel = dbContext.Events.Include(t => t.User).FirstOrDefault(t => t.EventId == eventId);
 
                 if (eventModel == null)
                 {
                     return NotFound();
                 }
 
+                using (var transaction = dbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var outdatedDates = dbContext.Dates
+                            .Where(d => d.EventId == eventId && !updateModel.EventDates.Contains(d.DateOfEvent))
+                            .ToList();
 
-                eventModel.Approval = true;
-                eventModel.EventUpdatedAt = DateTime.Now;
+                        dbContext.Dates.RemoveRange(outdatedDates);
 
-                dbContext.SaveChanges();
-                return Ok(dbContext.Events.ToList());
+                        var newDates = updateModel.EventDates
+                            .Where(date1 => !dbContext.Dates.Any(date2 => date2.EventId == eventId && date2.DateOfEvent == date1))
+                            .Select(newDate => new Date
+                            {
+                                EventName = eventModel.EventName,
+                                DateOfEvent = newDate,
+                                DateCreatedAt = DateTime.UtcNow,
+                                DateUpdatedAt = DateTime.UtcNow,
+                                EventId = eventId
+                            });
+
+                        dbContext.Dates.AddRange(newDates);
+
+
+                        eventModel.EventName = updateModel.EventName;
+                        eventModel.EventPrice = updateModel.EventPrice;
+                        eventModel.FriendPrice = updateModel.FriendPrice;
+                        eventModel.NTUCPrice = updateModel.NTUCPrice;
+                        eventModel.MaxPax = updateModel.MaxPax;
+                        eventModel.Approval = updateModel.Approval;
+                        eventModel.ActivityType = updateModel.ActivityType;
+                        eventModel.EventLocation = updateModel.EventLocation;
+                        eventModel.ExpiryDate = updateModel.ExpiryDate;
+                        eventModel.RemainingPax = updateModel.RemainingPax;
+                        eventModel.DateType = updateModel.DateType;
+                        eventModel.ContentHTML = updateModel.ContentHTML;
+                        eventModel.EventUpdatedAt = DateTime.UtcNow;
+
+
+                        dbContext.SaveChanges();
+
+                        transaction.Commit();
+
+
+                        return Ok(dbContext.Events.ToList());
+                    }
+                    catch (Exception ex)
+                    {
+
+                        logger.LogError(ex, $"Error Updating Event, ERRCODE 1010");
+
+
+                        transaction.Rollback();
+
+                        return StatusCode(500);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error Approving Event Application , ERRCODE 1010");
+                logger.LogError(ex, $"Error Updating Event, ERRCODE 1010");
                 return StatusCode(500);
             }
         }
