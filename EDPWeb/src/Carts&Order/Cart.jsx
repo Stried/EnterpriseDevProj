@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import http from "../../http";
 import UserContext from '../Users/UserContext';
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Modal } from "flowbite-react";
 
 import { IconContext } from "react-icons";
@@ -69,7 +69,6 @@ function Cart() {
         setSelected(option);
     };
 
-    let voucher = 50;
     let total = 0;
     cartItemList.forEach((cartItem) => {
         total = total + (cartItem.event.eventPrice * cartItem.quantity)
@@ -319,8 +318,12 @@ function Cart() {
                             {totalString}
                         </div>
                     </div>
+
                     <button className='font-semibold text-xl bg-orange-400 rounded-md m-2.5 py-2.5 hover:text-white hover:bg-orange-600 transition duration-300'>
-                        Proceed to Checkout?
+                        <Link
+                            to="/checkout">
+                            Proceed to Checkout?
+                        </Link>
                     </button>
                 </div>
             </div>
