@@ -75,6 +75,14 @@ function Cart() {
         total = total + (cartItem.event.eventPrice * cartItem.quantity)
     })
 
+    let totalString;
+    if (cartItemList.length <= 1) {
+        totalString = `Total (${cartItemList.length} Item): $${total.toFixed(2)}`
+    }
+    else {
+        totalString = `Total (${cartItemList.length} Items): $${total.toFixed(2)}`
+    }
+
     let quantityMessage;
     if (cartItemList.length <= 1) {
         quantityMessage = `Item: ${cartItemList.length}`
@@ -186,7 +194,7 @@ function Cart() {
                 </div>
             </div>
             <div className="flex flex-row-2">
-                <div className='items-left flex flex-col overflow-y-scroll h-96 w-3/4'>
+                <div className='custom-scrollbar items-left flex flex-col overflow-y-scroll h-96 w-3/4'>
                     {
                         cartItemList.map((cartItem, i) => {
                             return (
@@ -276,31 +284,39 @@ function Cart() {
                     }
                 </div>
                 <div className='bg-zinc-300 border-black w-1/4 mx-5 rounded-md justify-between flex flex-col'>
-                    <div className='flex flex-col pt-2.5 items-center'>
-                        <div className='font-bold text-2xl'>
-                            Total ({cartItemList.length} Item): ${total.toFixed(2)}
-                        </div>
-                    </div>
-                    <div className='flex flex-col py-2.5 items-center'>
-                        <div className='border bg-orange-200 text-center p-2 m-2 rounded-lg w-5/6'>
-                            <div className='font-semibold'>
-                                You have a voucher in use
+                    <div className='flex flex-col py-2.5 mx-2 items-center'>
+                        <div className='border bg-orange-200 text-center p-2 m-2 rounded-lg w-full justify-center h-64'>
+                            <div className='font-semibold mb-3'>
+                                Cart Summary
                             </div>
-                            <div>
-                                <button className='bg-zinc-50 w-full rounded-md text-xl p-2'>
-                                    <div>
-                                        [For Newly Registered Users!]
-                                        <br />
-                                        ${voucher} Off on your first purchase
-                                    </div>
-                                </button>
+                            <div className='custom-scrollbar overflow-y-scroll h-48'>
+                                {
+                                    cartItemList.map((cartItem, i) => {
+                                        return (
+                                            <div key={cartItem} className='bg-white items-left justify-between flex border-b-2 py-2'>
+                                                <div className='ml-2'>
+                                                    <div className='text-left text-lg font-semibold flex mr-2'>
+                                                        {i + 1}{". "}
+                                                        {cartItem.event.eventName}
+                                                    </div>
+                                                    <div className='text-left'>
+                                                        Qty: {cartItem.quantity}
+                                                    </div>
+                                                </div>
+                                                <div className='mr-2 text-xl font-bold'>
+                                                    ${cartItem.event.eventPrice * cartItem.quantity}
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
                         </div>
                     </div>
                     <div className='flex flex-grow'></div>
-                    <div className='flex flex-col py-2.5 items-center'>
+                    <div className='flex flex-col pb-2.5 items-center'>
                         <div className='font-bold text-2xl'>
-                            Final Total: ${(total - voucher).toFixed(2)}
+                            {totalString}
                         </div>
                     </div>
                     <button className='font-semibold text-xl bg-orange-400 rounded-md m-2.5 py-2.5 hover:text-white hover:bg-orange-600 transition duration-300'>
