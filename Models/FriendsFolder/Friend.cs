@@ -12,6 +12,8 @@ namespace EnterpriseDevProj.Models.FriendsFolder
 
         public bool RequestApproved { get; set; }
 
+        public int UserId { get; set; }
+
         public User? User { get; set; }
     }
 }

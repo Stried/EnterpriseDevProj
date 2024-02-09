@@ -3,6 +3,7 @@ using EnterpriseDevProj.Models.FriendsFolder;
 using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -37,7 +38,8 @@ namespace EnterpriseDevProj.Controllers
                 {
                     FromUser = userID,
                     ToUser = friendRequest.UserID,
-                    RequestApproved = false
+                    RequestApproved = false,
+                    UserId = userID,
                 };
 
                 _context.Friends.Add(newRequest);
@@ -59,7 +61,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 var userID = GetUserID();
 
-                IQueryable<Friend> friendRequestList = _context.Friends.Where(u => u.ToUser == userID && u.RequestApproved == false); ;
+                var friendRequestList = _context.Friends.Where(u => u.ToUser == userID && u.RequestApproved == false).Include(u => u.User);
 
                 var requestList = friendRequestList.ToList();
 

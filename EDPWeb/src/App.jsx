@@ -36,6 +36,7 @@ import AddVoucher from "./Vouchers/AddVoucher";
 import UpdateVoucher from "./Vouchers/UpdateVoucher";
 import Custom404 from "./ErrorPages/Custom404";
 import AddFriends from "./Friends/AddFriends";
+import FriendRequest from "./Friends/FriendRequest";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -187,7 +188,8 @@ function App() {
                             path="/group/:grpId"
                             element={<GroupMain />}
                         />
-                        <Route path="/addFriends" element={<AddFriends />} />
+                        <Route path="/addFriends" element={ <AddFriends /> } />
+                        <Route path="/friendRequests" element={<FriendRequest />} />
                         <Route
                             path="/adminPanel"
                             element={

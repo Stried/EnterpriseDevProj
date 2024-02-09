@@ -100,21 +100,6 @@ function UserAccount() {
         })
     }, [ groupsList ])
     
-    useEffect(() => {
-        http.get("/friends/allFriendRequests", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
-            },
-        })
-            .then((res) => {
-                console.log(res.data);
-                setFriendsList(res.data);
-            })
-            .catch(function (err) {
-                console.log(err);
-        })
-    }, [])
-    
     return (
         <div className="">
             {/* change to theme */}
@@ -386,14 +371,14 @@ function UserAccount() {
                                             </h1>
                                             <p className="flex space-x-3 underline">
                                                 <Link
-                                                    to={"/"}
+                                                    to={"/addFriends"}
                                                     className="text-blue-500 visited:text-purple-500"
                                                 >
                                                     Add A Friend
                                                 </Link>
 
                                                 <Link
-                                                    to={"/"}
+                                                    to={"/friendRequests"}
                                                     className="text-blue-500 visited:text-purple-500"
                                                 >
                                                     Friend Request(s)
@@ -404,7 +389,8 @@ function UserAccount() {
                                             {friendsList == 0 ? (
                                                 <div className="">
                                                     <p className="mb-5">
-                                                        You are currently have no friends.
+                                                        You are currently have
+                                                        no friends.
                                                     </p>
                                                     <p className="">
                                                         Want to add a friend?{" "}
@@ -418,7 +404,7 @@ function UserAccount() {
                                                     <p>
                                                         View Friend Request?{" "}
                                                         <a
-                                                            href="/joinGroup"
+                                                            href="/friendRequests"
                                                             className="text-blue-500 visited:text-purple-500 font-medium"
                                                         >
                                                             Approve Here

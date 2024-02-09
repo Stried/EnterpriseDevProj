@@ -267,7 +267,7 @@ namespace EnterpriseDevProj.Controllers
             return Ok(userDTO);
         }
 
-        [HttpGet("getAllUsers"), Authorize(Roles = "Administrator")]
+        [HttpGet("getAllUsers")]
         public IActionResult GetAllUsers()
         {
             IQueryable<User> userList = dbContext.Users;
