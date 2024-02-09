@@ -18,6 +18,7 @@ import MarkdownEditor from "./MarkDownEditor";
 import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import "./CKEditorStyles.css";
 import ReactMarkdown from "react-markdown";
 import {
   Box,
@@ -253,6 +254,64 @@ function ApplyEvent() {
     setSelectedValue(event.target.value);
   };
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src =
+      "https://cdn.ckeditor.com/ckeditor5/41.1.0/decoupled-document/ckeditor.js";
+    script.async = true;
+  
+    script.onload = () => {
+      DecoupledEditor.create(document.querySelector("#editor"), {
+        toolbar: {
+          items: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "strikethrough",
+            "link",
+            "|",
+            "undo",
+            "redo",
+            "fontsize",
+            "alignment",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "outdent",
+            "indent",
+          ],
+        },
+        language: "en",
+      })
+        .then((editor) => {
+          const editorContainer = document.querySelector("#editor");
+          const toolbarContainer = document.querySelector("#toolbar-container");
+  
+          // Set CKEditor container styles
+          editorContainer.style.width = "100%"; // Ensure full width
+          editorContainer.style.backgroundColor = "#fff"; // Set background color
+  
+          // Append CKEditor toolbar to the designated container
+          toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+  
+          // Use CKEditor's change event to update the form field
+          editor.model.document.on("change", () => {
+            const content = editor.getData();
+            formikEvent.setFieldValue("ContentHTML", content);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+  
+    document.body.appendChild(script);
+  
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
 
   return (
@@ -488,28 +547,23 @@ function ApplyEvent() {
             ) : null}
           </div>
 
-          <div className="my-4">
-            <label htmlFor="eventcontent">Content of your webpage</label>
-            <p className="opacity-70 italic ">
-              Create how the content of your webpage would be shown
-            </p>
-            <div className="flex justify-center">
-              {" "}
-              {/* Updated here */}
-              <MarkdownEditor
-                type="text"
-                name="ContentHTML"
-                id="eventcontent"
-                onChange={formikEvent.handleChange}
-                value={formikEvent.values.ContentHTML}
-                onContentChange={handleContentChange}
-              />
-            </div>
+
+
+          <div id="toolbar-container" className="w-full"></div>
+          <div id="editor" className="bg-white w-full"
+          name="ContentHTML"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.ContentHTML}
+          
+          ></div>
             {formikEvent.errors.ContentHTML ? (
               <div className="text-red-400 mt-3 ">
                 *{formikEvent.errors.ContentHTML}
               </div>
             ) : null}
+          <div className="my-4">
+
+
           </div>
           <button
             type="submit"
