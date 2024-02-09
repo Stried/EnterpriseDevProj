@@ -12,6 +12,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "flowbite-react";
+import DOMPurify from 'dompurify';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
@@ -153,7 +154,7 @@ function EventDetail() {
             allowedDate.getMonth() === date.getMonth() &&
             allowedDate.getDate() === date.getDate()
         );
-
+        const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
 <div>
@@ -237,7 +238,7 @@ function EventDetail() {
 
                     {selectedevent.user && (
                                 <span className="text-orange-400"> {selectedevent.user.name}</span>
-          )}
+                    )}
 
                   </p>
                 </div>
@@ -312,9 +313,7 @@ function EventDetail() {
                 <div className=" border-2 border-orange-400 rounded-md ">
                   <div className="p-2 max-h-96 overflow-auto ">
 
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose h-96">
-            {selectedevent.contentHTML}
-          </ReactMarkdown>
+                  <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
 
 <br></br>
                   </div>

@@ -19,6 +19,7 @@ import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import "./CKEditorStyles.css";
+import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";
 import {
   Box,
@@ -151,6 +152,8 @@ function ApplyEvent() {
         }
       }
 
+      const sanitizeddata=DOMPurify.sanitize(data.ContentHTML)
+
       const formData = {
         EventName: (data.EventName = data.EventName.trim()),
         EventPrice: (data.EventPrice = data.EventPrice),
@@ -163,7 +166,7 @@ function ApplyEvent() {
         RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
         DateType: (data.DateType = data.DateType.trim()),
-        ContentHTML: (data.ContentHTML = data.ContentHTML),
+        ContentHTML: (data.ContentHTML = sanitizeddata),
         EventDates: formattedDates,
         UserID: user.id,
       };
@@ -286,11 +289,13 @@ function ApplyEvent() {
       })
         .then((editor) => {
           const editorContainer = document.querySelector("#editor");
+          editorContainer.style.height = "400px"; // Set your desired initial height
+          editorContainer.style.border = "1px solid black"; // Add 1px black border
+
           const toolbarContainer = document.querySelector("#toolbar-container");
   
           // Set CKEditor container styles
-          editorContainer.style.width = "100%"; // Ensure full width
-          editorContainer.style.backgroundColor = "#fff"; // Set background color
+
   
           // Append CKEditor toolbar to the designated container
           toolbarContainer.appendChild(editor.ui.view.toolbar.element);
@@ -547,10 +552,13 @@ function ApplyEvent() {
             ) : null}
           </div>
 
-
-
+          <div className="my-4">
+          <label htmlFor="eventdatetype">Enter your event's description</label>
+            <p className="opacity-70 italic">
+              This will show up on the website!
+            </p>
           <div id="toolbar-container" className="w-full"></div>
-          <div id="editor" className="bg-white w-full"
+          <div id="editor" className="bg-white w-full h-96"
           name="ContentHTML"
           onChange={formikEvent.handleChange}
           value={formikEvent.values.ContentHTML}
@@ -562,7 +570,7 @@ function ApplyEvent() {
               </div>
             ) : null}
           <div className="my-4">
-
+          </div>
 
           </div>
           <button
