@@ -15,7 +15,7 @@ function UserAccount() {
     const [ currentOption, setCurrentOption ] = useState("optionOne");
     const [ groupsList, setGroupsList ] = useState([]);
     const [ groupsLengthList, setGroupsLengthList ] = useState([]);
-    const [ themeSetting, setTheme ] = useState("");
+    const [ friendsList, setFriendsList ] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -98,7 +98,7 @@ function UserAccount() {
         groupsList.map((groups, i) => {
             getUserLength(groups.id);
         })
-    }, [groupsList])
+    }, [ groupsList ])
     
     return (
         <div className="">
@@ -197,7 +197,7 @@ function UserAccount() {
                                             setCurrentOption("optionFour")
                                         }
                                     >
-                                        <button>Placeholder Option 4</button>
+                                        <button>Friends</button>
                                     </div>
 
                                     <div
@@ -315,13 +315,15 @@ function UserAccount() {
                                                                     <FaRegUser className="my-auto" />{" "}
                                                                     <span className="mx-2">
                                                                         {
-                                                                            groupsLengthList[i]
+                                                                            groupsLengthList[
+                                                                                i
+                                                                            ]
                                                                         }
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex-end">
                                                                     <Link
-                                                                        to={ `/group/${groups.id}` }
+                                                                        to={`/group/${groups.id}`}
                                                                         className="px-3 py-2 bg-orange-400 rounded-md"
                                                                     >
                                                                         View
@@ -362,7 +364,60 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionFour" && (
-                                    <div className="text-black">HAH GAY</div>
+                                    <div className="text-black">
+                                        <div className="">
+                                            <h1 className="text-3xl font-light">
+                                                Friends
+                                            </h1>
+                                            <p className="flex space-x-3 underline">
+                                                <Link
+                                                    to={"/addFriends"}
+                                                    className="text-blue-500 visited:text-purple-500"
+                                                >
+                                                    Add A Friend
+                                                </Link>
+
+                                                <Link
+                                                    to={"/friendRequests"}
+                                                    className="text-blue-500 visited:text-purple-500"
+                                                >
+                                                    Friend Request(s)
+                                                </Link>
+                                            </p>
+                                        </div>
+                                        <div className="my-5 grid grid-cols-3">
+                                            {friendsList == 0 ? (
+                                                <div className="">
+                                                    <p className="mb-5">
+                                                        You are currently have
+                                                        no friends.
+                                                    </p>
+                                                    <p className="">
+                                                        Want to add a friend?{" "}
+                                                        <a
+                                                            href="/addFriends"
+                                                            className="text-blue-500 visited:text-purple-500 font-medium"
+                                                        >
+                                                            Click here
+                                                        </a>
+                                                    </p>
+                                                    <p>
+                                                        View Friend Request?{" "}
+                                                        <a
+                                                            href="/friendRequests"
+                                                            className="text-blue-500 visited:text-purple-500 font-medium"
+                                                        >
+                                                            Approve Here
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <div className="">
+                                                    You have some friends
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 )}
 
                                 {currentOption == "optionFive" && (

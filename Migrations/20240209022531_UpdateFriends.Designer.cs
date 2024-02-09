@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240209022531_UpdateFriends")]
+    partial class UpdateFriends
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -261,18 +264,21 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<int>("FromUser")
                         .HasColumnType("int");
 
+                    b.Property<string>("FromUserImage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FromUserName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<bool>("RequestApproved")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<int>("ToUser")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Friends");
                 });
@@ -572,17 +578,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("CartItem");
 
                     b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>

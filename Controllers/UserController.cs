@@ -267,6 +267,15 @@ namespace EnterpriseDevProj.Controllers
             return Ok(userDTO);
         }
 
+        [HttpGet("getAllUsers")]
+        public IActionResult GetAllUsers()
+        {
+            IQueryable<User> userList = dbContext.Users;
+
+            var returnedUserList = userList.OrderBy(x => x.Name).ToList();
+            return Ok(returnedUserList);
+        }
+
         [HttpGet("googleAccount"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult getUserDetailsGoogleSelf()
@@ -512,7 +521,7 @@ namespace EnterpriseDevProj.Controllers
             return token;
         }
 
-        private int GetUserID()
+        public int GetUserID()
         {
             try
             {
