@@ -38,6 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="EDPWeb\src\Tickets\" />
 	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 </Project>

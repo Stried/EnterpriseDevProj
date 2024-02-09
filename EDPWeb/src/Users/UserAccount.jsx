@@ -197,7 +197,7 @@ function UserAccount() {
                                             setCurrentOption("optionFour")
                                         }
                                     >
-                                        <button>Placeholder Option 4</button>
+                                        <button>Friends</button>
                                     </div>
 
                                     <div

@@ -56,15 +56,33 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        //[HttpGet("getAllTickets")]
-        //public IActionResult GetAllTickets()
-        //{
-            
-        //}
+        [HttpGet("getAllTickets"), Authorize]
+        public IActionResult GetAllTickets(string? search)
+        {
+            try
+            {
+                var now = DateTime.Now;
+
+                IQueryable<Ticket> ticketsList = dbContext.Tickets;
+                
+                if (search != null)
+                {
+                    ticketsList = ticketsList.Where(x => x.TicketHeader.Contains(search));
+                }
+
+                var finalisedTicketsList = ticketsList.OrderBy(x => x.TicketCategory).ToList();
+                return Ok(finalisedTicketsList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error getting all tickets");
+                return StatusCode(500);
+            }
+        }
 
         // TODO: 
         // GET Endpoint (Get ALL)
         // PUT Endpoint (Header, Body, Attached File)
         // DELETE Endpoint (Delete by ID)
-    }
+    } 
 }

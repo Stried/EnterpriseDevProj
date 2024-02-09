@@ -7,6 +7,7 @@ using EnterpriseDevProj.Models.Miscellaneous;
 using EnterpriseDevProj.Models.CartFolder;
 using EnterpriseDevProj.Models.VoucherFolder;
 using EnterpriseDevProj.Models.TicketFolder;
+using EnterpriseDevProj.Models.FriendsFolder;
 namespace EnterpriseDevProj
 {
     public class MyDbContext : DbContext    
@@ -37,6 +38,8 @@ namespace EnterpriseDevProj
         public DbSet<UserGroup> UserGroups { get; set; }
 
         public DbSet<UserGroupLink> UserGroupLinks { get; set; }
+
+        public DbSet<Friend> Friends { get; set; }
 
         public DbSet<Theme> Themes { get; set; }
 

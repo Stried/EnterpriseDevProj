@@ -512,7 +512,7 @@ namespace EnterpriseDevProj.Controllers
             return token;
         }
 
-        private int GetUserID()
+        public int GetUserID()
         {
             try
             {
