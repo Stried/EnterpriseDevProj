@@ -44,8 +44,28 @@ function AddFriends() {
             })
             .catch(function (err) {
                 console.log(err);
+            })
+    }, []);
+
+    const sendFriendRequest = (id) => {
+        console.log(id);
+        var sendRequestForm = new FormData();
+        sendRequestForm.append("UserID", id);
+
+        http.post("/friends/sendRequest", sendRequestForm, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                "Content-Type": "application/json",
+            },
         })
-    }, [])
+            .then((res) => {
+                console.log(res.status);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        
+    }
 
     return (
         <div className="flex space-x-3 m-10">
@@ -98,7 +118,7 @@ function AddFriends() {
                                             {user.email}
                                         </p>
 
-                                        <button className="py-2 px-3 mt-3 bg-orange-400 rounded-md">
+                                        <button onClick={() => sendFriendRequest(user.id)} className="py-2 px-3 mt-3 bg-orange-400 rounded-md">
                                             Send Request
                                         </button>
                                     </div>
@@ -136,7 +156,12 @@ function AddFriends() {
                                             {userAcc.email}
                                         </p>
 
-                                        <button className="py-2 px-3 mt-3 bg-orange-400 rounded-md">
+                                        <button
+                                            onClick={() =>
+                                                sendFriendRequest(userAcc.id)
+                                            }
+                                            className="py-2 px-3 mt-3 bg-orange-400 rounded-md"
+                                        >
                                             Send Request
                                         </button>
                                     </div>

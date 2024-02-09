@@ -1,4 +1,6 @@
-﻿namespace EnterpriseDevProj.Models.FriendsFolder
+﻿using EnterpriseDevProj.Models.UserFolder;
+
+namespace EnterpriseDevProj.Models.FriendsFolder
 {
     public class Friend
     {
@@ -6,12 +8,10 @@
 
         public int FromUser { get; set; }
 
-        public string FromUserName { get; set; } = string.Empty;
-
-        public string FromUserImage { get; set; } = string.Empty;
-
         public int ToUser { get; set; }
 
         public bool RequestApproved { get; set; }
+
+        public User? User { get; set; }
     }
 }

@@ -36,8 +36,6 @@ namespace EnterpriseDevProj.Controllers
                 Friend newRequest = new()
                 {
                     FromUser = userID,
-                    FromUserName = friendRequest.UserName,
-                    FromUserImage = friendRequest.UserImage,
                     ToUser = friendRequest.UserID,
                     RequestApproved = false
                 };
@@ -62,15 +60,8 @@ namespace EnterpriseDevProj.Controllers
                 var userID = GetUserID();
 
                 IQueryable<Friend> friendRequestList = _context.Friends.Where(u => u.ToUser == userID && u.RequestApproved == false); ;
-                if (search != null)
-                {
-                    friendRequestList = friendRequestList
-                        .Where(u => u.ToUser == userID && u.RequestApproved == false)
-                        .Where(x => x.FromUserName.Contains(search)
-                    );
-                }
 
-                var requestList = friendRequestList.OrderBy( x => x.FromUserName ).ToList();
+                var requestList = friendRequestList.ToList();
 
                 return Ok(requestList);
             }
