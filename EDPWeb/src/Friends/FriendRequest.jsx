@@ -23,6 +23,36 @@ function FriendRequest() {
             });
     }, []);
 
+    const approveUserRequest = (id) => {
+        http.put(`/friends/approveRequest/${id}`, null, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+                window.location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }
+
+    const denyUserRequest = (id) => {
+        http.delete(`/friends/approveDelete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+                window.location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }
+
     return (
         <div className="m-10 p-5">
             <h1 className="text-2xl">View Friend Request(s)</h1>
@@ -49,10 +79,20 @@ function FriendRequest() {
                                     <p>{user.user.email}</p>
                                 </div>
                                 <div className="place-self-end float-right space-x-2">
-                                    <button className="px-2 py-1 bg-red-400 rounded-md">
+                                    <button
+                                        onClick={() => {
+                                            denyUserRequest(user.fromUser);
+                                        }}
+                                        className="px-2 py-1 bg-red-400 rounded-md"
+                                    >
                                         Reject
                                     </button>
-                                    <button className="px-2 py-1 bg-green-300 rounded-md">
+                                    <button
+                                        onClick={() => {
+                                            approveUserRequest(user.fromUser);
+                                        }}
+                                        className="px-2 py-1 bg-green-300 rounded-md"
+                                    >
                                         Approve
                                     </button>
                                 </div>

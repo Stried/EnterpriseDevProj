@@ -99,6 +99,35 @@ function UserAccount() {
             getUserLength(groups.id);
         })
     }, [ groupsList ])
+
+    useEffect(() => {
+        http.get("/friends/getApprovedFriends", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                setFriendsList(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    })
+
+    const removeFriend = (id) => {
+        http.delete(`/friends/approveDelete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+                window.location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
     
     return (
         <div className="">
@@ -385,7 +414,7 @@ function UserAccount() {
                                                 </Link>
                                             </p>
                                         </div>
-                                        <div className="my-5 grid grid-cols-3">
+                                        <div className="">
                                             {friendsList == 0 ? (
                                                 <div className="">
                                                     <p className="mb-5">
@@ -412,8 +441,42 @@ function UserAccount() {
                                                     </p>
                                                 </div>
                                             ) : (
-                                                <div className="">
-                                                    You have some friends
+                                                <div className="my-5 grid grid-cols-3">
+                                                    {friendsList &&
+                                                        friendsList.map(
+                                                            (user, i) => {
+                                                                return (
+                                                                    <div className="mb-2 mr-2 bg-slate-200 px-3 py-4 rounded">
+                                                                        <Avatar
+                                                                            rounded
+                                                                            size={
+                                                                                "lg"
+                                                                            }
+                                                                            className=""
+                                                                            img={
+                                                                                user.imageFile
+                                                                            }
+                                                                        />
+                                                                        <h1 className="text-center py-1 font-semibold">
+                                                                            {
+                                                                                user.name
+                                                                            }
+                                                                        </h1>
+                                                                        <p className="text-center">
+                                                                            {
+                                                                                user.email
+                                                                            }
+                                                                        </p>
+
+                                                                        <div className="mx-auto text-center py-2 mt-2">
+                                                                            <button onClick={() => removeFriend(user.id)} className="bg-red-400 px-3 py-2 rounded-md">
+                                                                                Unfriend
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        )}
                                                 </div>
                                             )}
                                         </div>

@@ -69,7 +69,7 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in retrieveing friend requests");
+                _logger.LogError(ex, "Error in retrieving friend requests");
                 return StatusCode(500);
             }
         }
@@ -93,6 +93,101 @@ namespace EnterpriseDevProj.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in finding by email");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("approveRequest/{userId}"), Authorize]
+        public IActionResult approveFriendRequest(int userId)
+        {
+            try
+            {
+                var id = GetUserID();
+                var userID = userId;
+
+                var approveUser = _context.Friends.Where(x => x.ToUser == id && x.FromUser == userID).FirstOrDefault();
+                if (approveUser == null)
+                {
+                    _logger.LogError("Error in retrieving friend request.");
+                    return StatusCode(500);
+                }
+
+                approveUser.RequestApproved = true;
+                _context.Friends.Update(approveUser);
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error in approving friend request");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("approveDelete/{userId}"), Authorize]
+        public IActionResult denyFriendRequest(int userId)
+        {
+            try
+            {
+                var id = GetUserID();
+                var userID = userId;
+
+                var denyUser = _context.Friends.Where(x => x.ToUser == id && x.FromUser == userID).FirstOrDefault();
+                if (denyUser != null)
+                {
+                    _context.Friends.Remove(denyUser);
+                    _context.SaveChanges();
+
+                    return Ok();
+                }
+
+                var denyUser2 = _context.Friends.Where(x => x.ToUser == userID && x.FromUser == id).FirstOrDefault();
+                if (denyUser != null)
+                {
+                    _context.Friends.Remove(denyUser2);
+                    _context.SaveChanges();
+
+                    return Ok();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in denying friend request");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("getApprovedFriends"), Authorize]
+        public IActionResult getApprovedFriends()
+        {
+            try
+            {
+                var id = GetUserID();
+                var finalList = new List<User>();
+
+                var approvedFriendsList = _context.Friends.Where(x => x.ToUser == id || x.FromUser == id).Where(a => a.RequestApproved == true).Include(u => u.User).OrderBy(x => x.FromUser).ToList();
+                for (int i = 0; i < approvedFriendsList.Count; i++)
+                {
+                    if (approvedFriendsList[i].ToUser == id)
+                    {
+                        var user = _context.Users.Find(approvedFriendsList[i].FromUser);
+                        finalList.Add(user);
+                    }
+                    else if (approvedFriendsList[i].FromUser == id)
+                    {
+                        var user = _context.Users.Find(approvedFriendsList[i].ToUser);
+                        finalList.Add(user);
+                    }
+                }
+
+                return Ok(finalList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in retrieving all approved friend requests");
                 return StatusCode(500);
             }
         }
