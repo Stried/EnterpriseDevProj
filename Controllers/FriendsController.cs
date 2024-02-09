@@ -81,6 +81,29 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpGet("searchUserEmail"), Authorize]
+        public IActionResult getUserByEmail(string? search)
+        {
+            try
+            {
+                IQueryable<User> userList = _context.Users;
+                if (search != null)
+                {
+                    userList = userList.Where(x => x.Email.Contains(search));
+                    var returnedUserList = userList.OrderBy(x => x.Email).ToList();
+
+                    return Ok(returnedUserList);
+                }
+
+                return Ok("");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in finding by email");
+                return StatusCode(500);
+            }
+        }
+
         private int GetUserID()
         {
             try
