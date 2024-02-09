@@ -35,6 +35,7 @@ import AdminEditUser from "./Admin/AdminEditUser";
 import AddVoucher from "./Vouchers/AddVoucher";
 import UpdateVoucher from "./Vouchers/UpdateVoucher";
 import Custom404 from "./ErrorPages/Custom404";
+import AddFriends from "./Friends/AddFriends";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -76,6 +77,21 @@ function App() {
                 .then((res) => {
                     console.log(res.data);
                     setUser(res.data);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        } else if (localStorage.getItem("googleAccessToken")) {
+            http.get("/user/googleAccount", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "googleAccessToken"
+                    )}`, // This is needed for mine for some reason, not part of the practical
+                },
+            })
+                .then((res) => {
+                    setUser(res.data);
+                    console.log(res.data);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -171,6 +187,7 @@ function App() {
                             path="/group/:grpId"
                             element={<GroupMain />}
                         />
+                        <Route path="/addFriends" element={<AddFriends />} />
                         <Route
                             path="/adminPanel"
                             element={
