@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EnterpriseDevProj.Models.TicketFolder;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace EnterpriseDevProj.Controllers
 {
@@ -73,28 +74,86 @@ namespace EnterpriseDevProj.Controllers
                 var finalisedTicketsList = ticketsList.OrderBy(x => x.TicketCategory).ToList();
                 return Ok(finalisedTicketsList);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                logger.LogError(ex, "Unable to gather info on tickets.");
+                logger.LogError(e, "Unable to gather info on tickets.");
                 return StatusCode(500);
             }
         }
 
-        [HttpPut("updateTicketDetails"), Authorize]
-        public IActionResult updateTicketDetails(UpdateTicketDetails updateTicketDetails)
+        [HttpPut("updateTicketDetails/{ticketId}"), Authorize]
+        public IActionResult UpdateTicketDetails(UpdateTicketDetails updateTicketDetails, int ticketId)
+        { 
+            try
+            {
+                var ticketID = ticketId;
+                var ticketItem = dbContext.Tickets.Find(ticketID);
+
+                if (ticketItem == null)
+                {
+                    logger.LogError("Ticket item not found");
+                    return StatusCode(500);
+                }
+
+                ticketItem.TicketHeader = updateTicketDetails.TicketHeader.Trim();
+                ticketItem.TicketBody = updateTicketDetails.TicketBody.Trim();
+                ticketItem.SenderEmail = updateTicketDetails.SenderEmail.Trim();
+                ticketItem.AttachedFilename = updateTicketDetails.AttachedFilename.Trim();
+
+                dbContext.Tickets.Update(ticketItem);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in updating ticket");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("/commentOnTicket/{ticketId}"), Authorize]
+        public IActionResult CommentOnTicket(CommentRequest commentRequest, int ticketId)
         {
             try
             {
+                var userID = GetUserID();
+                var ticketID = ticketId;
+
+                Comment comment = new()
+                {
+                    CommentBody = commentRequest.CommentBody.Trim(),
+                    TicketId = ticketID,
+                    UserId = userID
+                };
+
+                dbContext.Comments.Add(comment);
+                dbContext.SaveChanges();
+
                 return Ok();
             }
-            catch
+            catch (Exception e)
             {
-                return Ok();
+                logger.LogError(e, "Commenting failed. Please try again.");
+                return StatusCode(500);
+            } 
+        }
+
+        public int GetUserID()
+        {
+            try
+            {
+                return Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return 401;
             }
         }
-        
+
         // TODO: 
         // PUT Endpoint (Header, Body, Attached File)
         // DELETE Endpoint (Delete by ID)
+
     } 
 }

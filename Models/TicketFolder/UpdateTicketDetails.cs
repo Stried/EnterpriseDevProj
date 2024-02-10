@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EnterpriseDevProj.Models.TicketFolder
 {
@@ -10,6 +11,7 @@ namespace EnterpriseDevProj.Models.TicketFolder
         [Required, EmailAddress]
         public string SenderEmail { get; set; } = string.Empty;
         [Required, MaxLength(30)]
-        public string AttachedFilename { get; set; } = string.Empty;
+        public string AttachedFilename { get; set; } = string.Empty; 
+        
     }
 }
