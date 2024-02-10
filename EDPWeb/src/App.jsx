@@ -21,7 +21,7 @@ import EventApplicationDetailed from "./Events/EventApplicationDetailed";
 import EventRecords from "./Events/EventRecords";
 import EventOverview from "./Events/EventOverviewUser";
 import EventDetails from "./Events/EventDetails";
-import EventUpdate  from "./Events/EventRecordUpdate";
+import EventUpdate from "./Events/EventRecordUpdate";
 
 import GetCartItem from "./Carts&Order/Cart";
 import Checkout from "./Carts&Order/Checkout";
@@ -37,12 +37,16 @@ import UpdateVoucher from "./Vouchers/UpdateVoucher";
 import Custom404 from "./ErrorPages/Custom404";
 import AddFriends from "./Friends/AddFriends";
 import FriendRequest from "./Friends/FriendRequest";
+import PaymentForm from "./Carts&Order/PaymentForm";
+import Stripe from "./Carts&Order/StripeMain";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [menuClicks, setMenuClicks] = useState(0);
     const [navbarVis, setNavbarVis] = useState(null);
-    const [ user, setUser ] = useState("");
+    const [user, setUser] = useState("");
     const [themeSetting, setTheme] = useState("");
 
     const handleMouseMove = (e) => {
@@ -153,6 +157,10 @@ function App() {
                             element={<Checkout />}
                         />
                         <Route
+                            path="/paymentForm"
+                            element={<Stripe/>}
+                        />
+                        <Route
                             path="/eventapplicationdetailed/Details/:EventId"
                             element={<EventApplicationDetailed />}
                         />
@@ -188,7 +196,7 @@ function App() {
                             path="/group/:grpId"
                             element={<GroupMain />}
                         />
-                        <Route path="/addFriends" element={ <AddFriends /> } />
+                        <Route path="/addFriends" element={<AddFriends />} />
                         <Route path="/friendRequests" element={<FriendRequest />} />
                         <Route
                             path="/adminPanel"
