@@ -188,7 +188,6 @@ namespace EnterpriseDevProj.Controllers
                 CartParticipantName = cartParticipant.CartParticipantName.Trim(),
                 CartParticipantPhone = cartParticipant.CartParticipantPhone,
                 CartParticipantEmail = cartParticipant.CartParticipantEmail.Trim(),
-                DateOfBirth = cartParticipant.DateOfBirth,
                 CartItemId = cartParticipant.CartItemId,
                 CreatedAt = now,
                 UpdatedAt = now
@@ -241,10 +240,6 @@ namespace EnterpriseDevProj.Controllers
             {
                 myCartParticipant.CartParticipantEmail = cartParticipant.CartParticipantEmail.Trim();
             }
-            if (cartParticipant.DateOfBirth != null)
-            {
-                myCartParticipant.DateOfBirth = cartParticipant.DateOfBirth;
-            }
             myCartParticipant.UpdatedAt = DateTime.Now;
 
             _context.SaveChanges();
@@ -261,6 +256,38 @@ namespace EnterpriseDevProj.Controllers
 
             _context.CartParticipants.Remove(myCartParticipant);
             _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpPost("/addParticipantGroup/{groupId}"), Authorize]
+        public IActionResult addParticipantGroup(int groupId) 
+        { 
+            var groupID = groupId;
+            var participantsInGroup = _context.UserGroupLinks.Where(x => x.GroupID == groupID).ToList();
+
+            for (int i = 0; i < participantsInGroup.Count; i++)
+            {
+                var user = _context.Users.Find(participantsInGroup[i].UserID);
+                if (user != null)
+                {
+                    logger.LogError("Error in retrieving user for group participants");
+                    return StatusCode(500);
+                }
+
+                var now = DateTime.Now;
+                CartParticipant cartParticipant = new()
+                {
+                    CartParticipantName = user.Name,
+                    CartParticipantEmail = user.Email,
+                    CartParticipantPhone = user.PhoneNumber,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                };
+
+                _context.CartParticipants.Add(cartParticipant);
+                _context.SaveChanges();
+            }
+
             return Ok();
         }
     }

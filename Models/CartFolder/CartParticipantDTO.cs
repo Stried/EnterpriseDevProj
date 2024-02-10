@@ -6,7 +6,6 @@
         public string CartParticipantName { get; set; } = string.Empty;
         public int CartParticipantPhone { get; set; }
         public string CartParticipantEmail { get; set; } = string.Empty;
-        public DateOnly DateOfBirth { get; set; }
         public int CartItemId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
