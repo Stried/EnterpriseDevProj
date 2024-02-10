@@ -75,13 +75,25 @@ namespace EnterpriseDevProj.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error getting all tickets");
+                logger.LogError(ex, "Unable to gather info on tickets.");
                 return StatusCode(500);
             }
         }
 
+        [HttpPut("updateTicketDetails"), Authorize]
+        public IActionResult updateTicketDetails(UpdateTicketDetails updateTicketDetails)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch
+            {
+                return Ok();
+            }
+        }
+        
         // TODO: 
-        // GET Endpoint (Get ALL)
         // PUT Endpoint (Header, Body, Attached File)
         // DELETE Endpoint (Delete by ID)
     } 
