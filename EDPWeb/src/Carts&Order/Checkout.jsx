@@ -57,21 +57,21 @@ function Checkout() {
                 </div>
                 <div className="flex bg-zinc-300 pl-5">
                     <div className="w-1/6 px-2 border-r-2 border-black border-solid my-2 text-lg font-semibold">
-                        Payment Methods
+                        Payment Options
                     </div>
                     <div className="w-5/6 my-2 px-3 h-24">
                         <FaCcVisa className="text-8xl inline-block" />
                         <FaCcMastercard className="text-8xl inline-block ml-2" />
                         <FaCcJcb className="text-8xl inline-block ml-2" />
                     </div>
-                    <div>
+                    {/* <div>
                         <button className="border border-black rounded-lg p-2 mt-2 mr-2 hover:bg-black hover:text-white transition duration-300">
                             <Link
                                 to="/">
                                 Edit?
                             </Link>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="flex border-y-2 border-gray-400">
                     <div className="w-1/6 text-lg py-10 pl-7 font-semibold">
@@ -90,9 +90,12 @@ function Checkout() {
                     <div className="text-lg my-10 ml-5 pl-2 font-semibold border-black border-l-4">
                         Purchased Items
                     </div>
-                    <div className="underline inline-block font-semibold my-9 py-1 px-2 rounded-md bg-orange-400 hover:text-white hover:bg-orange-600 transition duration-300">
-                        Edit Purchase?
-                    </div>
+                    <button className="underline inline-block font-semibold my-9 py-1 px-2 rounded-md bg-orange-400 hover:text-white hover:bg-orange-600 transition duration-300">
+                        <Link
+                            to="/myCart">
+                            Edit Purchase?
+                        </Link>
+                    </button>
                 </div>
                 <div className="custom-scrollbar overflow-y-scroll h-48">
                     {
@@ -144,7 +147,10 @@ function Checkout() {
                     <div className="text-3xl font-semibold text-orange-600">${subTotal - voucher}</div>
                 </div>
                 <button className="bg-orange-400 font-bold my-3 py-5 rounded-lg text-2xl hover:bg-orange-600 hover:text-white transition duration-300">
-                    Finalize Purchase
+                    <Link
+                        to={"/paymentForm"}>
+                        Finalize Purchase
+                    </Link>
                 </button>
             </div>
         </div>

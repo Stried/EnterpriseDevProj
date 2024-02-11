@@ -12,6 +12,8 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string TicketHeader { get; set; } = string.Empty;
         [Required, MinLength(5), MaxLength(500)]
         public string TicketBody { get; set; } = string.Empty;
+        [Required]
+        public string TicketStatus { get; set; } = string.Empty; // Open, Closed, Pending, Not Solving, Unfixable
         [Required, EmailAddress]
         public string SenderEmail { get; set; } = string.Empty;
         [Required, MaxLength(30)]
