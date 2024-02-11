@@ -525,7 +525,7 @@ function ViewTicket() {
                                                 formikComment.values
                                                     .TicketStatus
                                             }
-                                            className="form-select w-full rounded-md"
+                                            className="form-select w-full rounded-md my-2"
                                         >
                                             <option value="Open">Open</option>
                                             <option value="Pending">Pending</option>
@@ -539,6 +539,7 @@ function ViewTicket() {
                                         onBlur={formikComment.handleBlur}
                                         value={formikComment.values.CommentBody}
                                         className="form-textarea w-full rounded-md"
+                                        placeholder="Enter comment here"
                                     ></textarea>
                                     {formikComment.touched.CommentBody &&
                                     formikComment.errors.CommentBody ? (
