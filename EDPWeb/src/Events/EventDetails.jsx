@@ -155,6 +155,21 @@ function EventDetail() {
             allowedDate.getDate() === date.getDate()
         );
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
+
+        const rawData =
+        {
+          Quantity: 1,
+          EventId: EventId
+        }
+
+        const addToCart = () => {
+          http.post("/cart/AddCartItem", rawData, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+          },
+          })
+          .then((res) => console.log(res))
+        }
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
 <div>
@@ -327,18 +342,14 @@ function EventDetail() {
         </div>
       </div>
       <div className="p-5 text-right mr-10 w-1/2 mx-auto rounded-lg ">
-        <form
-          onSubmit={formikApplication.handleSubmit}
-          className="text-lg font-medium"
-        >
-
+          
           <button
+            onClick={addToCart}
             type="submit"
             className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
           >
             Add to Cart
           </button>
-        </form>
       </div>
     </div>
     </div>

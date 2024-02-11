@@ -149,7 +149,7 @@ function Cart() {
         <div className="bg-gradient-to-b from-gray-300 to-gray-400 pb-10">
             <div className='relative'>
                 <img src="../src/assets/u-sports-banner.jpg" className='w-full' />
-                <div class="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                     <h1 className='text-white font-bold text-8xl'>Your Cart</h1>
                 </div>
             </div>

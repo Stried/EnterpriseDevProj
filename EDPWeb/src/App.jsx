@@ -37,10 +37,8 @@ import UpdateVoucher from "./Vouchers/UpdateVoucher";
 import Custom404 from "./ErrorPages/Custom404";
 import AddFriends from "./Friends/AddFriends";
 import FriendRequest from "./Friends/FriendRequest";
-import PaymentForm from "./Carts&Order/PaymentForm";
 import Stripe from "./Carts&Order/StripeMain";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
+import PurchaseComplete from "./Carts&Order/PurchaseComplete"
 import TicketMain from "./Tickets/TicketMain";
 import TicketSubmission from "./Tickets/TicketSubmission";
 
@@ -162,6 +160,10 @@ function App() {
                             path="/paymentForm"
                             element={<Stripe />}
                         />
+                        <Route
+                            path="/purchaseComplete"
+                            element={<PurchaseComplete/>}
+                            />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
                             element={<EventApplicationDetailed />}

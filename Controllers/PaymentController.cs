@@ -27,7 +27,7 @@ namespace EnterpriseDevProj.Controllers
 
             var service = new PaymentIntentService();
             var paymentIntent = service.Create(options);
-            return Ok(new { clientSecret = paymentIntent.ClientSecret });
+            return Ok(paymentIntent);
         }
 
         [HttpGet("GetPaymentIntent/{paymentIntentId}")]
@@ -40,6 +40,22 @@ namespace EnterpriseDevProj.Controllers
             var service = new PaymentIntentService();
 
             return Ok(service.Get(paymentIntentId));
+        }
+
+        [HttpPost("CancelPaymentIntent/{paymentIntentId}")]
+        public IActionResult CancelPaymentIntent(string paymentIntentId)
+        {
+            StripeConfiguration.ApiKey = ApiKey;
+            var service = new PaymentIntentService();
+            if (service.Get(paymentIntentId) == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                service.Cancel(paymentIntentId);
+                return Ok();
+            }
         }
     }
 }
