@@ -46,7 +46,7 @@ namespace EnterpriseDevProj.Controllers
                     UpdatedAt = now,
                 };
 
-                dbContext.Add(createTicketRequest);
+                dbContext.Tickets.Add(newTicket);
                 dbContext.SaveChanges();
                 return Ok();
             }

@@ -12,7 +12,7 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string TicketBody { get; set; } = string.Empty;
         [Required, EmailAddress]
         public string SenderEmail { get; set; } = string.Empty;
-        [Required, MaxLength(30)]
+        [Required]
         public string AttachedFilename { get; set; } = string.Empty;
     }
 }

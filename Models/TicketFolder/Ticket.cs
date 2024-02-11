@@ -16,7 +16,7 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string TicketStatus { get; set; } = string.Empty; // Open, Closed, Pending, Not Solving, Unfixable
         [Required, EmailAddress]
         public string SenderEmail { get; set; } = string.Empty;
-        [Required, MaxLength(30)]
+        [Required]
         public string AttachedFilename { get; set; } = string.Empty;
         [Column (TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }

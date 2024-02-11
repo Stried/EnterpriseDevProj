@@ -46,5 +46,22 @@ namespace EnterpriseDevProj.Controllers
 
             return Ok(new { files = uploadedFiles });
         }
+
+        [HttpPost("uploadTicketImage"), Authorize]
+        public IActionResult UploadTicketImage(IFormFile formFile) {
+            if (formFile.Length > 1024 * 1024)
+            {
+                var message = "Maximum file size is 1MB";
+                return BadRequest(new { message });
+            }
+
+            var id = Nanoid.Generate(size: 10);
+            var fileName = id + Path.GetExtension(formFile.FileName);
+            var imagePath = Path.Combine(environment.ContentRootPath, @"wwwroot/images", fileName);
+            using var fileStream = new FileStream(imagePath, FileMode.Create);
+            formFile.CopyTo(fileStream);
+
+            return Ok(new { fileName });
+        }
     }
 }

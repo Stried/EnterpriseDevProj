@@ -41,6 +41,8 @@ import PaymentForm from "./Carts&Order/PaymentForm";
 import Stripe from "./Carts&Order/StripeMain";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import TicketMain from "./Tickets/TicketMain";
+import TicketSubmission from "./Tickets/TicketSubmission";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -158,7 +160,7 @@ function App() {
                         />
                         <Route
                             path="/paymentForm"
-                            element={<Stripe/>}
+                            element={<Stripe />}
                         />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
@@ -196,8 +198,14 @@ function App() {
                             path="/group/:grpId"
                             element={<GroupMain />}
                         />
-                        <Route path="/addFriends" element={<AddFriends />} />
-                        <Route path="/friendRequests" element={<FriendRequest />} />
+                        <Route
+                            path="/addFriends"
+                            element={<AddFriends />}
+                        />
+                        <Route
+                            path="/friendRequests"
+                            element={<FriendRequest />}
+                        />
                         <Route
                             path="/adminPanel"
                             element={
@@ -225,6 +233,14 @@ function App() {
                         <Route
                             path="/vouchers/updateVouchers/:voucherID"
                             element={<UpdateVoucher />}
+                        />
+                        <Route
+                            path="/support"
+                            element={<TicketMain />}
+                        />
+                        <Route
+                            path="/support/submitTicket"
+                            element={<TicketSubmission />}
                         />
                         <Route
                             path="/404"
