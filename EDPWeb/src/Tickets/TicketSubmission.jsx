@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import *  as yup from "yup";
+import * as yup from "yup";
 import http from "../../http";
 import { useContext, useState, useEffect } from "react";
 
@@ -61,9 +61,10 @@ function TicketSubmission() {
                 .string()
                 .trim()
                 .min(5, "Ticket Body must be at least 3 characters.")
+                .max(5000, "Ticket Body must be maximum of 5000 characters.")
                 .required(),
             SenderEmail: yup.string().email().required(),
-        }), 
+        }),
         onSubmit: async (data) => {
             if (imageFile) {
                 data.AttachedFilename = imageFile;
@@ -74,150 +75,168 @@ function TicketSubmission() {
                 TicketHeader: data.TicketHeader.trim(),
                 TicketBody: data.TicketBody.trim(),
                 SenderEmail: data.SenderEmail.trim(),
-                AttachedFilename: imageFile.toString()
-            }
+                AttachedFilename: imageFile.toString(),
+            };
 
-            await http.post("/ticket/TicketCreate", formData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "accessToken"
-                    )}`,
-                },
-            })
+            await http
+                .post("/ticket/TicketCreate", formData, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "accessToken"
+                        )}`,
+                    },
+                })
                 .then(() => {
-                    navigate("/support")
+                    navigate("/support");
                 })
                 .catch(function (err) {
                     console.log(err);
-            })
+                });
         },
     });
 
     return (
-        <div className="">
-            <h1>Ticket Submission</h1>
-            <form
-                action=""
-                onSubmit={formikTicket.handleSubmit}
-            >
-                <div className="my-4">
-                    <label
-                        htmlFor="TicketTitle"
-                        className="font-semibold text-lg"
-                    >
-                        Ticket Category
-                    </label>
-                    <p className="opacity-70 italic">Category of the ticket.</p>
-                    <input
-                        name="TicketCategory"
-                        id="TicketCategory"
-                        onChange={formikTicket.handleChange}
-                        value={formikTicket.values.TicketCategory}
-                        className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                    />
-                    {formikTicket.errors.TicketCategory ? (
-                        <div className="text-red-400">
-                            *{formikTicket.errors.TicketCategory}
-                        </div>
-                    ) : null}
-                </div>
-
-                <div className="my-4">
-                    <label
-                        htmlFor="TicketTitle"
-                        className="font-semibold text-lg"
-                    >
-                        Ticket Header
-                    </label>
-                    <p className="opacity-70 italic">Title of the ticket.</p>
-                    <input
-                        name="TicketHeader"
-                        id="TicketHeader"
-                        onChange={formikTicket.handleChange}
-                        value={formikTicket.values.TicketHeader}
-                        className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                    />
-                    {formikTicket.errors.TicketHeader ? (
-                        <div className="text-red-400">
-                            *{formikTicket.errors.TicketHeader}
-                        </div>
-                    ) : null}
-                </div>
-
-                <div className="my-4">
-                    <label
-                        htmlFor="TicketBody"
-                        className="font-semibold text-lg"
-                    >
-                        Ticket Body
-                    </label>
-                    <p className="opacity-70 italic">Body of the ticket.</p>
-                    <input
-                        name="TicketBody"
-                        id="TicketBody"
-                        onChange={formikTicket.handleChange}
-                        value={formikTicket.values.TicketBody}
-                        className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                    />
-                    {formikTicket.errors.TicketBody ? (
-                        <div className="text-red-400">
-                            *{formikTicket.errors.TicketBody}
-                        </div>
-                    ) : null}
-                </div>
-
-                <div className="my-4">
-                    <label
-                        htmlFor="TicketBody"
-                        className="font-semibold text-lg"
-                    >
-                        Email Address
-                    </label>
-                    <p className="opacity-70 italic">
-                        Email address to reply to/send notifications.
-                    </p>
-                    <input
-                        type="email"
-                        name="SenderEmail"
-                        id="SenderEmail"
-                        onChange={formikTicket.handleChange}
-                        value={formikTicket.values.SenderEmail}
-                        className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-                    />
-                    {formikTicket.errors.SenderEmail ? (
-                        <div className="text-red-400">
-                            *{formikTicket.errors.SenderEmail}
-                        </div>
-                    ) : null}
-                </div>
-
-                <div className="mb-4">
-                    <p>Add an Image</p>
-                    <input
-                        accept="image/*"
-                        multiple
-                        type="file"
-                        onChange={onFileChange}
-                    />
-                    {imageFile && (
-                        <div className="image-preview">
-                            <img
-                                src={`${
-                                    import.meta.env.VITE_FILE_BASE_URL
-                                }${imageFile}`}
-                                alt="Uploaded"
-                            />
-                        </div>
-                    )}
-                </div>
-
-                <button
-                    type="submit"
-                    className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+        <div>
+            <div className="my-10 rounded container w-1/2 py-8 mx-auto text-center text-blue-950 bg-gray-100">
+                <h1 className="text-3xl font-bold my-8">Ticket Submission</h1>
+                <form
+                    onSubmit={formikTicket.handleSubmit}
+                    className="max-w-md mx-auto"
                 >
-                    Submit Ticket
-                </button>
-            </form>
+                    <div className="mb-4">
+                        <label
+                            htmlFor="TicketCategory"
+                            className="block text-sm font-semibold mb-2"
+                        >
+                            Ticket Category
+                        </label>
+                        <select
+                            id="TicketCategory"
+                            name="TicketCategory"
+                            onChange={formikTicket.handleChange}
+                            onBlur={formikTicket.handleBlur}
+                            value={formikTicket.values.TicketCategory}
+                            className="form-select w-full rounded-md"
+                        >
+                            <option value="">Select Category</option>
+                            <option value="Account Issues">
+                                Account Issues
+                            </option>
+                            <option value="Payment Issues">
+                                Payment Issues
+                            </option>
+                            <option value="Activity Issues">
+                                Activity Issues
+                            </option>
+                            <option value="Technical Issues">
+                                Technical Issues
+                            </option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {formikTicket.touched.TicketCategory &&
+                        formikTicket.errors.TicketCategory ? (
+                            <div className="text-red-500 text-sm mt-1">
+                                {formikTicket.errors.TicketCategory}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div className="mb-4">
+                        <label
+                            htmlFor="TicketHeader"
+                            className="block text-sm font-semibold mb-2"
+                        >
+                            Ticket Header
+                        </label>
+                        <input
+                            type="text"
+                            id="TicketHeader"
+                            name="TicketHeader"
+                            onChange={formikTicket.handleChange}
+                            onBlur={formikTicket.handleBlur}
+                            value={formikTicket.values.TicketHeader}
+                            className="form-input w-full rounded-md"
+                        />
+                        {formikTicket.touched.TicketHeader &&
+                        formikTicket.errors.TicketHeader ? (
+                            <div className="text-red-500 text-sm mt-1">
+                                {formikTicket.errors.TicketHeader}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div className="mb-4">
+                        <label
+                            htmlFor="TicketBody"
+                            className="block text-sm font-semibold mb-2"
+                        >
+                            Ticket Body
+                        </label>
+                        <textarea
+                            id="TicketBody"
+                            name="TicketBody"
+                            onChange={formikTicket.handleChange}
+                            onBlur={formikTicket.handleBlur}
+                            value={formikTicket.values.TicketBody}
+                            className="form-textarea w-full rounded-md"
+                        ></textarea>
+                        {formikTicket.touched.TicketBody &&
+                        formikTicket.errors.TicketBody ? (
+                            <div className="text-red-500 text-sm mt-1">
+                                {formikTicket.errors.TicketBody}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div className="mb-4">
+                        <label
+                            htmlFor="SenderEmail"
+                            className="block text-sm font-semibold mb-2"
+                        >
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            id="SenderEmail"
+                            name="SenderEmail"
+                            onChange={formikTicket.handleChange}
+                            onBlur={formikTicket.handleBlur}
+                            value={formikTicket.values.SenderEmail}
+                            className="form-input w-full"
+                        />
+                        {formikTicket.touched.SenderEmail &&
+                        formikTicket.errors.SenderEmail ? (
+                            <div className="text-red-500 text-sm mt-1">
+                                {formikTicket.errors.SenderEmail}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div className="mb-4">
+                        <label
+                            htmlFor="attachments"
+                            className="block text-sm font-semibold mb-2"
+                        >
+                            Attach Files
+                        </label>
+                        <input
+                            type="file"
+                            id="attachments"
+                            name="attachments"
+                            onChange={onFileChange}
+                            className="form-input w-full"
+                            multiple
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="bg-gradient-to-br from-orange-400 to-red-500 text-white py-2 px-4 rounded-md hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-600"
+                    >
+                        Submit Ticket
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

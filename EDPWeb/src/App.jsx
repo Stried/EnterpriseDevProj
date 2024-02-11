@@ -41,6 +41,7 @@ import Stripe from "./Carts&Order/StripeMain";
 import PurchaseComplete from "./Carts&Order/PurchaseComplete"
 import TicketMain from "./Tickets/TicketMain";
 import TicketSubmission from "./Tickets/TicketSubmission";
+import ViewTicket from "./Tickets/ViewTicket";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -244,6 +245,7 @@ function App() {
                             path="/support/submitTicket"
                             element={<TicketSubmission />}
                         />
+                        <Route path="/support/ticket/:ticketId" element={<ViewTicket />} />
                         <Route
                             path="/404"
                             element={<Custom404 />}

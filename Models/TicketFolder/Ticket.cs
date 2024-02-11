@@ -10,7 +10,7 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string TicketCategory { get; set; } = string.Empty;
         [Required, MinLength(5), MaxLength(50)]
         public string TicketHeader { get; set; } = string.Empty;
-        [Required, MinLength(5), MaxLength(500)]
+        [Required, MinLength(5), MaxLength(5000)]
         public string TicketBody { get; set; } = string.Empty;
         [Required]
         public string TicketStatus { get; set; } = string.Empty; // Open, Closed, Pending, Not Solving, Unfixable
@@ -18,6 +18,8 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string SenderEmail { get; set; } = string.Empty;
         [Required]
         public string AttachedFilename { get; set; } = string.Empty;
+        public int UserId { get; set; }
+
         [Column (TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
         [Column (TypeName = "datetime")]

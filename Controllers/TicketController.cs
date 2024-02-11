@@ -29,6 +29,7 @@ namespace EnterpriseDevProj.Controllers
             try
             {
                 var now = DateTime.Now;
+                var userID = GetUserID();
 
                 createTicketRequest.TicketHeader = createTicketRequest.TicketHeader.Trim();
                 createTicketRequest.TicketBody = createTicketRequest.TicketBody.Trim();
@@ -40,8 +41,10 @@ namespace EnterpriseDevProj.Controllers
                     TicketCategory = createTicketRequest.TicketCategory,
                     TicketHeader = createTicketRequest.TicketHeader,
                     TicketBody = createTicketRequest.TicketBody,
+                    TicketStatus = "Open",
                     SenderEmail = createTicketRequest.SenderEmail,
                     AttachedFilename = createTicketRequest.AttachedFilename,
+                    UserId = userID,
                     CreatedAt = now,
                     UpdatedAt = now,
                 };
@@ -77,6 +80,46 @@ namespace EnterpriseDevProj.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Unable to gather info on tickets.");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("getOneTicket/{ticketId}"), Authorize]
+        public IActionResult GetTicket(int ticketId)
+        {
+            try
+            {
+                var ticketID = ticketId;
+
+                var ticket = dbContext.Tickets.Find(ticketID);
+                if (ticket == null)
+                {
+                    logger.LogError("Ticket cannot be found");
+                    return StatusCode(500);
+                }
+
+                return Ok(ticket);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error getting single ticket");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("getAllUserTickets"), Authorize]
+        public IActionResult GetAllUserTickets()
+        {
+            try
+            {
+                var userID = GetUserID();
+                var tickets = dbContext.Tickets.Where(x => x.UserId == userID).ToList();
+
+                return Ok(tickets);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in retrieving user's tickets");
                 return StatusCode(500);
             }
         }
@@ -138,6 +181,8 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             } 
         }
+
+        
 
         public int GetUserID()
         {

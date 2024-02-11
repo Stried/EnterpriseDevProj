@@ -4,6 +4,7 @@ import { Spinner, Card, Avatar, theme } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import http from "./../../http";
 
+import { Badge } from "flowbite-react";
 import { MdEmail, MdPhone } from "react-icons/md";
 import { FaPen, FaRegUser } from "react-icons/fa";
 
@@ -16,6 +17,7 @@ function UserAccount() {
     const [ groupsList, setGroupsList ] = useState([]);
     const [ groupsLengthList, setGroupsLengthList ] = useState([]);
     const [ friendsList, setFriendsList ] = useState([]);
+    const [ supportTicketList, setSupportTicketList ] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -49,7 +51,7 @@ function UserAccount() {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
                         "accessToken"
-                    )}`, // This is needed for mine for some reason, not part of the practical
+                    )}`,
                 },
             })
                 .then((res) => {
@@ -63,7 +65,7 @@ function UserAccount() {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
                         "googleAccessToken"
-                    )}`, // This is needed for mine for some reason, not part of the practical
+                    )}`, 
                 },
             })
                 .then((res) => {
@@ -79,15 +81,13 @@ function UserAccount() {
     const getUserLength = (groupID) => {
         http.get(`/group/groupDetails/${groupID}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
             },
         })
             .then((res) => {
                 // creates a list to store the lengths of all the grps in the list
                 var listLength = res.data.length;
-                console.log(listLength)
                 groupsLengthList.push(listLength);
-                console.log(groupsLengthList)
             })
             .catch(function (err) {
                 console.log(err);
@@ -103,7 +103,7 @@ function UserAccount() {
     useEffect(() => {
         http.get("/friends/getApprovedFriends", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
             },
         })
             .then((res) => {
@@ -117,7 +117,7 @@ function UserAccount() {
     const removeFriend = (id) => {
         http.delete(`/friends/approveDelete/${id}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
             },
         })
             .then((res) => {
@@ -128,10 +128,27 @@ function UserAccount() {
                 console.log(err);
             });
     };
+
+    useEffect(() => {
+        http.get("/ticket/getAllUserTickets", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+            },
+        })
+            .then((res) => {
+                setSupportTicketList(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }, [])
+
+    const openTicket = (id) => {
+        navigate(`/support/ticket/${id}`);
+    }
     
     return (
         <div className="">
-            {/* change to theme */}
             {user && (
                 <div
                     className={`min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400`}
@@ -240,7 +257,7 @@ function UserAccount() {
                                             setCurrentOption("optionFive")
                                         }
                                     >
-                                        <button>Placeholder Option 5</button>
+                                        <button>Support Ticket</button>
                                     </div>
 
                                     <div
@@ -306,7 +323,7 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionTwo" && (
-                                    <div className="text-black">HAH GAY</div>
+                                    <div className="text-black">To be done, eventually.</div>
                                 )}
 
                                 {currentOption == "optionThree" && (
@@ -469,7 +486,14 @@ function UserAccount() {
                                                                         </p>
 
                                                                         <div className="mx-auto text-center py-2 mt-2">
-                                                                            <button onClick={() => removeFriend(user.id)} className="bg-red-400 px-3 py-2 rounded-md">
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    removeFriend(
+                                                                                        user.id
+                                                                                    )
+                                                                                }
+                                                                                className="bg-red-400 px-3 py-2 rounded-md"
+                                                                            >
                                                                                 Unfriend
                                                                             </button>
                                                                         </div>
@@ -484,7 +508,56 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionFive" && (
-                                    <div className="text-black">HAH GAY</div>
+                                    <div className="text-black">
+                                        <div className="">
+                                            <h1 className="text-3xl font-light">
+                                                Support Tickets
+                                            </h1>
+                                            <p className="flex space-x-3 underline">
+                                                <Link
+                                                    to={"/support/submitTicket"}
+                                                    className="text-blue-500 visited:text-purple-500"
+                                                >
+                                                    Submit A Ticket
+                                                </Link>
+                                            </p>
+                                        </div>
+                                        <div className="">
+                                            { supportTicketList.length == 0 && (
+                                                <p>You currently have no support tickets</p>
+                                            ) }
+                                            { supportTicketList && supportTicketList.map((tickets, i) => {
+                                                return (
+                                                    <div onClick={() => {openTicket(tickets.id)}} className="bg-gray-200 px-6 py-4 rounded-md flex mt-2 cursor-pointer">
+                                                        <div className="grow">
+                                                            <h1 className="text-xl font-semibold">
+                                                                {
+                                                                    tickets.ticketHeader
+                                                                }
+                                                            </h1>
+                                                            <p>
+                                                                Category:{" "}
+                                                                {
+                                                                    tickets.ticketCategory
+                                                                }
+                                                            </p>
+                                                            <p className="text-sm mt-5">
+                                                                Ticket No.{" "}
+                                                                {tickets.id}
+                                                            </p>
+                                                        </div>
+                                                        <div className="">
+                                                            <Badge color="success" className="text-md">
+                                                                {
+                                                                    tickets.ticketStatus
+                                                                }
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
                                 )}
 
                                 {currentOption == "optionSix" && (
