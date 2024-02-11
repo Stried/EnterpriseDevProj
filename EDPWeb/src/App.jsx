@@ -38,6 +38,7 @@ import Custom404 from "./ErrorPages/Custom404";
 import AddFriends from "./Friends/AddFriends";
 import FriendRequest from "./Friends/FriendRequest";
 import Stripe from "./Carts&Order/StripeMain";
+import PurchaseComplete from "./Carts&Order/PurchaseComplete"
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -157,6 +158,10 @@ function App() {
                             path="/paymentForm"
                             element={<Stripe/>}
                         />
+                        <Route
+                            path="/purchaseComplete"
+                            element={<PurchaseComplete/>}
+                            />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
                             element={<EventApplicationDetailed />}
