@@ -37,10 +37,7 @@ import UpdateVoucher from "./Vouchers/UpdateVoucher";
 import Custom404 from "./ErrorPages/Custom404";
 import AddFriends from "./Friends/AddFriends";
 import FriendRequest from "./Friends/FriendRequest";
-import PaymentForm from "./Carts&Order/PaymentForm";
 import Stripe from "./Carts&Order/StripeMain";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
