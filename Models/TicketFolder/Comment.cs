@@ -7,7 +7,7 @@ namespace EnterpriseDevProj.Models.TicketFolder
     {
         public int Id { get; set; }
 
-        [Required, MinLength(3), MaxLength(100)]
+        [Required, MinLength(3), MaxLength(500)]
         public string CommentBody { get; set; } = string.Empty;
 
         public int TicketId { get; set; }

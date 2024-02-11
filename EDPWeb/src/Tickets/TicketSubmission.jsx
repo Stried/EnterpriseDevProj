@@ -6,7 +6,23 @@ import { useContext, useState, useEffect } from "react";
 
 function TicketSubmission() {
     const navigate = useNavigate();
-    const [imageFile, setImageFile] = useState([]);
+    const [ imageFile, setImageFile ] = useState([]);
+    const [ userAcc, setUserAcc ] = useState("");
+
+    useEffect(() => {
+        http.get(`/user`, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setUserAcc(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }, []);
 
     const onFileChange = (e) => {
         var fileListLength = e.target.files.length;
@@ -42,11 +58,12 @@ function TicketSubmission() {
     };
 
     const formikTicket = useFormik({
+        enableReinitialize: true,
         initialValues: {
             TicketCategory: "",
             TicketHeader: "",
             TicketBody: "",
-            SenderEmail: "",
+            SenderEmail: userAcc.email,
             AttachedFilename: "",
         },
         validationSchema: yup.object().shape({
@@ -193,7 +210,7 @@ function TicketSubmission() {
                             htmlFor="SenderEmail"
                             className="block text-sm font-semibold mb-2"
                         >
-                            Email Address
+                            Want us to contact you using another email? (OPTIONAL)
                         </label>
                         <input
                             type="email"
@@ -203,6 +220,7 @@ function TicketSubmission() {
                             onBlur={formikTicket.handleBlur}
                             value={formikTicket.values.SenderEmail}
                             className="form-input w-full"
+                            placeholder="example@mail.com"
                         />
                         {formikTicket.touched.SenderEmail &&
                         formikTicket.errors.SenderEmail ? (

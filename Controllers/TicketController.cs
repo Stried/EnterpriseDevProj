@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using EnterpriseDevProj.Models.TicketFolder;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace EnterpriseDevProj.Controllers
 {
@@ -34,6 +36,12 @@ namespace EnterpriseDevProj.Controllers
                 createTicketRequest.TicketHeader = createTicketRequest.TicketHeader.Trim();
                 createTicketRequest.TicketBody = createTicketRequest.TicketBody.Trim();
                 createTicketRequest.SenderEmail = createTicketRequest.SenderEmail.Trim();
+                if (createTicketRequest.SenderEmail.IsNullOrEmpty())
+                {
+                    var userAcc = dbContext.Users.Find(userID);
+                    createTicketRequest.SenderEmail = userAcc.Email;
+                }
+
                 createTicketRequest.AttachedFilename = createTicketRequest.AttachedFilename.Trim();
 
                 Ticket newTicket = new()
@@ -155,7 +163,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPost("/commentOnTicket/{ticketId}"), Authorize]
+        [HttpPost("commentOnTicket/{ticketId}"), Authorize]
         public IActionResult CommentOnTicket(CommentRequest commentRequest, int ticketId)
         {
             try
@@ -182,7 +190,20 @@ namespace EnterpriseDevProj.Controllers
             } 
         }
 
-        
+        [HttpGet("getCommentsOnTicket/{ticketId}")]
+        public IActionResult GetCommentOnTicket(int ticketId) 
+        { 
+            try
+            {
+                var commentsOnTicket = dbContext.Comments.Where(x => x.TicketId == ticketId).Include(x => x.User).ToList();
+                return Ok(commentsOnTicket);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in getting comments for ticket");
+                return StatusCode(500);
+            }
+        }
 
         public int GetUserID()
         {

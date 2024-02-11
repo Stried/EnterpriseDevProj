@@ -14,8 +14,8 @@ namespace EnterpriseDevProj.Models.TicketFolder
         public string TicketBody { get; set; } = string.Empty;
         [Required]
         public string TicketStatus { get; set; } = string.Empty; // Open, Closed, Pending, Not Solving, Unfixable
-        [Required, EmailAddress]
-        public string SenderEmail { get; set; } = string.Empty;
+        [EmailAddress]
+        public string SenderEmail { get; set; } = string.Empty; // Optional - defaults to user email
         [Required]
         public string AttachedFilename { get; set; } = string.Empty;
         public int UserId { get; set; }
