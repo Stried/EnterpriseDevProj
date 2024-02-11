@@ -92,7 +92,7 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // CartItem
-        [HttpPost("/AddCartItem"), Authorize]  // who lives in a pineapple under the sea?
+        [HttpPost("AddCartItem"), Authorize]  // who lives in a pineapple under the sea?
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         public IActionResult AddCartItem(AddCartItemRequest cartItem)
         {
