@@ -1,19 +1,27 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import http from "../../http";
+import UserContext from "./../Users/UserContext";
 
 import { Badge, Avatar } from "flowbite-react";
 import { Button, Timeline } from "flowbite-react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import dayjs from "dayjs";
+
+import { RiDeleteBinFill } from "react-icons/ri";
+import { FaEdit } from "react-icons/fa";
 
 function ViewTicket() {
     let { ticketId } = useParams();
+    const { user } = useContext(UserContext);
     const [ticketDetails, setTicketDetails] = useState("");
     const [ticketImages, setTicketImages] = useState([]);
     const [userAcc, setUserAcc] = useState("");
     const [flavourText, setFlavourText] = useState("");
     const [comments, setComments] = useState([]);
+    const [editComment, setEditComment] = useState("");
+    const [editCommentId, setEditCommentId] = useState(0);
 
     useEffect(() => {
         http.get(`/ticket/getCommentsOnTicket/${ticketId}`)
@@ -121,6 +129,7 @@ function ViewTicket() {
             "seeks the wisdom of the digital elders with reverence and respect.",
             "confronts the digital dragon with courage and bravery.",
             "tackles the digital challenge head-on with determination.",
+            "is stewpee and requires helpee.",
             "embraces the digital adventure with open arms.",
             "channels their inner digital sage in pursuit of enlightenment.",
             "rides the digital wave with skill and finesse.",
@@ -166,6 +175,67 @@ function ViewTicket() {
     const formikComment = useFormik({
         initialValues: {
             CommentBody: "",
+            TicketStatus: "Open",
+        },
+        validationSchema: yup.object().shape({
+            CommentBody: yup
+                .string()
+                .min(3, "Comment must have at least 3 characters.")
+                .max(500, "Comments must have at most 500 characters.")
+                .required(),
+            TicketStatus: yup.string(),
+        }),
+        onSubmit: async (data) => {
+            const formData = {
+                CommentBody: data.CommentBody.toString().trim(),
+            };
+
+            http.post(`/ticket/commentOnTicket/${ticketId}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`,
+                },
+            })
+                .then((res) => {
+                    console.log(res.status);
+                    http.put(
+                        `/ticket/updateTicketStatus/${ticketId}`,
+                        formTicketStatus,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem(
+                                    "accessToken"
+                                )}`,
+                            },
+                        }
+                    )
+                        .then((res) => {
+                            console.log(res.status);
+                            window.location.reload();
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+                    
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+
+            const formTicketStatus = {
+                TicketStatus: data.TicketStatus.trim(),
+            };
+            console.log(data.TicketStatus);
+
+            
+        },
+    });
+
+    const formikCommentEdit = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            CommentBody: editComment,
         },
         validationSchema: yup.object().shape({
             CommentBody: yup
@@ -176,11 +246,11 @@ function ViewTicket() {
         }),
         onSubmit: async (data) => {
             const formData = {
-                CommentBody: data.CommentBody.toString().trim()
-            }
+                CommentBody: data.CommentBody.toString().trim(),
+            };
 
             await http
-                .post(`/ticket/commentOnTicket/${ticketId}`, formData, {
+                .put(`/ticket/updateComment/${editCommentId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem(
                             "accessToken"
@@ -197,6 +267,25 @@ function ViewTicket() {
         },
     });
 
+    const updateComment = (commentId, commentDetails) => {
+        setEditCommentId(commentId);
+        setEditComment(commentDetails);
+    };
+
+    const deleteComment = (commentId) => {
+        http.delete(`/ticket/deleteComment/${commentId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                window.location.reload();
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    };
+
     return (
         <div className="bg-gradient-to-br from-gray-800 to-red-700 py-10">
             {ticketDetails && (
@@ -212,7 +301,9 @@ function ViewTicket() {
                                 />
                             </div>
                             <p className="text-center font-medium my-auto ml-3 text-md">
-                                <span className="text-sky-700">{userAcc.name}</span>{" "}
+                                <span className="text-sky-700">
+                                    {userAcc.name}
+                                </span>{" "}
                                 {flavourText}
                             </p>
                         </h2>
@@ -224,20 +315,35 @@ function ViewTicket() {
                             {ticketDetails.ticketStatus.toLowerCase() ==
                                 "open" && (
                                 <Badge
-                                    color="warning"
+                                    color="indigo"
                                     className="w-fit text-sm my-auto mx-2"
                                 >
                                     Open
                                 </Badge>
                             )}
                             {ticketDetails.ticketStatus.toLowerCase() ==
-                                "close" && (
+                                "closed" && (
                                 <Badge
-                                    color="success"
+                                    color="failure"
                                     className="w-fit text-sm my-auto mx-2"
                                 >
-                                    Close
+                                    Closed
                                 </Badge>
+                            )}
+                            {ticketDetails.ticketStatus.toLowerCase() ==
+                                "pending" && (
+                                <Badge
+                                    color="warning"
+                                    className="w-fit text-sm my-auto mx-2"
+                                >
+                                    Pending
+                                </Badge>
+                            )}
+                        </p>
+                        <p className="text-sky-700">
+                            <span className="mr-1 text-blue-950">Filed</span>
+                            {dayjs(ticketDetails.createdAt).format(
+                                "DD MMM YYYY, h:mma"
                             )}
                         </p>
 
@@ -263,69 +369,195 @@ function ViewTicket() {
                         </div>
                     </div>
 
-                    { comments && comments.map((comments, i) => {
-                        return (
-                            <div className="mx-auto  w-2/3 rounded-md text-blue-950 bg-gray-100 p-10">
-                                <h2 className="text-md flex mb-4">
-                                    <div className="">
-                                        <Avatar
-                                            rounded
-                                            size={"md"}
-                                            className=""
-                                            img={comments.user.imageFile}
-                                        />
-                                    </div>
-                                    <p className="text-center font-medium my-auto ml-3 text-md">
-                                        <span className="text-sky-700">
-                                            {comments.user.name}
-                                        </span>{" "}
-                                        &#183; {comments.user.userRole}
-                                    </p>
-                                </h2>
-                                <pre className="whitespace-pre-wrap font-sans">
-                                    {comments.commentBody}
-                                </pre>
-                            </div>
-                        );
-                    })}
+                    {comments &&
+                        comments.map((comments, i) => {
+                            return (
+                                <div className="mx-auto w-2/3 rounded-md text-blue-950 bg-gray-100 px-10 py-5">
+                                    {editComment == "" && (
+                                        <div className="">
+                                            <h2 className="text-md flex mb-4">
+                                                <div className="">
+                                                    <Avatar
+                                                        rounded
+                                                        size={"md"}
+                                                        className=""
+                                                        img={
+                                                            comments.user
+                                                                .imageFile
+                                                        }
+                                                    />
+                                                </div>
+                                                <p className="text-left font-medium my-auto ml-3 text-md grow">
+                                                    <span className="text-sky-700">
+                                                        {comments.user.name}
+                                                    </span>{" "}
+                                                    &#183;{" "}
+                                                    {user.id ==
+                                                        comments.user.id && (
+                                                        <span className="">
+                                                            You
+                                                        </span>
+                                                    )}
+                                                    {user.id !=
+                                                        comments.user.id && (
+                                                        <span className="">
+                                                            {
+                                                                comments.user
+                                                                    .userRole
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </p>
 
-                    <div className="mx-auto  w-2/3 rounded-md text-blue-950 bg-gray-100 p-10">
-                        <form
-                            onSubmit={formikComment.handleSubmit}
-                            action=""
-                        >
-                            <div className="mb-4">
-                                <label
-                                    htmlFor="CommentBody"
-                                    className="block text-sm font-semibold mb-2"
-                                >
-                                    How will you respond?
-                                </label>
-                                <textarea
-                                    id="CommentBody"
-                                    name="CommentBody"
-                                    onChange={formikComment.handleChange}
-                                    onBlur={formikComment.handleBlur}
-                                    value={formikComment.values.CommentBody}
-                                    className="form-textarea w-full rounded-md"
-                                ></textarea>
-                                {formikComment.touched.CommentBody &&
-                                formikComment.errors.CommentBody ? (
-                                    <div className="text-red-500 text-sm mt-1">
-                                        {formikComment.errors.CommentBody}
-                                    </div>
-                                ) : null}
-                            </div>
-                            <div className="w-full flex flex-row-reverse">
-                                <button
-                                    type="submit"
-                                    className="px-3 py-2 bg-slate-800 font-medium text-white hover:bg-slate-600 transition duration-300 ease-in-out rounded-md"
-                                >
-                                    Add Comment
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                                                {user.id ==
+                                                    comments.user.id && (
+                                                    <div className="flex">
+                                                        <FaEdit
+                                                            onClick={() => {
+                                                                updateComment(
+                                                                    comments.id,
+                                                                    comments.commentBody
+                                                                );
+                                                            }}
+                                                            className="mx-3 my-auto text-xl cursor-pointer"
+                                                        />
+                                                        <RiDeleteBinFill
+                                                            onClick={() => {
+                                                                deleteComment(
+                                                                    comments.id
+                                                                );
+                                                            }}
+                                                            className="my-auto text-xl text-red-500 cursor-pointer"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </h2>
+                                            <pre className="whitespace-pre-wrap font-sans">
+                                                {comments.commentBody}
+                                            </pre>
+                                            <p className="flex flex-row-reverse mt-7 text-sky-700">
+                                                {dayjs(
+                                                    comments.createdAt
+                                                ).format("DD MMM YYYY, h:mma")}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {editComment != "" && (
+                                        <form
+                                            onSubmit={
+                                                formikCommentEdit.handleSubmit
+                                            }
+                                            action=""
+                                        >
+                                            <div className="mb-4">
+                                                <label
+                                                    htmlFor="CommentBody"
+                                                    className="block text-sm font-semibold mb-2"
+                                                >
+                                                    Fixing some typos and
+                                                    misinformation..
+                                                </label>
+                                                <textarea
+                                                    id="CommentBody"
+                                                    name="CommentBody"
+                                                    onChange={
+                                                        formikCommentEdit.handleChange
+                                                    }
+                                                    onBlur={
+                                                        formikCommentEdit.handleBlur
+                                                    }
+                                                    value={
+                                                        formikCommentEdit.values
+                                                            .CommentBody
+                                                    }
+                                                    className="form-textarea w-full rounded-md"
+                                                ></textarea>
+                                                {formikCommentEdit.touched
+                                                    .CommentBody &&
+                                                formikCommentEdit.errors
+                                                    .CommentBody ? (
+                                                    <div className="text-red-500 text-sm mt-1">
+                                                        {
+                                                            formikCommentEdit
+                                                                .errors
+                                                                .CommentBody
+                                                        }
+                                                    </div>
+                                                ) : null}
+                                            </div>
+                                            <div className="w-full flex flex-row-reverse">
+                                                <button
+                                                    type="submit"
+                                                    className="px-3 py-2 bg-slate-800 font-medium text-white hover:bg-slate-600 transition duration-300 ease-in-out rounded-md"
+                                                >
+                                                    Update Comment
+                                                </button>
+                                            </div>
+                                        </form>
+                                    )}
+                                </div>
+                            );
+                        })}
+
+                    {ticketDetails.ticketStatus.toLowerCase() != "closed" && (
+                        <div className="mx-auto  w-2/3 rounded-md text-blue-950 bg-gray-100 p-10">
+                            <form
+                                onSubmit={formikComment.handleSubmit}
+                                action=""
+                            >
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="CommentBody"
+                                        className="block text-sm font-semibold mb-2"
+                                    >
+                                        How will you respond?
+                                    </label>
+                                    {user.userRole == "Administrator" && (
+                                        <select
+                                            id="TicketStatus"
+                                            name="TicketStatus"
+                                            onChange={
+                                                formikComment.handleChange
+                                            }
+                                            onBlur={formikComment.handleBlur}
+                                            value={
+                                                formikComment.values
+                                                    .TicketStatus
+                                            }
+                                            className="form-select w-full rounded-md"
+                                        >
+                                            <option value="Open">Open</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Closed">Closed</option>
+                                        </select>
+                                    )}
+                                    <textarea
+                                        id="CommentBody"
+                                        name="CommentBody"
+                                        onChange={formikComment.handleChange}
+                                        onBlur={formikComment.handleBlur}
+                                        value={formikComment.values.CommentBody}
+                                        className="form-textarea w-full rounded-md"
+                                    ></textarea>
+                                    {formikComment.touched.CommentBody &&
+                                    formikComment.errors.CommentBody ? (
+                                        <div className="text-red-500 text-sm mt-1">
+                                            {formikComment.errors.CommentBody}
+                                        </div>
+                                    ) : null}
+                                </div>
+                                <div className="w-full flex flex-row-reverse">
+                                    <button
+                                        type="submit"
+                                        className="px-3 py-2 bg-slate-800 font-medium text-white hover:bg-slate-600 transition duration-300 ease-in-out rounded-md"
+                                    >
+                                        Add Comment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

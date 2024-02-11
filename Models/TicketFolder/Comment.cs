@@ -1,5 +1,6 @@
 ﻿using EnterpriseDevProj.Models.UserFolder;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnterpriseDevProj.Models.TicketFolder
 {
@@ -15,5 +16,11 @@ namespace EnterpriseDevProj.Models.TicketFolder
 
         public int UserId { get; set; }
         public User? User { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime CreatedAt { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime UpdatedAt { get; set; }
+
     }
 }

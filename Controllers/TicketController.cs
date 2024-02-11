@@ -163,6 +163,28 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpPut("updateTicketStatus/{ticketId}"), Authorize]
+        public IActionResult UpdateTicketStatus(int ticketId, TicketStatusRequest ticketStatusRequest)
+        {
+            try
+            {
+                var ticketID = ticketId;
+                var ticketItem = dbContext.Tickets.Find(ticketID);
+
+                ticketItem.TicketStatus = ticketStatusRequest.TicketStatus;
+                logger.LogInformation(ticketItem.TicketStatus);
+                dbContext.Tickets.Update(ticketItem);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating status of ticket.");
+                return StatusCode(500);
+            }
+        }
+
         [HttpPost("commentOnTicket/{ticketId}"), Authorize]
         public IActionResult CommentOnTicket(CommentRequest commentRequest, int ticketId)
         {
@@ -170,12 +192,15 @@ namespace EnterpriseDevProj.Controllers
             {
                 var userID = GetUserID();
                 var ticketID = ticketId;
+                var now = DateTime.Now;
 
                 Comment comment = new()
                 {
                     CommentBody = commentRequest.CommentBody.Trim(),
                     TicketId = ticketID,
-                    UserId = userID
+                    UserId = userID,
+                    CreatedAt = now,
+                    UpdatedAt = now,
                 };
 
                 dbContext.Comments.Add(comment);
@@ -201,6 +226,44 @@ namespace EnterpriseDevProj.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error in getting comments for ticket");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("updateComment/{commentId}"), Authorize]
+        public IActionResult UpdateComment(CommentRequest commentRequest, int commentId)
+        {
+            try
+            {
+                var comment = dbContext.Comments.Find(commentId);
+
+                comment.CommentBody = commentRequest.CommentBody.Trim();
+                dbContext.Comments.Update(comment);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating comment");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("deleteComment/{commentId}"), Authorize]
+        public IActionResult DeleteComment(int commentId)
+        {
+            try
+            {
+                var comment = dbContext.Comments.Find(commentId);
+                dbContext.Comments.Remove(comment);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to remove comment.");
                 return StatusCode(500);
             }
         }

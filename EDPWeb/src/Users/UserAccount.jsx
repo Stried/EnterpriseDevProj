@@ -528,7 +528,14 @@ function UserAccount() {
                                             ) }
                                             { supportTicketList && supportTicketList.map((tickets, i) => {
                                                 return (
-                                                    <div onClick={() => {openTicket(tickets.id)}} className="bg-gray-200 px-6 py-4 rounded-md flex mt-2 cursor-pointer">
+                                                    <div
+                                                        onClick={() => {
+                                                            openTicket(
+                                                                tickets.id
+                                                            );
+                                                        }}
+                                                        className="bg-white first-line: px-6 py-4 rounded-md flex mt-2 cursor-pointer"
+                                                    >
                                                         <div className="grow">
                                                             <h1 className="text-xl font-semibold">
                                                                 {
@@ -547,11 +554,34 @@ function UserAccount() {
                                                             </p>
                                                         </div>
                                                         <div className="">
-                                                            <Badge color="success" className="text-md">
-                                                                {
-                                                                    tickets.ticketStatus
-                                                                }
-                                                            </Badge>
+                                                            {tickets.ticketStatus.toLowerCase() ==
+                                                                "open" && (
+                                                                <Badge
+                                                                    color="indigo"
+                                                                    className="w-fit text-sm my-auto mx-2"
+                                                                >
+                                                                    Open
+                                                                </Badge>
+                                                            )}
+                                                            {tickets.ticketStatus.toLowerCase() ==
+                                                                "closed" && (
+                                                                <Badge
+                                                                    color="failure"
+                                                                    className="w-fit text-sm my-auto mx-2"
+                                                                >
+                                                                    Closed
+                                                                </Badge>
+                                                            )}
+                                                            {tickets.ticketStatus.toLowerCase() ==
+                                                                "pending" && (
+                                                                <Badge
+                                                                    color="warning"
+                                                                    className="w-fit text-sm my-auto mx-2"
+                                                                >
+                                                                    Pending
+                                                                </Badge>
+                                                            )}
+
                                                         </div>
                                                     </div>
                                                 );
