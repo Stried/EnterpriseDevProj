@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240212105502_orderChanges2")]
+    partial class orderChanges2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +76,8 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventId")
+                        .IsUnique();
 
                     b.ToTable("CartItems");
                 });
@@ -356,7 +360,8 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("OrderItemId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventId")
+                        .IsUnique();
 
                     b.HasIndex("OrderId");
 
@@ -632,8 +637,8 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
+                        .WithOne("CartItem")
+                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -723,8 +728,8 @@ namespace EnterpriseDevProj.Migrations
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
+                        .WithOne("OrderItem")
+                        .HasForeignKey("EnterpriseDevProj.Models.OrderFolder.OrderItem", "EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -820,7 +825,11 @@ namespace EnterpriseDevProj.Migrations
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
                 {
+                    b.Navigation("CartItem");
+
                     b.Navigation("Dates");
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>

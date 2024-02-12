@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -7,38 +6,38 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EnterpriseDevProj.Migrations
 {
     /// <inheritdoc />
-    public partial class removeFKEvents : Migration
+    public partial class orderChanges3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CustomerName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CustomerEmail = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CustomerPhone = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+               name: "Orders",
+               columns: table => new
+               {
+                   OrderId = table.Column<int>(type: "int", nullable: false)
+                       .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                   CustomerName = table.Column<string>(type: "longtext", nullable: false)
+                       .Annotation("MySql:CharSet", "utf8mb4"),
+                   CustomerEmail = table.Column<string>(type: "longtext", nullable: false)
+                       .Annotation("MySql:CharSet", "utf8mb4"),
+                   CustomerPhone = table.Column<string>(type: "longtext", nullable: false)
+                       .Annotation("MySql:CharSet", "utf8mb4"),
+                   CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                   UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                   UserId = table.Column<int>(type: "int", nullable: false)
+               },
+               constraints: table =>
+               {
+                   table.PrimaryKey("PK_Orders", x => x.OrderId);
+                   table.ForeignKey(
+                       name: "FK_Orders_Users_UserId",
+                       column: x => x.UserId,
+                       principalTable: "Users",
+                       principalColumn: "Id",
+                       onDelete: ReferentialAction.Cascade);
+               })
+               .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "OrderItems",
@@ -58,7 +57,8 @@ namespace EnterpriseDevProj.Migrations
                         name: "FK_OrderItems_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
-                        principalColumn: "EventId");
+                        principalColumn: "EventId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -113,19 +113,31 @@ namespace EnterpriseDevProj.Migrations
                 name: "IX_OrdersParticipants_OrderItemId",
                 table: "OrdersParticipants",
                 column: "OrderItemId");
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "OrdersParticipants");
+            migrationBuilder.DropIndex(
+                name: "IX_OrderItems_EventId",
+                table: "OrderItems");
 
-            migrationBuilder.DropTable(
-                name: "OrderItems");
+            migrationBuilder.DropIndex(
+                name: "IX_CartItems_EventId",
+                table: "CartItems");
 
-            migrationBuilder.DropTable(
-                name: "Orders");
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_EventId",
+                table: "OrderItems",
+                column: "EventId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_EventId",
+                table: "CartItems",
+                column: "EventId",
+                unique: true);
         }
     }
 }

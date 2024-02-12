@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using EnterpriseDevProj.Models.CartFolder;
 using EnterpriseDevProj.Models.OrderFolder;
+using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +31,7 @@ namespace EnterpriseDevProj.Controllers
 
         // Order
         [HttpPost("NewOrder")]
-        public IActionResult NewOrder(AddOrderRequest order)
+        public IActionResult NewOrder()
         {
             var user = GetUserId();
             // var userAcc = _context.Users.FirstOrDefault(x => x.Email == userEmail);
@@ -51,6 +53,45 @@ namespace EnterpriseDevProj.Controllers
             Order? newOrder = _context.Orders.Include(t => t.User)
                 .FirstOrDefault(t => t.UserId == myOrder.UserId);
             return Ok(newOrder);
+        }
+
+
+        // OrderItem
+        [HttpPost("CreateOrderItem")]
+        public IActionResult CreateOrderItem(AddOrderItemRequest orderItem)
+        {
+            try
+            {
+                logger.LogInformation("Check 1");
+                var user = GetUserId;
+                var now = DateTime.Now;
+                var result = _context.Orders.OrderBy(t => t.CreatedAt).Select(t => t.OrderId).FirstOrDefault();
+                var myOrderItem = new OrderItem()
+                {
+                    Quantity = orderItem.Quantity,
+                    EventId = orderItem.EventId,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    OrderId = result,
+                };
+                logger.LogInformation("Check 2");
+
+                _context.OrderItems.Add(myOrderItem);
+                _context.SaveChanges();
+
+                logger.LogInformation("Check 3");
+                OrderItem? newOrderItem = _context.OrderItems.Include(t => t.OrderId)
+                    .Include(e => e.Event).FirstOrDefault(t => t.OrderId == myOrderItem.OrderId && t.EventId == myOrderItem.EventId);
+                var OrderItem = _mapper.Map<OrderItem>(myOrderItem);
+
+                logger.LogInformation("Check 4");
+                return Ok(OrderItem);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to create order item. Please troubleshoot the abovementioned error(s) and try again.");
+                return StatusCode(500);
+            }
         }
     }
 }

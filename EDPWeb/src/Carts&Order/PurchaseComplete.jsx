@@ -1,23 +1,61 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import http from "./../../http"
 
 function PurchaseComplete() {
-    const rawData = {
-        CustomerName: "CKz",
-        CustomerEmail: "user@example.com",
-        CustomerPhone: 90000000
-    }
+    const [cartItemList, setCartItemList] = useState([]);
 
     useEffect(() => {
-        http.post("/order/NewOrder", rawData, {
+        http.get("/cart/getMyCartItems", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
             },
-        }).catch((err) => {
-            console.log(err);
-        });
-    })
+        })
+            .then((res) => {
+                console.log(res.data)
+                setCartItemList(res.data);
+                console.log(cartItemList)
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    }, []);
+
+    useEffect(() => {
+        const delay = 2000; // 2 seconds in milliseconds
+        const timerId = setTimeout(() => {
+            http.post("/order/NewOrder", null, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            }).then((res) => {
+                console.log(cartItemList)
+                for (var i = 0; i < cartItemList.length; i++) {
+                    const formData = {
+                        Quantity: cartItemList[i].Quantity,
+                        SubTotal: cartItemList[i].SubTotal,
+                        EventId: cartItemList[i].EventId
+                    }
+                    http.post("/order/CreateOrderItem", formData, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        },
+                    })
+                        .then((res) => console.log(res.status + " check"))
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+            })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }, delay);
+
+        return () => {
+            clearTimeout(timerId); // Cleanup function to clear the timer if component unmounts before 5 seconds
+        };
+    }, [cartItemList]);
 
     return (
         <div className="bg-gray-200 pt-2 pb-40">

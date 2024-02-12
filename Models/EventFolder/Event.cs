@@ -59,7 +59,5 @@ namespace EnterpriseDevProj.Models.EventFolder
         [Column(TypeName = "datetime")]
         public DateTime EventUpdatedAt { get; set; }
         public List<Date>? Dates {get; set;}
-        public CartItem? CartItem { get; set; }
-        public OrderItem? OrderItem { get; set; }
     }
 }

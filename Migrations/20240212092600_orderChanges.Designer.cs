@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240212092600_orderChanges")]
+    partial class orderChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +76,8 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventId")
+                        .IsUnique();
 
                     b.ToTable("CartItems");
                 });
@@ -336,13 +340,10 @@ namespace EnterpriseDevProj.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -351,12 +352,10 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<float>("SubTotal")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("OrderItemId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventId")
+                        .IsUnique();
 
                     b.HasIndex("OrderId");
 
@@ -632,8 +631,8 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
+                        .WithOne("CartItem")
+                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -723,20 +722,16 @@ namespace EnterpriseDevProj.Migrations
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
+                        .WithOne("OrderItem")
+                        .HasForeignKey("EnterpriseDevProj.Models.OrderFolder.OrderItem", "EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.Order", "Order")
+                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Event");
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
@@ -820,7 +815,11 @@ namespace EnterpriseDevProj.Migrations
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
                 {
+                    b.Navigation("CartItem");
+
                     b.Navigation("Dates");
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
