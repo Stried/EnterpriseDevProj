@@ -13,8 +13,8 @@ function AdminPanel() {
     }, [])
 
     return (
-        <div className="m-5">
-            <div className="py-5">
+        <div className="bg-gradient-to-br from-blue-950 to-red-700 p-5">
+            <div className="py-5 text-gray-100">
                 <h1 className="text-center text-3xl font-semibold">
                     Admin Panel
                 </h1>
@@ -22,13 +22,13 @@ function AdminPanel() {
                     Welcome back, {user.name}
                 </p>
             </div>
-            <div className="flex py-10 px-4 min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400 rounded-xl">
-                <div className="w-1/3 flex flex-col space-y-3 px-4 mx-3 py-5 bg-white rounded-md drop-shadow-lg">
+            <div className="flex py-5 px-4 min-h-[100vh] max-h-full rounded-xl">
+                <div className="w-1/3 flex flex-col space-y-3 px-4 mx-3 py-5 bg-white/30 text-gray-100 rounded-md drop-shadow-lg">
                     <h2 className="px-3 text-2xl font-semibold">Menu</h2>
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionOne" ? `bg-red-400` : ``)
+                            (currentOption == "optionOne" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionOne")}
                     >
@@ -40,7 +40,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionTwo" ? `bg-red-400` : ``)
+                            (currentOption == "optionTwo" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionTwo")}
                     >
@@ -52,7 +52,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionThree" ? `bg-red-400` : ``)
+                            (currentOption == "optionThree" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionThree")}
                     >
@@ -64,7 +64,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionFour" ? `bg-red-400` : ``)
+                            (currentOption == "optionFour" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionFour")}
                     >
@@ -76,7 +76,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionFive" ? `bg-red-400` : ``)
+                            (currentOption == "optionFive" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionFive")}
                     >
@@ -90,7 +90,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionSix" ? `bg-red-400` : ``)
+                            (currentOption == "optionSix" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionSix")}
                     >
@@ -104,7 +104,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionSeven" ? `bg-red-400` : ``)
+                            (currentOption == "optionSeven" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionSeven")}
                     >
@@ -116,7 +116,7 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionEight" ? `bg-red-400` : ``)
+                            (currentOption == "optionEight" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionEight")}
                     >
@@ -125,7 +125,7 @@ function AdminPanel() {
                         </button>
                     </div>
                 </div>
-                <div className="mx-5 px-2 w-5/6 bg-white rounded-md">
+                <div className="px-2 w-5/6 bg-white/30 rounded-md">
                     {currentOption == "optionOne" && <AdminAllUsers />}
                     {currentOption == "optionTwo" && <AdminAllUsers />}
                     {currentOption == "optionThree" && <AdminAllTickets />}

@@ -265,7 +265,7 @@ function UserSettings() {
     });
 
     return (
-        <div className="">
+        <div className="text-gray-100">
             {userAcc && (
                 <div className="">
                     <h1 className="text-xl font-semibold">
@@ -334,7 +334,7 @@ function UserSettings() {
                                     id="Name"
                                     onChange={formikAccount.handleChange}
                                     value={formikAccount.values.Name}
-                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                    className="bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                                 />
                             )}
                             {googleUser && (
@@ -345,7 +345,7 @@ function UserSettings() {
                                     disabled
                                     onChange={formikAccount.handleChange}
                                     value={formikAccount.values.Name}
-                                    className="disabled:bg-gray-200 bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                    className="disabled:bg-gray-200 bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                                 />
                             )}
                             {formikAccount.errors.Name ? (
@@ -373,7 +373,7 @@ function UserSettings() {
                                     id="Email"
                                     onChange={formikAccount.handleChange}
                                     value={formikAccount.values.Email}
-                                    className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                    className="bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                                 />
                             )}
                             {googleUser && (
@@ -384,7 +384,7 @@ function UserSettings() {
                                     disabled
                                     onChange={formikAccount.handleChange}
                                     value={formikAccount.values.Email}
-                                    className="disabled:bg-gray-200 bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                    className="disabled:bg-gray-200 bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                                 />
                             )}
                             {formikAccount.errors.Email ? (
@@ -410,7 +410,7 @@ function UserSettings() {
                                 id="PhoneNumber"
                                 onChange={formikAccount.handleChange}
                                 value={formikAccount.values.PhoneNumber}
-                                className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                className="bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                             />
                             {formikAccount.errors.PhoneNumber ? (
                                 <div className="text-red-400">
@@ -427,7 +427,7 @@ function UserSettings() {
                         </button>
                     </form>
 
-                    <hr className="my-10 mx-auto border-2 border-gray-400" />
+                    <hr className="my-10 mx-auto border-2 border-gray-100" />
 
                     <h1 className="text-xl font-semibold">
                         Change Account Password
@@ -452,7 +452,7 @@ function UserSettings() {
                                 id="Password"
                                 onChange={formikPassword.handleChange}
                                 value={formikPassword.values.Password}
-                                className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                className="bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                             />
                             {formikPassword.errors.Password ? (
                                 <div className="text-red-400">
@@ -477,7 +477,7 @@ function UserSettings() {
                                 id="ConfirmPassword"
                                 onChange={formikPassword.handleChange}
                                 value={formikPassword.values.ConfirmPassword}
-                                className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+                                className="bg-transparent border-gray-100 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
                             />
                             {formikPassword.errors.ConfirmPassword ? (
                                 <div className="text-red-400">
@@ -494,7 +494,7 @@ function UserSettings() {
                         </button>
                     </form>
 
-                    <hr className="my-10 mx-auto border-2 border-gray-400" />
+                    <hr className="my-10 mx-auto border-2 border-gray-100" />
 
                     <h1 className="text-xl font-semibold mb-10">
                         Logout/Account Deletion

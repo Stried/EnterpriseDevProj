@@ -351,13 +351,13 @@ function ViewTicket() {
                             Issue Description
                         </p>
                         <p className="text-md">{ticketDetails.ticketBody}</p>
-                        <div className="overflow-x-auto mx-auto my-10 flex flex-row h-[40vh] space-x-2">
+                        <div className="overflow-x-auto mx-auto my-10 flex flex-row h-[40vh] space-x-2 ">
                             {ticketImages &&
                                 ticketImages.map((ticketImage, i) => {
                                     return (
                                         <img
                                             key={i}
-                                            className="flex-auto object-contain max-h-full"
+                                            className="object-contain max-h-full drop-shadow-lg rounded"
                                             src={`${
                                                 import.meta.env
                                                     .VITE_FILE_BASE_URL

@@ -151,7 +151,7 @@ function UserAccount() {
         <div className="">
             {user && (
                 <div
-                    className={`min-h-[100vh] max-h-full bg-gradient-to-b from-orange-300 to-red-400`}
+                    className={`min-h-[100vh] max-h-full bg-gradient-to-br from-gray-800 to-red-700 text-gray-100`}
                 >
                     {user && (
                         <div
@@ -159,14 +159,14 @@ function UserAccount() {
                         >
                             <div className="w-1/3">
                                 <div
-                                    className={`flex bg-stone-100 p-5 rounded-lg shadow-md`}
+                                    className={`flex text-gray-100 bg-white/30 p-5 rounded-lg shadow-md`}
                                     id="userProfile"
                                 >
                                     <div className="w-1/3">
                                         <Avatar
                                             rounded
                                             size={"lg"}
-                                            className=""
+                                            className="pt-1"
                                             img={user.imageFile}
                                         />
                                     </div>
@@ -187,14 +187,14 @@ function UserAccount() {
                                     </div>
                                 </div>
                                 <nav
-                                    className={`flex flex-col space-y-3 mt-5 bg-stone-100 p-5 rounded-lg shadow-md`}
+                                    className={`flex flex-col space-y-3 mt-5 bg-white/30 text-gray-100 p-5 rounded-lg shadow-md`}
                                     id="optionsMenu"
                                 >
                                     <div
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionOne"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -208,7 +208,7 @@ function UserAccount() {
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionTwo"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -222,7 +222,7 @@ function UserAccount() {
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionThree"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -236,7 +236,7 @@ function UserAccount() {
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionFour"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -250,7 +250,7 @@ function UserAccount() {
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionFive"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -264,7 +264,7 @@ function UserAccount() {
                                         className={
                                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                                             (currentOption == "optionSix"
-                                                ? `bg-red-400`
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
                                                 : ``)
                                         }
                                         onClick={() =>
@@ -276,7 +276,7 @@ function UserAccount() {
                                 </nav>
                             </div>
                             <div
-                                className={`w-2/3 p-10 bg-stone-100 text-black rounded-lg`}
+                                className={`w-2/3 p-10 bg-white/30 text-gray-100 rounded-lg`}
                             >
                                 {currentOption == "optionOne" && (
                                     <div className="">
@@ -323,11 +323,13 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionTwo" && (
-                                    <div className="text-black">To be done, eventually.</div>
+                                    <div className="text-black">
+                                        To be done, eventually.
+                                    </div>
                                 )}
 
                                 {currentOption == "optionThree" && (
-                                    <div className="text-black">
+                                    <div className="">
                                         <h1 className="text-3xl font-light">
                                             Groups
                                         </h1>
@@ -345,12 +347,12 @@ function UserAccount() {
                                                 Join Group
                                             </Link>
                                         </p>
-                                        <div className="my-5 grid grid-cols-3">
+                                        <div className="my-5 grid grid-cols-3 text-black">
                                             {groupsLengthList &&
                                             groupsList.length != 0 ? (
                                                 groupsList.map((groups, i) => {
                                                     return (
-                                                        <div className="bg-stone-100 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
+                                                        <div className="bg-gray-200 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
                                                             <h1 className="text-xl font-semibold">
                                                                 {
                                                                     groups.groupName
@@ -410,7 +412,7 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionFour" && (
-                                    <div className="text-black">
+                                    <div className="">
                                         <div className="">
                                             <h1 className="text-3xl font-light">
                                                 Friends
@@ -418,20 +420,20 @@ function UserAccount() {
                                             <p className="flex space-x-3 underline">
                                                 <Link
                                                     to={"/addFriends"}
-                                                    className="text-blue-500 visited:text-purple-500"
+                                                    className="text-blue-500 visited:text-purple-400"
                                                 >
                                                     Add A Friend
                                                 </Link>
 
                                                 <Link
                                                     to={"/friendRequests"}
-                                                    className="text-blue-500 visited:text-purple-500"
+                                                    className="text-blue-500 visited:text-purple-400"
                                                 >
                                                     Friend Request(s)
                                                 </Link>
                                             </p>
                                         </div>
-                                        <div className="">
+                                        <div className="text-black">
                                             {friendsList == 0 ? (
                                                 <div className="">
                                                     <p className="mb-5">
@@ -508,7 +510,7 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionFive" && (
-                                    <div className="text-black">
+                                    <div className="">
                                         <div className="">
                                             <h1 className="text-3xl font-light">
                                                 Support Tickets
@@ -516,76 +518,84 @@ function UserAccount() {
                                             <p className="flex space-x-3 underline">
                                                 <Link
                                                     to={"/support/submitTicket"}
-                                                    className="text-blue-500 visited:text-purple-500"
+                                                    className="text-blue-500 visited:text-purple-400"
                                                 >
                                                     Submit A Ticket
                                                 </Link>
                                             </p>
                                         </div>
                                         <div className="">
-                                            { supportTicketList.length == 0 && (
-                                                <p>You currently have no support tickets</p>
-                                            ) }
-                                            { supportTicketList && supportTicketList.map((tickets, i) => {
-                                                return (
-                                                    <div
-                                                        onClick={() => {
-                                                            openTicket(
-                                                                tickets.id
-                                                            );
-                                                        }}
-                                                        className="bg-white first-line: px-6 py-4 rounded-md flex mt-2 cursor-pointer"
-                                                    >
-                                                        <div className="grow">
-                                                            <h1 className="text-xl font-semibold">
-                                                                {
-                                                                    tickets.ticketHeader
-                                                                }
-                                                            </h1>
-                                                            <p>
-                                                                Category:{" "}
-                                                                {
-                                                                    tickets.ticketCategory
-                                                                }
-                                                            </p>
-                                                            <p className="text-sm mt-5">
-                                                                Ticket No.{" "}
-                                                                {tickets.id}
-                                                            </p>
-                                                        </div>
-                                                        <div className="">
-                                                            {tickets.ticketStatus.toLowerCase() ==
-                                                                "open" && (
-                                                                <Badge
-                                                                    color="indigo"
-                                                                    className="w-fit text-sm my-auto mx-2"
-                                                                >
-                                                                    Open
-                                                                </Badge>
-                                                            )}
-                                                            {tickets.ticketStatus.toLowerCase() ==
-                                                                "closed" && (
-                                                                <Badge
-                                                                    color="failure"
-                                                                    className="w-fit text-sm my-auto mx-2"
-                                                                >
-                                                                    Closed
-                                                                </Badge>
-                                                            )}
-                                                            {tickets.ticketStatus.toLowerCase() ==
-                                                                "pending" && (
-                                                                <Badge
-                                                                    color="warning"
-                                                                    className="w-fit text-sm my-auto mx-2"
-                                                                >
-                                                                    Pending
-                                                                </Badge>
-                                                            )}
-
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
+                                            {supportTicketList.length == 0 && (
+                                                <p>
+                                                    You currently have no
+                                                    support tickets
+                                                </p>
+                                            )}
+                                            {supportTicketList &&
+                                                supportTicketList.map(
+                                                    (tickets, i) => {
+                                                        return (
+                                                            <div
+                                                                onClick={() => {
+                                                                    openTicket(
+                                                                        tickets.id
+                                                                    );
+                                                                }}
+                                                                className="bg-white text-black first-line: px-6 py-4 rounded-md flex mt-2 cursor-pointer"
+                                                            >
+                                                                <div className="grow">
+                                                                    <h1 className="text-xl font-semibold">
+                                                                        {
+                                                                            tickets.ticketHeader
+                                                                        }
+                                                                    </h1>
+                                                                    <p>
+                                                                        Category:{" "}
+                                                                        {
+                                                                            tickets.ticketCategory
+                                                                        }
+                                                                    </p>
+                                                                    <p className="text-sm mt-5">
+                                                                        Ticket
+                                                                        No.{" "}
+                                                                        {
+                                                                            tickets.id
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                                <div className="">
+                                                                    {tickets.ticketStatus.toLowerCase() ==
+                                                                        "open" && (
+                                                                        <Badge
+                                                                            color="indigo"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Open
+                                                                        </Badge>
+                                                                    )}
+                                                                    {tickets.ticketStatus.toLowerCase() ==
+                                                                        "closed" && (
+                                                                        <Badge
+                                                                            color="failure"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Closed
+                                                                        </Badge>
+                                                                    )}
+                                                                    {tickets.ticketStatus.toLowerCase() ==
+                                                                        "pending" && (
+                                                                        <Badge
+                                                                            color="warning"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Pending
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    }
+                                                )}
                                         </div>
                                     </div>
                                 )}

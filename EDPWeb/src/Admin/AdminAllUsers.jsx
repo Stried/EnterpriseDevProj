@@ -52,20 +52,20 @@ function AdminAllUsers() {
                         <p className="text-lg font-medium">{user.name}</p>
                         <p className="">{user.email}</p>
 
-                        <div className="pt-4 space-x-2">
+                        <div className="pt-4 flex flex-row-reverse">
                             <button
-                                className="px-2 py-1 bg-blue-300 text-md font-medium rounded"
+                                onClick={() => setOpenModal(user.id)}
+                                className="px-2 py-1 bg-red-300 text-md font-medium rounded ml-1"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className="px-2 py-1 bg-blue-300 text-md font-medium rounded mr-1"
                                 onClick={() =>
                                     navigate(`/adminPanel/editUser/${user.id}`)
                                 }
                             >
                                 Edit
-                            </button>
-                            <button
-                                onClick={() => setOpenModal(user.id)}
-                                className="px-2 py-1 bg-red-300 text-md font-medium rounded"
-                            >
-                                Delete
                             </button>
                         </div>
 
@@ -102,9 +102,7 @@ function AdminAllUsers() {
                                 </Button>
                                 <Button
                                     color="gray"
-                                    onClick={() =>
-                                        setOpenModal("")
-                                    }
+                                    onClick={() => setOpenModal("")}
                                 >
                                     Decline
                                 </Button>
