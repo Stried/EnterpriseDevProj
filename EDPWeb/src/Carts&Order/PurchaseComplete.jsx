@@ -30,11 +30,16 @@ function PurchaseComplete() {
                 },
             }).then((res) => {
                 console.log(cartItemList)
+                console.log(cartItemList[ 0 ].event.eventId);
+                console.log(cartItemList[0].subTotal)
                 for (var i = 0; i < cartItemList.length; i++) {
                     const formData = {
-                        Quantity: cartItemList[i].Quantity,
-                        SubTotal: cartItemList[i].SubTotal,
-                        EventId: cartItemList[i].EventId
+                        // Please note that when taking from a json response, first letter is always small
+                        Quantity: cartItemList[i].quantity,
+                        SubTotal: cartItemList[ i ].subTotal,
+                        // Error also caused by fact that cartItemList[i] returns undefined, u can test it if you want.
+                        // Changed to cartItemList.Event.EventId to referece event Id from event object
+                        EventId: cartItemList[i].event.eventId
                     }
                     http.post("/order/CreateOrderItem", formData, {
                         headers: {
