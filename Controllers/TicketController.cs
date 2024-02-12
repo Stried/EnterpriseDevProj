@@ -132,6 +132,21 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
+        [HttpGet("getAllUserTicketsAdmin"), Authorize(Roles = "Administrator")]
+        public IActionResult GetAllUserTicketsAdmin()
+        {
+            try
+            {
+                var tickets = dbContext.Tickets.Include(u => u.User).ToList();
+                return Ok(tickets);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error in retrieving all Tickets");
+                return StatusCode(500);
+            }
+        }
+
         [HttpPut("updateTicketDetails/{ticketId}"), Authorize]
         public IActionResult UpdateTicketDetails(UpdateTicketDetails updateTicketDetails, int ticketId)
         { 

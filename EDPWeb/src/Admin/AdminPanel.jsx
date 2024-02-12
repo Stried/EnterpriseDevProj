@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../Users/UserContext";
 import AdminAllUsers from "./AdminAllUsers";
 import { Link } from "react-router-dom";
+import AdminAllTickets from "./AdminAllTickets";
 
 function AdminPanel() {
     const { user } = useContext(UserContext);
@@ -80,9 +81,9 @@ function AdminPanel() {
                         onClick={() => setCurrentOption("optionFive")}
                     >
                         <Link to="/eventrecords">
-                        <button className="text-lg font-medium">
-                            Event Records
-                        </button>
+                            <button className="text-lg font-medium">
+                                Event Records
+                            </button>
                         </Link>
                     </div>
 
@@ -94,9 +95,9 @@ function AdminPanel() {
                         onClick={() => setCurrentOption("optionSix")}
                     >
                         <Link t0="/eventapplications">
-                        <button className="text-lg font-medium">
-                            Event Applications
-                        </button>
+                            <button className="text-lg font-medium">
+                                Event Applications
+                            </button>
                         </Link>
                     </div>
 
@@ -125,7 +126,9 @@ function AdminPanel() {
                     </div>
                 </div>
                 <div className="mx-5 px-2 w-5/6 bg-white rounded-md">
-                    <AdminAllUsers />
+                    {currentOption == "optionOne" && <AdminAllUsers />}
+                    {currentOption == "optionTwo" && <AdminAllUsers />}
+                    {currentOption == "optionThree" && <AdminAllTickets />}
                 </div>
             </div>
         </div>
