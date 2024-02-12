@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using EnterpriseDevProj.Models.CartFolder;
+using EnterpriseDevProj.Models.OrderFolder;
 
 namespace EnterpriseDevProj.Models.EventFolder
 {
@@ -59,5 +60,6 @@ namespace EnterpriseDevProj.Models.EventFolder
         public DateTime EventUpdatedAt { get; set; }
         public List<Date>? Dates {get; set;}
         public CartItem? CartItem { get; set; }
+        public OrderItem? OrderItem { get; set; }
     }
 }

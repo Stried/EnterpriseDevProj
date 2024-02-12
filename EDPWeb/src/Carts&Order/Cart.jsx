@@ -138,7 +138,9 @@ function Cart() {
             },
         })
             .then((res) => {
+                console.log(res.data)
                 setCartItemList(res.data);
+                console.log(cartItemList)
             })
             .catch(function (err) {
                 console.log(err);

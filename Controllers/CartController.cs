@@ -132,8 +132,8 @@ namespace EnterpriseDevProj.Controllers
 
                 IQueryable<CartItem> userCartItems = _context.CartItems.Include(e => e.Event).Where(u => u.CartId == userCart.CartId);
 
-                List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).ToList();
-                IEnumerable<CartItemDTO> data = cartItemsList.Select(t => _mapper.Map<CartItemDTO>(t));
+                List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).Include(x => x.Event).ToList();
+                IEnumerable<CartItem> data = cartItemsList.Select(t => _mapper.Map<CartItem>(t));
 
                 return Ok(data);
             }

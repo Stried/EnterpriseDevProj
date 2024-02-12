@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240212044009_cartChanges")]
+    partial class cartChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartItem", b =>
@@ -76,7 +79,7 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("EventId")
                         .IsUnique();
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartParticipant", b =>
@@ -111,7 +114,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("CartItemId");
 
-                    b.ToTable("CartParticipants", (string)null);
+                    b.ToTable("CartParticipants");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
@@ -146,7 +149,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Dates", (string)null);
+                    b.ToTable("Dates");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
@@ -215,7 +218,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
@@ -246,7 +249,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
@@ -271,7 +274,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Friends", (string)null);
+                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.Miscellaneous.Theme", b =>
@@ -306,7 +309,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Themes", (string)null);
+                    b.ToTable("Themes");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
@@ -340,7 +343,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
@@ -368,7 +371,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
@@ -401,7 +404,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("OrderItemId");
 
-                    b.ToTable("OrdersParticipants", (string)null);
+                    b.ToTable("OrdersParticipants");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Comment", b =>
@@ -433,7 +436,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Ticket", b =>
@@ -479,9 +482,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
@@ -529,7 +530,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroup", b =>
@@ -556,7 +557,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserGroups", (string)null);
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.UserGroupLink", b =>
@@ -586,7 +587,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UserGroupLinks", (string)null);
+                    b.ToTable("UserGroupLinks");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.VoucherFolder.Voucher", b =>
@@ -617,7 +618,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Vouchers", (string)null);
+                    b.ToTable("Vouchers");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
@@ -769,17 +770,6 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("Ticket");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Ticket", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

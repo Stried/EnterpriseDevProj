@@ -1,6 +1,25 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import http from "./../../http"
 
 function PurchaseComplete() {
+    const rawData = {
+        CustomerName: "CKz",
+        CustomerEmail: "user@example.com",
+        CustomerPhone: 90000000
+    }
+
+    useEffect(() => {
+        http.post("/order/NewOrder", rawData, rawData.CustomerEmail, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+                "Content-Type": "application/json"
+            },
+        }).catch((err) => {
+            console.log(err);
+        });
+    })
+
     return (
         <div className="bg-gray-200 pt-2 pb-40">
             <div className="text-6xl font-semibold flex justify-center items-center pt-48">
