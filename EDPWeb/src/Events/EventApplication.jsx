@@ -14,7 +14,6 @@ import DatePicker from "react-multi-date-picker";
 import "react-multi-date-picker/styles/colors/red.css";
 import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
-import MarkdownEditor from "./MarkDownEditor";
 import UserContext from "../Users/UserContext";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
@@ -289,22 +288,18 @@ function ApplyEvent() {
       })
         .then((editor) => {
           const editorContainer = document.querySelector("#editor");
-          editorContainer.style.height = "400px"; // Set your desired initial height
-          editorContainer.style.border = "1px solid black"; // Add 1px black border
+          editorContainer.style.height = "400px"; 
+          editorContainer.style.border = "1px solid black"; 
 
           const toolbarContainer = document.querySelector("#toolbar-container");
-  
-          // Set CKEditor container styles
 
-  
-          // Append CKEditor toolbar to the designated container
           toolbarContainer.appendChild(editor.ui.view.toolbar.element);
   
-          // Use CKEditor's change event to update the form field
           editor.model.document.on("change", () => {
             const content = editor.getData();
             formikEvent.setFieldValue("ContentHTML", content);
           });
+        editor => editor.destroy()
         })
         .catch((error) => {
           console.error(error);
