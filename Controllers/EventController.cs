@@ -140,61 +140,61 @@ public IActionResult AddEvents(EventApplication data)
         }
 
         [HttpGet("GetAllEvents")]
-public IActionResult GetAllEvents(string? search)
-{
-    try
-    {
-        IQueryable<Event> result = dbContext.Events.Include(t => t.User).Include(t => t.Dates);
-        result = result.Where(x => x.Approval == true);
-        
-        if (search != null)
+        public IActionResult GetAllEvents(string? search)
         {
-            result = result.Where(x => x.EventName.Contains(search) || x.UserID.ToString().Contains(search));
+            try
+            {
+                IQueryable<Event> result = dbContext.Events.Include(t => t.User).Include(t => t.Dates);
+                result = result.Where(x => x.Approval == true);
+                
+                if (search != null)
+                {
+                    result = result.Where(x => x.EventName.Contains(search) || x.UserID.ToString().Contains(search));
+                }
+
+                var listofEvents = result.OrderByDescending(x => x.EventCreatedAt).ToList();
+                var data = listofEvents.Select(t => new
+                {
+                    t.EventId,
+                    t.EventName,
+                    t.EventPrice,
+                    t.FriendPrice,
+                    t.NTUCPrice,
+                    t.MaxPax,
+                    t.Approval,
+                    t.ActivityType,
+                    t.EventLocation,
+                    t.ExpiryDate,
+                    t.RemainingPax,
+                    t.AvgRating,
+                    t.DateType,
+                    t.ContentHTML,
+                    t.UserID,
+                    t.EventCreatedAt,
+                    t.EventUpdatedAt,
+                    User = new
+                    {
+                        t.User?.Name
+                    },
+                    Dates = t.Dates.Select(d => new
+                    {
+                        d.DateId,
+                        d.EventName,
+                        d.DateOfEvent,
+                        d.DateCreatedAt,
+                        d.DateUpdatedAt
+                    })
+                });
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error Retrieving Event Applications. ERRCODE 1008");
+                return StatusCode(500);
+            }
         }
-
-        var listofEvents = result.OrderByDescending(x => x.EventCreatedAt).ToList();
-        var data = listofEvents.Select(t => new
-        {
-            t.EventId,
-            t.EventName,
-            t.EventPrice,
-            t.FriendPrice,
-            t.NTUCPrice,
-            t.MaxPax,
-            t.Approval,
-            t.ActivityType,
-            t.EventLocation,
-            t.ExpiryDate,
-            t.RemainingPax,
-            t.AvgRating,
-            t.DateType,
-            t.ContentHTML,
-            t.UserID,
-            t.EventCreatedAt,
-            t.EventUpdatedAt,
-            User = new
-            {
-                t.User?.Name
-            },
-            Dates = t.Dates.Select(d => new
-            {
-                d.DateId,
-                d.EventName,
-                d.DateOfEvent,
-                d.DateCreatedAt,
-                d.DateUpdatedAt
-            })
-        });
-
-        return Ok(data);
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Error Retrieving Event Applications. ERRCODE 1008");
-        return StatusCode(500);
-    }
-}
-       [HttpGet("Details/{EventId}"), Authorize]
+[HttpGet("Details/{EventId}"), Authorize]
 public IActionResult GetEvent(int EventId)
 {
     try
@@ -279,6 +279,7 @@ public IActionResult GetEvent(int EventId)
             }
         }
 
+
         [HttpPut("UpdateEvent/{eventId}")]
         [Authorize]
         public IActionResult UpdateEvent(int eventId, UpdateEvent updateModel)
@@ -314,8 +315,6 @@ public IActionResult GetEvent(int EventId)
                             });
 
                         dbContext.Dates.AddRange(newDates);
-
-
                         eventModel.EventName = updateModel.EventName;
                         eventModel.EventPrice = updateModel.EventPrice;
                         eventModel.FriendPrice = updateModel.FriendPrice;
@@ -329,7 +328,6 @@ public IActionResult GetEvent(int EventId)
                         eventModel.DateType = updateModel.DateType;
                         eventModel.ContentHTML = updateModel.ContentHTML;
                         eventModel.EventUpdatedAt = DateTime.UtcNow;
-
 
                         dbContext.SaveChanges();
 

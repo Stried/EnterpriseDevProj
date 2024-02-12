@@ -26,6 +26,7 @@ import {
   Typography,
   CardContent,
 } from "@mui/material";
+
 function EventDetail() {
   let { EventId } = useParams();
 
@@ -264,7 +265,6 @@ function EventDetail() {
             className={`text-center top-10 left-1 absolute  ${
               isCardShifted ? "transform translate-x-[370px] duration" : ""
             }`}
-            
             onClick={handleToggle}
             style={{ left: "23.520rem", top: "3.75rem", cursor: "pointer", transition: "transform 110ms ease-in-out" }}
           >
@@ -328,9 +328,8 @@ function EventDetail() {
                 <div className=" border-2 border-orange-400 rounded-md ">
                   <div className="p-2 max-h-96 overflow-auto ">
 
-                  <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-
-<br></br>
+                  <div className="prose" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+                <br></br>
                   </div>
                 </div>
         </CardContent>
