@@ -84,10 +84,10 @@ function Cart() {
 
     let quantityMessage;
     if (cartItemList.length <= 1) {
-        quantityMessage = `Item: ${cartItemList.length}`
+        quantityMessage = `${cartItemList.length} Item`
     }
     else {
-        quantityMessage = `Items: ${cartItemList.length}`
+        quantityMessage = `${cartItemList.length} Items`
     }
 
     const updateQuantity = (id, currentItemQuantity) => {
@@ -147,25 +147,25 @@ function Cart() {
             })
     }, []);
 
-    return (
-        <div className="bg-gradient-to-b from-gray-300 to-gray-400 pb-10">
-            <div className='relative'>
-                <img src="../src/assets/u-sports-banner.jpg" className='w-full' />
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <h1 className='text-white font-bold text-8xl'>Your Cart</h1>
+    return ( 
+        <div className="text-blue-950 bg-gradient-to-br from-gray-800 to-red-700 pb-10">
+            <div className='pt-10'>
+                <div className="text-center items-center justify-center">
+                    <h1 className='text-gray-200 font-bold text-6xl'>Your Cart</h1><br/>
+                    <h2 className='text-gray-200 font-semibold text-3xl italic'>Stuff you've ordered goes here!</h2>
                 </div>
             </div>
             {cartItemList.length > 0 && (
                 <div>
-                    <div className='flex-row flex justify-between'>
-                        <div className='text-2xl font-bold px-5 py-3 mb-5 bg-zinc-400 rounded-br-lg items-center flex'>
+                    <div className='mt-5 flex justify-between'>
+                        <div className='ml-5 text-2xl font-bold px-5 mb-5 bg-zinc-100 rounded-lg items-center flex'>
                             {quantityMessage}
                         </div>
-                        <div className={`relative inline-block px-5 py-2.5 mb-5 bg-zinc-400 ${isOpen ? 'rounded-none' : 'rounded-bl-lg'}`}>
+                        <div className={`relative inline-block py-2.5 px-3 mb-5 mr-5 bg-zinc-100 ${isOpen ? 'rounded-none' : 'rounded-lg'}`}>
                             <Listbox value={selected} onChange={setSelected}>
-                                <Listbox.Label className="text-xl font-bold mr-5">Sort By:</Listbox.Label>
+                                <Listbox.Label className="text-xl font-bold mr-5 ml-4">Sort By:</Listbox.Label>
                                 <Listbox.Button
-                                    className="rounded-md text-xl bg-orange-400 text-black hover:text-white hover:bg-orange-600 transition duration-300 font-semibold px-4 py-2 z-20"
+                                    className="pl-3 rounded-md text-xl bg-slate-700 text-gray-200 hover:text-gray-200 hover:bg-slate-600 transition duration-300 font-semibold px-4 py-2 z-20"
                                     onClick={() => setIsOpen(!isOpen)}
                                 >
                                     {selected.label}
@@ -197,23 +197,23 @@ function Cart() {
                         </div>
                     </div>
                     <div className="flex flex-row-2">
-                        <div className='custom-scrollbar items-left flex flex-col overflow-y-scroll h-96 w-3/4'>
+                        <div className='custom-scrollbar items-left flex flex-col overflow-y-scroll h-96 w-3/4 pr-1'>
                             {
                                 cartItemList.map((cartItem, i) => {
                                     return (
                                         <div
                                             key={cartItem.cartItemId}
-                                            className="ml-5 border-b-2 border-zinc-500 bg-zinc-300"
+                                            className="rounded-lg ml-5 border-b-2 border-zinc-500 bg-zinc-100 my-1"
                                         >
                                             <div className="m-5 flex">
                                                 <img
                                                     src="../src/assets/backgroundMain1.jpg"
-                                                    className="w-96 h-64 rounded-lg"
+                                                    className="w-96 h-64 rounded-lg opacity-90"
                                                 ></img>
                                                 <div className="pl-5 content-between grid grid-col-2 w-auto">
                                                     <div className="">
                                                         <div className="text-2xl font-bold pb-3">
-                                                            <IconContext.Provider value={{ className: "hover:text-orange-400" }}>
+                                                            <IconContext.Provider value={{ className: "ml-2 mb-1 hover:text-blue-800" }}>
                                                                 {cartItem.event.eventName}{" "}<IoMdOpen className='inline-block' />
                                                             </IconContext.Provider>
                                                         </div>
@@ -229,14 +229,14 @@ function Cart() {
                                                     </div>
 
                                                     <div className="flex">
-                                                        <button onClick={() => updateQuantity(cartItem.cartItemId, (cartItem.quantity - 1))} className="border-y-2 border-l-2 border-black text-3xl p-2 rounded-l-lg w-12">
+                                                        <button onClick={() => updateQuantity(cartItem.cartItemId, (cartItem.quantity - 1))} className="bg-rose-300 border-y-2 border-l-2 border-black text-3xl rounded-l-lg w-12 pb-1">
                                                             -
                                                         </button>
-                                                        <div className="p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-300">
+                                                        <div className="p-2 border-2 border-black text-3xl text-center w-20 bg-zinc-200">
                                                             {cartItem.quantity}
                                                         </div>
                                                         <button
-                                                            className="border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12"
+                                                            className="bg-emerald-200 border-y-2 border-r-2 border-black text-3xl p-2 rounded-r-lg w-12"
                                                             onClick={() => updateQuantity(cartItem.cartItemId, (cartItem.quantity + 1))}
                                                         >
                                                             +
@@ -244,7 +244,7 @@ function Cart() {
                                                     </div>
                                                 </div>
                                                 <div className='text-2xl ml-auto'>
-                                                    <IconContext.Provider value={{ className: "hover:text-orange-400" }}>
+                                                    <IconContext.Provider value={{ className: "text-red-700 hover:text-red-600" }}>
                                                         <button onClick={() => setOpenDeleteItemModal(true)}>
                                                             <FaTrashAlt className='inline-block' />
                                                         </button>
@@ -286,9 +286,9 @@ function Cart() {
                                 })
                             }
                         </div>
-                        <div className='bg-zinc-300 border-black w-1/4 mx-5 rounded-md justify-between flex flex-col'>
+                        <div className='bg-zinc-100 border-black w-1/4 mx-5 rounded-md justify-between flex flex-col'>
                             <div className='flex flex-col py-2.5 mx-2 items-center'>
-                                <div className='border bg-orange-200 text-center p-2 m-2 rounded-lg w-full justify-center h-64'>
+                                <div className='border bg-zinc-300 text-center p-2 m-2 rounded-lg w-full justify-center h-64'>
                                     <div className='font-semibold mb-3'>
                                         Cart Summary
                                     </div>
@@ -296,21 +296,36 @@ function Cart() {
                                         {
                                             cartItemList.map((cartItem, i) => {
                                                 return (
-                                                    <div key={cartItem} className='bg-white items-left justify-between flex border-b-2 py-2'>
-                                                        <div className='ml-2'>
-                                                            <div className='text-left text-lg font-semibold flex mr-2'>
-                                                                {i + 1}{". "}
-                                                                {cartItem.event.eventName}
+                                                    <div
+                                                        key={cartItem}
+                                                        className="ml-2 bg-white rounded-lg justify-between flex drop-shadow-md py-2 my-1"
+                                                    >
+                                                        <div className="ml-2">
+                                                            <div className="text-left text-lg font-semibold flex">
+                                                                {i + 1}.
+                                                                <span className="pl-1 text-sky-700">
+                                                                    {
+                                                                        cartItem
+                                                                            .event
+                                                                            .eventName
+                                                                    }
+                                                                </span>
                                                             </div>
-                                                            <div className='text-left'>
-                                                                Qty: {cartItem.quantity}
+                                                            <div className="text-left">
+                                                                Qty:{" "}
+                                                                {
+                                                                    cartItem.quantity
+                                                                }
                                                             </div>
                                                         </div>
-                                                        <div className='mr-2 text-xl font-bold'>
-                                                            ${cartItem.event.eventPrice * cartItem.quantity}
+                                                        <div className="mr-2 text-xl font-bold">
+                                                            $
+                                                            {cartItem.event
+                                                                .eventPrice *
+                                                                cartItem.quantity}
                                                         </div>
                                                     </div>
-                                                )
+                                                );
                                             })
                                         }
                                     </div>
@@ -326,7 +341,7 @@ function Cart() {
                             <button className='font-semibold text-xl bg-orange-400 rounded-md m-2.5 py-2.5 hover:text-white hover:bg-orange-600 transition duration-300'>
                                 <Link
                                     to="/checkout">
-                                    Proceed to Checkout?
+                                    Proceed to Checkout
                                 </Link>
                             </button>
                         </div>

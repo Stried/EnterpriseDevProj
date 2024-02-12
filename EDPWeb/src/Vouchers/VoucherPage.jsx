@@ -3,6 +3,7 @@ import backgroundMain1 from "./../../src/assets/backgroundMain1.jpg";
 import http from "../../http";
 import UserContext from "../Users/UserContext";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 function VoucherPage() {
     const [vouchersList, setVouchersList] = useState([]);
@@ -33,13 +34,16 @@ function VoucherPage() {
     };
 
     return (
-        <div className="p-10 space-x-4">
-            <div className="flex">
-                <p className="text-6xl">Vouchers</p>
+        <div className="p-10 space-x-4 text-blue-950 bg-gradient-to-br from-gray-800 to-red-700 h-screen">
+            <div className="">
+                <p className="text-6xl text-gray-200 text-center">Vouchers</p>
+                <p className="text-2xl italic text-gray-200 text-center">
+                    Looking for discounts? You've come to the right place.
+                </p>
                 <div className="ml-10 pt-3">
                     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
                         <ul
-                            class="flex flex-wrap -mb-px text-sm font-medium text-center"
+                            class="justify-center flex flex-wrap -mb-px text-sm font-medium text-center"
                             id="default-tab"
                             data-tabs-toggle="#default-tab-content"
                             role="tablist"
@@ -49,9 +53,8 @@ function VoucherPage() {
                                 role="presentation"
                             >
                                 <button
-                                    class="inline-block p-4 border-b-2 rounded-t-lg"
+                                    class="inline-block p-4 border-b-2 rounded-t-lg text-gray-200 hover:text-orange-400 transition duration-300 ease-in-out"
                                     type="button"
-                                    aria-controls="profile"
                                     aria-selected="false"
                                 >
                                     Public
@@ -62,9 +65,8 @@ function VoucherPage() {
                                 role="presentation"
                             >
                                 <button
-                                    class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                                    class="inline-block p-4 border-b-2 rounded-t-lg text-gray-200 hover:text-orange-400 transition duration-300 ease-in-out"
                                     type="button"
-                                    aria-controls="dashboard"
                                     aria-selected="false"
                                 >
                                     Claimed
@@ -74,7 +76,7 @@ function VoucherPage() {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pl-1 drop-shadow-xl">
                 {vouchersList.map((vouchers, i) => (
                     <div
                         key={i}
@@ -97,14 +99,21 @@ function VoucherPage() {
                                         Edit
                                     </Link>
                                 )}
-                                <div className="text-gray-900 font-bold text-xl mb-2">
-                                    ${vouchers.voucherValue} Voucher
+                                <div className="drop-shadow-md">
+                                    <div className="text-gray-900 font-bold text-xl mb-2">
+                                        ${vouchers.voucherValue} Voucher
+                                    </div>
+                                    <p className="text-gray-700 text-base w-64">
+                                        {vouchers.voucherName}
+                                    </p>
+                                    <p>
+                                        Expires{" "}
+                                        {dayjs(vouchers.voucherExpiry).format(
+                                            "DD MMM YYYY"
+                                        )}
+                                    </p>
+                                    <p>Uses: {vouchers.voucherUses}</p>
                                 </div>
-                                <p className="text-gray-700 text-base w-64">
-                                    {vouchers.voucherName}
-                                </p>
-                                <p>Expiry Date: {vouchers.voucherExpiry}</p>
-                                <p>Uses: {vouchers.voucherUses}</p>
                             </div>
                             <button className="bg-white text-black text-l font-semibold">
                                 Claim

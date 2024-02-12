@@ -23,7 +23,7 @@ namespace EnterpriseDevProj.Controllers
                             .Where(c => c.Type == ClaimTypes.NameIdentifier)
                             .Select(c => c.Value).SingleOrDefault());
         }
-        public CartController(MyDbContext context, ILogger<EventController> logger,IMapper mapper)
+        public CartController(MyDbContext context, ILogger<EventController> logger, IMapper mapper)
         {
             _context = context;
             this.logger = logger;
@@ -42,7 +42,7 @@ namespace EnterpriseDevProj.Controllers
             }
             var now = DateTime.Now;
             var result = _context.Carts.FirstOrDefault(c => c.UserId == userAcc.Id);
-            if (result == null) 
+            if (result == null)
             {
                 var myCart = new Cart()
                 {
@@ -92,15 +92,15 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // CartItem
-        [HttpPost("AddCartItem"), Authorize]  // who lives in a pineapple under the sea?
+        [HttpPost("AddCartItem"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         public IActionResult AddCartItem(AddCartItemRequest cartItem)
         {
             var now = DateTime.Now;
-            var userId = GetUserId;
-			var result = _context.Carts.Where(t => t.CartRoute == userId()).Select(t => t.CartId).FirstOrDefault();
+            var userId = GetUserId();
+            var result = _context.Carts.Where(t => t.CartRoute == userId).Select(t => t.CartId).FirstOrDefault();
 
-			var myCartItem = new CartItem()
+            var myCartItem = new CartItem()
             {
                 Quantity = cartItem.Quantity,
                 CreatedAt = now,
@@ -111,6 +111,15 @@ namespace EnterpriseDevProj.Controllers
             var eventPrice = _context.Events.Where(t => t.EventId == cartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
             myCartItem.SubTotal = myCartItem.Quantity * eventPrice;
 
+            var checkForCartItem = _context.CartItems.Where(x => x.EventId == cartItem.EventId && x.CartId == result).FirstOrDefault();
+            if (checkForCartItem != null)
+            {
+                checkForCartItem.Quantity += 1;
+                _context.SaveChanges();
+
+                return Ok();
+            }
+
             _context.CartItems.Add(myCartItem);
             _context.SaveChanges();
 
@@ -119,7 +128,7 @@ namespace EnterpriseDevProj.Controllers
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
             return Ok(cartItemDTO);
         }
-        
+
         [HttpGet("getMyCartItems"), Authorize]
         [ProducesResponseType(typeof(IEnumerable<CartItemDTO>), StatusCodes.Status200OK)]
         public IActionResult GetMyCartItems()
@@ -148,7 +157,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult UpdateCartItem(int cartItemId, UpdateCartItemRequest cartItemQuantity)
         {
             var findCartItem = _context.CartItems.Find(cartItemId);
-            if  (findCartItem == null)
+            if (findCartItem == null)
             {
                 logger.LogError("Cart Item is not found");
                 return StatusCode(500);
@@ -201,6 +210,7 @@ namespace EnterpriseDevProj.Controllers
             CartParticipantDTO cartParticipantDTO = _mapper.Map<CartParticipantDTO>(newCartParticipant);
             return Ok(cartParticipantDTO);
         }
+
         [ProducesResponseType(typeof(IEnumerable<CartParticipantDTO>), StatusCodes.Status200OK)]
         [HttpGet("/GetCartParticipant"), Authorize]
         public IActionResult GetCartParticipants(int cartItemId)
@@ -212,6 +222,7 @@ namespace EnterpriseDevProj.Controllers
             });
             return Ok(data);
         }
+
         [ProducesResponseType(typeof(IEnumerable<CartParticipantDTO>), StatusCodes.Status200OK)]
         [HttpPut("/UpdateCartParticipant"), Authorize]
         public IActionResult UpdateCartParticipant(int cartParticipantId, UpdateCartParticipantRequest cartParticipant)
@@ -245,6 +256,7 @@ namespace EnterpriseDevProj.Controllers
             _context.SaveChanges();
             return Ok();
         }
+
         [HttpDelete("/DeleteCartParticipant"), Authorize]
         public IActionResult DeleteCartParticipant(int cartParticiapntId)
         {
@@ -260,8 +272,8 @@ namespace EnterpriseDevProj.Controllers
         }
 
         [HttpPost("/addParticipantGroup/{groupId}"), Authorize]
-        public IActionResult addParticipantGroup(int groupId) 
-        { 
+        public IActionResult addParticipantGroup(int groupId)
+        {
             var groupID = groupId;
             var participantsInGroup = _context.UserGroupLinks.Where(x => x.GroupID == groupID).ToList();
 

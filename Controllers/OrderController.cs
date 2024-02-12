@@ -29,14 +29,14 @@ namespace EnterpriseDevProj.Controllers
 
         // Order
         [HttpPost("NewOrder")]
-        public IActionResult NewOrder(AddOrderRequest order, string userEmail)
+        public IActionResult NewOrder(AddOrderRequest order)
         {
-            var user = GetUserId();
-            var userAcc = _context.Users.FirstOrDefault(x => x.Email == userEmail);
-            if (userAcc == null)
-            {
-                return StatusCode(500);
-            }
+            // var user = GetUserId();
+            // var userAcc = _context.Users.FirstOrDefault(x => x.Email == userEmail);
+            // if (userAcc == null)
+            // {
+            //     return StatusCode(500);
+            // }
             var now = DateTime.Now;
             var myOrder = new Order()
             {
@@ -45,7 +45,7 @@ namespace EnterpriseDevProj.Controllers
                 CustomerPhone = order.CustomerPhone,
                 CreatedAt = now,
                 UpdatedAt = now,
-                UserId = userAcc.Id
+                UserId = user
             };
 
             _context.Orders.Add(myOrder);
