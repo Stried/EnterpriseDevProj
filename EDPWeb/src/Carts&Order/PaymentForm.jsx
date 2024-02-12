@@ -49,13 +49,44 @@ function PaymentForm() {
                 CustomerPhone: (data.CustomerPhone = data.CustomerPhone),
             };
 
+            if (!stripe || !elements) {
+                // Stripe.js hasn't yet loaded.
+                // Make sure to disable form submission until Stripe.js has loaded.
+                return;
+            }
+
+            setIsLoading(true);
+
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    // Make sure to change this to your payment completion page
+                    return_url: "http://localhost:3000/purchaseComplete",
+                },
+            });
+
+            // This point will only be reached if there is an immediate error when
+            // confirming the payment. Otherwise, your customer will be redirected to
+            // your `return_url`. For some payment methods like iDEAL, your customer will
+            // be redirected to an intermediate site first to authorize the payment, then
+            // redirected to the `return_url`.
+            if (
+                error.type === "card_error" ||
+                error.type === "validation_error"
+            ) {
+                setMessage(error.message);
+            } else {
+                setMessage("An unexpected error occurred.");
+            }
+
+            setIsLoading(false);
+
             await http
                 .post("/order/NewOrder", formData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem(
                             "accessToken"
-                        )}`, // This is needed for mine for some reason, not part of the practical
-                        "Content-Type": "application/json",
+                        )}`,
                     },
                 })
                 .then((res) => {
@@ -112,8 +143,7 @@ function PaymentForm() {
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                // return_url: "http://localhost:3000/purchaseComplete",
-                return_url: null
+                return_url: "http://localhost:3000/purchaseComplete",
             },
         });
 
@@ -176,6 +206,7 @@ function PaymentForm() {
                     <button
                         disabled={isLoading || !stripe || !elements}
                         id="submit"
+                        type="submit"
                         className="bg-orange-400 text-white font-semibold rounded-md py-3 px-4 text-lg shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-100 w-full transition duration-200 ease-in-out"
                     >
                         <span className="flex items-center justify-center">
@@ -216,5 +247,4 @@ function PaymentForm() {
         </div>
     );
 }
-
 export default PaymentForm;

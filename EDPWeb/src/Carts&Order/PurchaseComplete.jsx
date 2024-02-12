@@ -10,10 +10,9 @@ function PurchaseComplete() {
     }
 
     useEffect(() => {
-        http.post("/order/NewOrder", rawData, rawData.CustomerEmail, {
+        http.post("/order/NewOrder", rawData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
-                "Content-Type": "application/json"
             },
         }).catch((err) => {
             console.log(err);

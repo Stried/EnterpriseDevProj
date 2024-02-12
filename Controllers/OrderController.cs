@@ -31,7 +31,7 @@ namespace EnterpriseDevProj.Controllers
         [HttpPost("NewOrder")]
         public IActionResult NewOrder(AddOrderRequest order)
         {
-            // var user = GetUserId();
+            var user = GetUserId();
             // var userAcc = _context.Users.FirstOrDefault(x => x.Email == userEmail);
             // if (userAcc == null)
             // {
@@ -40,9 +40,6 @@ namespace EnterpriseDevProj.Controllers
             var now = DateTime.Now;
             var myOrder = new Order()
             {
-                CustomerName = order.CustomerName,
-                CustomerEmail = order.CustomerEmail,
-                CustomerPhone = order.CustomerPhone,
                 CreatedAt = now,
                 UpdatedAt = now,
                 UserId = user
