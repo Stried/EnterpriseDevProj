@@ -3,8 +3,8 @@
 .text-editor-container {
     position: relative;
     width: 850px;
-    height: 850px;
-    min-height: 850px;
+    height: 650px;
+    min-height: 650px;
     margin: auto;
     text-align: left;
     padding:25px;

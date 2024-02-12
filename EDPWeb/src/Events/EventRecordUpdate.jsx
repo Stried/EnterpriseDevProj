@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { BubbleMenu, EditorContent, FloatingMenu, useEditor } from '@tiptap/react';
-
+import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 import './TextEditor.css'; 
 import http from "../../http";
@@ -183,7 +183,7 @@ function EventRecordUpdate() {
 
     }),
 
-    onSubmit: async (data) => {
+    onSubmit: async (data, {setFieldError}) => {
       console.log("Submit button clicked");
       console.log("Form data:", data);
 
@@ -213,7 +213,7 @@ console.log("Form data for event dates: "+data.EventDates)
         RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
         DateType: (data.DateType = data.DateType.trim()),
-        ContentHTML: (data.ContentHTML = data.ContentHTML),
+        ContentHTML: (data.ContentHTML = editor.getHTML().trim()),
         EventDates: formattedDates,
       };
 
@@ -226,6 +226,11 @@ console.log("Form data for event dates: "+data.EventDates)
         console.log("Formatted Max Date:", formattedMaxDate);
 
         formData.ExpiryDate = formattedMaxDate;
+      }
+      if (editor.getHTML().trim() === "<p></p>") {
+        // Set an error for the ContentHTML field
+        setFieldError('ContentHTML', 'Content is required');
+        return;
       }
 
       console.log(formData);
@@ -288,17 +293,19 @@ console.log("Form data for event dates: "+data.EventDates)
 
   const handleUpdateContent = (content) => {
     // Update the state or perform any actions with the updated content
-    setTiptapContent(content);
+    formikEvent.setFieldValue("ContentHTML", content);
   };
 
   
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TextAlign.configure({
+      types: ['heading', 'paragraph'],
+    })],
     content: selectedevent.contentHTML,
     onUpdate: ({ editor }) => {
-      // Handle content updates here
-      onUpdateContent(editor.getHTML());
+
+      handleUpdateContent(editor.getHTML());
     },
   });
   
@@ -307,10 +314,25 @@ console.log("Form data for event dates: "+data.EventDates)
       editor.commands.setContent(selectedevent.contentHTML);
     }
   }, [editor, selectedevent.contentHTML]);
+
+  const getSelectedHeadingLevel = () => {
+    const { active } = editor;
+    if (active && active.type.name === 'heading') {
+      return active.type.attrs.level;
+    }
+    return '';
+  };
+
+  useEffect(() => {
+    if (editor) {
+      editor.commands.setContent(formikEvent.values.ContentHTML);
+    }
+  }, [editor, formikEvent.values.ContentHTML]);
+
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
       <div className="p-5 text-center bg-stone-100 w-7/12 mx-auto rounded-lg drop-shadow-lg shadow-lg">
-        <h1 className="text-xl font-medium">Event Application</h1>
+        <h1 className="text-xl font-medium">Event Record Update</h1>
         <form
           onSubmit={formikEvent.handleSubmit}
           className="text-lg font-medium"
@@ -516,7 +538,11 @@ console.log("Form data for event dates: "+data.EventDates)
             </RadioGroup>
           </div>
 
-          <div className="pb-96">
+          <div className="my-4">
+          <label htmlFor="eventlocation">Event Dates</label>
+            <p className="opacity-70 italic">
+              When does your event happen?
+            </p>
             <DatePicker
               name="EventDates"
               id="eventdates"
@@ -538,13 +564,20 @@ console.log("Form data for event dates: "+data.EventDates)
               </div>
             ) : null}
           </div>
+<div className="my-4">
+          <label htmlFor="eventlocation">Event Details</label>
+            <p className="opacity-70 italic">
+              Create the details, and tell us more about your event
+            </p>
+          
 <div className="prose">
 <div className="text-editor-container">
+
       {editor && (
         <>
-
 <BubbleMenu className="bubble-menu" tippyOptions={{ duration: 100 }} editor={editor}>
   <select
+    value={getSelectedHeadingLevel()}
     onChange={(e) => {
       const selectedHeadingLevel = parseInt(e.target.value, 10);
       if (!isNaN(selectedHeadingLevel)) {
@@ -553,7 +586,7 @@ console.log("Form data for event dates: "+data.EventDates)
     }}
   >
     <option value="" disabled>Select Heading</option>
-    {[1, 2, 3, 4, 5, 6].map((level) => (
+    {[1, 2, 3, 4, 5].map((level) => (
       <option
         key={level}
         value={level}
@@ -566,25 +599,12 @@ console.log("Form data for event dates: "+data.EventDates)
 
   <button
     type="button"
-    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-    style={{ color: editor.isActive('heading', { level: 1 }) ? 'blue' : 'inherit' }}
-  >
-    H1
-  </button>
-  <button
-    type="button"
-    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-    style={{ color: editor.isActive('heading', { level: 2 }) ? 'blue' : 'inherit' }}
-  >
-    H2
-  </button>
-  <button
-    type="button"
     onClick={() => editor.chain().focus().toggleBold().run()}
     style={{ color: editor.isActive('bold') ? 'blue' : 'inherit' }}
   >
     Bold
   </button>
+  
   <button
     type="button"
     onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -592,6 +612,7 @@ console.log("Form data for event dates: "+data.EventDates)
   >
     Italic
   </button>
+  
   <button
     type="button"
     onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -599,24 +620,61 @@ console.log("Form data for event dates: "+data.EventDates)
   >
     Strike
   </button>
+  
   <button
+              type="button"
     onClick={() => editor.chain().focus().toggleBulletList().run()}
     style={{ color: editor.isActive('bulletList') ? 'blue' : 'inherit' }}
   >
     Bullet
   </button>
+  
+
+      <button
+            type="button"
+        onClick={() => editor.chain().focus().setTextAlign('left').run()}
+        className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-left"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+      </button>
+      <button
+            type="button"
+        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+        className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-center"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+      </button>
+      <button
+            type="button"
+        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+        className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-right"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+      </button>
+      <button
+      type="button"
+        onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+        className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-justify"><line x1="21" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="3" y2="18"></line></svg>
+      </button>
+
 </BubbleMenu>
-
-
-
           <div className="tiptap-editor">
+          <div className="text-4xl pt-5">Markdown Editor:</div>
             <EditorContent editor={editor} />
           </div>
+          {formikEvent.errors.ContentHTML ? (
+              <div className="text-red-400">
+                *{formikEvent.errors.ContentHTML}
+              </div>
+            ) : null}
         </>
       )}
+     </div>
     </div>
-          </div>
 
+          </div>
           <button
             type="submit"
             className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"

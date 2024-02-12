@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "flowbite-react";
 import DOMPurify from 'dompurify';
 import Calendar from 'react-calendar';
+import './Calendar.css';
 import 'react-calendar/dist/Calendar.css';
 import {
   Box,
@@ -91,43 +92,10 @@ function EventDetail() {
         console.log(err);
       });
   }, [EventId]);
-  
-
-  const formikApplication = useFormik({
-    initialValues: selectedevent,
-    validationSchema: yup.object().shape({
-      Approval: yup.boolean(),
-    }),
-    onSubmit: async (data) => {
-      console.log("Submit button clicked");
-      console.log("Form data:", data);
-      if (!formikApplication.isValid) {
-        console.error("Form is not valid");
-        return;
-      }
-      const updatedEvent = { ...selectedevent, Approval: true };
-      console.log("Updated Event:", updatedEvent);
-      http
-        .put(`/event/Approval/${EventId}`, updatedEvent, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          navigate("/eventapplications");
-        })
-        .catch(function (err) {
-          console.log(err);
-
-          toast.error(`${err.response.data}`);
-        });
-    },
-  });
 
   const navigate = useNavigate();
   const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+
   const onChange = (date) => {
     setSelectedDate(date);
 
@@ -148,6 +116,9 @@ function EventDetail() {
       setSelectedTime(formattedTime);
     }
   };
+  const earliestDate = allowedDates.length > 0 ? new Date(Math.min(...allowedDates)) : new Date();
+  const maxDate = allowedDates.length > 0 ? new Date(Math.max(...allowedDates)) : new Date();
+
         const tileDisabled = ({ date }) =>
         !allowedDates.some(
           (allowedDate) =>
@@ -155,6 +126,7 @@ function EventDetail() {
             allowedDate.getMonth() === date.getMonth() &&
             allowedDate.getDate() === date.getDate()
         );
+
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
 
         const rawData =
@@ -162,197 +134,122 @@ function EventDetail() {
           Quantity: 1,
           EventId: EventId
         }
+        console.log(earliestDate);
+        const [selectedDate, setSelectedDate] = useState(earliestDate);
 
         const addToCart = () => {
           http.post("/cart/AddCartItem", rawData, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           })
           .then((res) => console.log(res))
         }
   return (
-    <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
-<div>
-        <Calendar onChange={onChange} value={selectedDate} tileDisabled={tileDisabled} />
-      </div>
-      {selectedTime && (
-        <div className="text-center text-lg mt-4">
-          Selected Time: {selectedTime}
-        </div>
-      )}
-    
-          <div className="relative min-h-screen">
-      <div className="relative min-h-screen text-white">
-      <h1 className="text-center text-5xl text-black">Event Name:</h1>
-        <h1 className="text-center text-5xl text-black">{selectedevent.eventName}</h1>
-        <br></br>
-        <div className="relative sm:rounded-lg mx-2 sm:mx-6 lg:mx-16 flex text-left">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-0">
-          <div className="w-full h-full">
+    <div className="bg-white">
+  <div className=" p-5 grid grid-cols-2 gap-8 mx-28">
 
-            <Card
-              className={`w-4/12 bg-gray-700 rounded-md absolute bottom-0 left-8.5 border-2 border-red-600 ${
-                isCardShifted ? "transform translate-x-[370px]" : ""
-              }`}
-              style={{ width: "23.630rem", borderRadius: "8px", height: "33.25em", backgroundColor:"RGB(53, 63, 78)", transition: "transform 110ms ease-in-out", }}
-            >
-              <CardContent className="px-12">
-                <Typography
-                  variant="h4"
-                  className="text-center text-4xl text-orange-400"
-                >
-                  Details:
-                </Typography>
 
-                <div className="w-max mr-10 mb-3 mt-3 pb-3 px-2 font-medium text-xl space-y-1 border-b-gray-700 border-solid border-b-2 text-white">
-                  <p>
-                    Event ID:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.eventId}
-                    </span>
-                  </p>
-                  <p>
-                    Event Type:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.activityType}
-                    </span>
-                  </p>
-                  <p>
-                    Event Entry Fee:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.eventPrice}
-                    </span>
-                  </p>
-
-                  <p>
-                    Uplay Friends Fee:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.friendPrice}
-                    </span>
-                  </p>
-                  <p>
-                    NTUC Members Fee:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.ntucPrice}
-                    </span>
-                  </p>
-                  <p>
-                  Event Location:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.eventPrice}
-                    </span>
-                  </p>
-                  <p>
-                    Max Participants:{" "}
-                    <span className="text-orange-400">
-                    {selectedevent.maxPax}
-                    </span>
-                  </p>
-                  <p>
-                    Posted by:{" "}
-
-                    {selectedevent.user && (
-                                <span className="text-orange-400"> {selectedevent.user.name}</span>
-                    )}
-
-                  </p>
+  <div>
+      <p className="pb-5">
+      {(() => {
+            switch (selectedevent.activityType) {
+              case "Dine and Wine":
+                return (
+                  <div className="text-3xl text-red-400 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-coffee"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                    <span className="ml-2">Dine and Wine</span>
+                  </div>
+                );
+              case "Adventure":
+                return (
+                  <div className="text-3xl text-yellow-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-compass"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                  <span className="ml-2">Adventure</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div
-            className={`text-center top-10 left-1 absolute  ${
-              isCardShifted ? "transform translate-x-[370px] duration" : ""
-            }`}
-            onClick={handleToggle}
-            style={{ left: "23.520rem", top: "3.75rem", cursor: "pointer", transition: "transform 110ms ease-in-out" }}
-          >
-            <div className=" h-32 w-8 rounded-r-md border-y-2 border-y-red-600 border-r-2 border-r-red-600" style={{ backgroundColor:"RGB(53, 63, 78)"}}>
-              <div className="text-center top-4 left-2 relative">
-                {!isCardShifted && (
-                  <div className="h-20 w-7 ">
-                    <div className="left-1 top-10 absolute  ">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="1em"
-                        viewBox="0 0 512 512"
-                        fill="rgb(220 38 38)"
-                      >
-                        <path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z" />
-                      </svg>
+                );
+                case "Family and Friends":
+                  return (
+                    <div className="text-3xl text-sky-400 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                      <span className="ml-2">Family and Friends</span>
                     </div>
-                  </div>
-                )}
-                {isCardShifted && (
-                  <div className="h-20 w-7">
-                    <div className="left-1 top-10 absolute ">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="1em"
-                        viewBox="0 0 512 512"
-                        fill="rgb(220 38 38)"
-                      >
-                        <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          </div>
+                  );
+                  case "Travels":
+                    return (
+                      <div className="text-3xl text-teal-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-wind"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
+                        <span className="ml-2">Travels</span>
+                      </div>
+                    );
+                    case "Sports":
+                      return (
+                        <div className="text-3xl text-orange-400 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dribbble"><circle cx="12" cy="12" r="10"></circle><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"></path></svg>
+                          <span className="ml-2">Sports</span>
+                        </div>
+                      );
+                      case "Hobbies and Wellness":
+                        return (
+                          <div className="text-3xl text-violet-400 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                            <span className="ml-2">Hobbies and Wellness</span>
+                          </div>
+                        );
+              default:
+                return null; 
+            }
+          })()}
+      </p>
 
-          <div className="col-span-1">
-            <Grid
-              item
-              xs={12}
-              md={6}
-              lg={6}
-              key={selectedevent.eventId}
-              className="ml-64"
-            >
-
-              <div className="w-2/3 grid grid-cols- columns-2">
-              <Card className="w-96 relative rounded-md z-20 border-2 border-red-600" style={{height:"33.25em"}}>
-        <CardContent className="px-12 ">
-        <Typography
-                  variant="h4"
-                  className="text-center text-4xl text-orange-400"
-                >
-                  Description:
-                </Typography>
-
-                <br />
-                <br />
-                <div className=" border-2 border-orange-400 rounded-md ">
-                  <div className="p-2 max-h-96 overflow-auto ">
-
-                  <div className="prose" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-                <br></br>
-                  </div>
+    <h1 className=" text-5xl text-black">{selectedevent.eventName}</h1>
+    <div className="text-3xl text-black flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                  <span className="ml-2"><p className="text-2xl py-5">{selectedevent.eventLocation}</p></span>
                 </div>
-        </CardContent>
-      </Card>
-              </div>
+    <div className="border-b-2 border-gray-300 mb-4" />
 
-            </Grid>
+<div>Available spots left: </div>
+    <div className="prose" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+  </div>
+
+
+<div className="flex flex-col items-end space-y-4"> 
+        <div className="bg-gray-100 p-4 rounded-md shadow-md sticky top-20"> 
+          {(console.log("Selected Date:", selectedDate))}
+          <Calendar onChange={onChange} value={selectedDate} tileDisabled={tileDisabled}
+          minDate={earliestDate}
+          maxDate={maxDate}
+          />
+          {selectedTime && (
+            <div className="text-center text-lg mt-4">Selected Time: {selectedTime}</div>
+          )}
+
+              {selectedevent.eventPrice !== 0 ? (
+                <p className="py-5 text-xl">Event Price: ${selectedevent.eventPrice}</p>
+              ) : (
+                <p className="py-5 text-xl"> Event Price: Free</p>
+              )}
+
+          <div className="p-5 text-right space-x-4"> 
+            <button
+              onClick={addToCart}
+              type="submit"
+              className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={() => console.log("View Cart clicked")} 
+              className="bg-gray-300 px-3 py-2 rounded-md tracking-wide hover:bg-gray-400 transition ease-in-out duration-300"
+            >
+              View Cart
+            </button>
           </div>
         </div>
       </div>
-      <div className="p-5 text-right mr-10 w-1/2 mx-auto rounded-lg ">
-          
-          <button
-            onClick={addToCart}
-            type="submit"
-            className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
-          >
-            Add to Cart
-          </button>
-      </div>
     </div>
-    </div>
-
+</div>
   );
 }
 export default EventDetail;
