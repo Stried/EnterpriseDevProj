@@ -309,101 +309,6 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("Themes", (string)null);
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CustomerEmail")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CustomerPhone")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders", (string)null);
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
-                {
-                    b.Property<int>("OrderItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<float>("SubTotal")
-                        .HasColumnType("float");
-
-                    b.HasKey("OrderItemId");
-
-                    b.HasIndex("EventId")
-                        .IsUnique();
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems", (string)null);
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
-                {
-                    b.Property<int>("OrderParticipantId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OrderParticipantEmail")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("OrderParticipantName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("OrderParticipantPhoneNumber")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("OrderParticipantId");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.ToTable("OrdersParticipants", (string)null);
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -717,43 +622,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithOne("OrderItem")
-                        .HasForeignKey("EnterpriseDevProj.Models.OrderFolder.OrderItem", "EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
-
-                    b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.OrderItem", "OrderItem")
-                        .WithMany("Participants")
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderItem");
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Comment", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.TicketFolder.Ticket", "Ticket")
@@ -827,18 +695,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("CartItem");
 
                     b.Navigation("Dates");
-
-                    b.Navigation("OrderItem");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
-                {
-                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
@@ -848,8 +704,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("Events");
 
                     b.Navigation("Friends");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("UserGroups");
                 });

@@ -114,7 +114,7 @@ namespace EnterpriseDevProj.Controllers
             _context.CartItems.Add(myCartItem);
             _context.SaveChanges();
 
-            CartItem? newCartItem = _context.CartItems.Include(t => t.Cart)
+            CartItem? newCartItem = _context.CartItems.Include(t => t.Cart).Include(e => e.Event)
                         .FirstOrDefault(t => t.CartId == myCartItem.CartId && t.EventId == myCartItem.EventId);
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
             return Ok(cartItemDTO);
@@ -130,12 +130,12 @@ namespace EnterpriseDevProj.Controllers
                 // userID from user cart can be found
                 var userCart = _context.Carts.First(x => x.UserId == userId);
 
-                IQueryable<CartItem> userCartItems = _context.CartItems.Include(e => e.Event).Where(u => u.CartId == userCart.CartId);
+                var userCartItems = _context.CartItems.Where(u => u.CartId == userCart.CartId).Include(e => e.Event);
 
-                List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).Include(x => x.Event).ToList();
-                IEnumerable<CartItem> data = cartItemsList.Select(t => _mapper.Map<CartItem>(t));
+                List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).ToList();
+                // IEnumerable<CartItem> data = cartItemsList.Select(t => _mapper.Map<CartItem>(t));
 
-                return Ok(data);
+                return Ok(cartItemsList);
             }
             catch (Exception ex)
             {
