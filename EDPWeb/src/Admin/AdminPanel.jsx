@@ -65,18 +65,6 @@ function AdminPanel() {
                     <div
                         className={
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionFour" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
-                        }
-                        onClick={() => setCurrentOption("optionFour")}
-                    >
-                        <button className="text-lg font-medium">
-                            Merchant Request
-                        </button>
-                    </div>
-
-                    <div
-                        className={
-                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                             (currentOption == "optionFive" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
                         onClick={() => setCurrentOption("optionFive")}
@@ -93,9 +81,8 @@ function AdminPanel() {
                             `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
                             (currentOption == "optionSix" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
                         }
-                        onClick={() => setCurrentOption("optionSix")}
                     >
-                        <Link t0="/eventapplications">
+                        <Link to="/eventapplications">
                             <button className="text-lg font-medium">
                                 Event Applications
                             </button>
@@ -126,17 +113,6 @@ function AdminPanel() {
                         </button>
                     </div>
 
-                    <div
-                        className={
-                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                            (currentOption == "optionNine" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
-                        }
-                        onClick={() => setCurrentOption("optionNine")}
-                    >
-                        <button className="text-lg font-medium">
-                            Data Analytics
-                        </button>
-                    </div>
                 </div>
                 <div className="px-2 w-5/6 bg-white/30 rounded-md">
                     {currentOption == "optionOne" && <AdminAllUsers />}

@@ -234,6 +234,7 @@ public IActionResult GetEvent(int EventId)
             eventModel.UserID,
             eventModel.EventCreatedAt,
             eventModel.EventUpdatedAt,
+            eventModel.EventImageFile,
             User = new
             {
                 eventModel.User?.Name
