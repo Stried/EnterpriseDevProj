@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import waguri from "../assets/waguriKaoruko.png";
+import waguri from "../assets/waguriKaorukoTransparent.png";
 import { useEffect, useState } from "react";
 
 
@@ -60,7 +60,7 @@ function Custom401() {
 
     const navigate = useNavigate();
     return (
-        <div className="pt-20 bg-gradient-to-br from-gray-900 to-purple-900 text-gray-100 flex flex-col items-center justify-center w-screen h-[89vh]">
+        <div className="pt-20 bg-gradient-to-br from-gray-900 to-rose-900 text-gray-100 flex flex-col items-center justify-center w-screen h-[89vh]">
             <p className="text-6xl font-semibold">Hey!</p> 
             <p className="pt-5">
                 <span className="italic">{flavourText}</span>
@@ -79,7 +79,7 @@ function Custom401() {
                 Pat her head or click{" "}
                 <Link
                     to={"/"}
-                    className="text-blue-500 font-semibold"
+                    className="text-rose-400 font-semibold"
                 >
                     here 
                 </Link>

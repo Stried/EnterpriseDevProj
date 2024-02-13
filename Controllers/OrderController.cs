@@ -64,6 +64,13 @@ namespace EnterpriseDevProj.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetAllOrders"), Authorize]
+        public IActionResult GetAllOrders()
+        {
+            IQueryable result = _context.Orders.Include(t => t.OrderItems);
+
+            return Ok(result);
+        }
 
         [HttpGet("GetMyCurrentOrder"), Authorize]
         public IActionResult GetMyCurrentOrder()
@@ -71,13 +78,6 @@ namespace EnterpriseDevProj.Controllers
             var user = GetUserId();
             var result = _context.Orders.Where(t => t.UserId == user).Include(t => t.OrderItems).OrderByDescending(t => t.OrderId).FirstOrDefault();
 
-            return Ok(result);
-        }
-
-        [HttpGet("GetMySpecificOrder/{id}"), Authorize]
-        public IActionResult GetMySpecificOrder(int id)
-        {
-            var result = _context.Orders.Where(t => t.OrderId == id).Include(t => t.User).FirstOrDefault();
             return Ok(result);
         }
 
@@ -133,16 +133,6 @@ namespace EnterpriseDevProj.Controllers
         [HttpGet("GetOrderItem/{id}"), Authorize]
         public IActionResult GetOrderItem(int id)
         {
-            // Get the user ID from the JWT token
-            var userId = GetUserId();
-
-            // Check if the user is authorized to access the order items
-            var order = _context.Orders.FirstOrDefault(o => o.OrderId == id && o.UserId == userId);
-            if (order == null)
-            {
-                // If the order does not belong to the user, return 403 Forbidden
-                return StatusCode(403, "You are not authorized to access this order item.");
-            }
             var usersOrderItems = _context.OrderItems.Where(t => t.OrderId == id);
             List<OrderItem> orderItems = usersOrderItems.Include(t => t.Event).OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(orderItems);  

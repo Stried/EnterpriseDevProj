@@ -3,6 +3,7 @@ import UserContext from "../Users/UserContext";
 import AdminAllUsers from "./AdminAllUsers";
 import { Link } from "react-router-dom";
 import AdminAllTickets from "./AdminAllTickets";
+import AdminAllOrders from "./AdminAllOrders";
 
 function AdminPanel() {
     const { user } = useContext(UserContext);
@@ -121,6 +122,18 @@ function AdminPanel() {
                         onClick={() => setCurrentOption("optionEight")}
                     >
                         <button className="text-lg font-medium">
+                            Transaction Records
+                        </button>
+                    </div>
+
+                    <div
+                        className={
+                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
+                            (currentOption == "optionNine" ? `bg-gradient-to-r from-red-400/70 to-transparent` : ``)
+                        }
+                        onClick={() => setCurrentOption("optionNine")}
+                    >
+                        <button className="text-lg font-medium">
                             Data Analytics
                         </button>
                     </div>
@@ -129,6 +142,7 @@ function AdminPanel() {
                     {currentOption == "optionOne" && <AdminAllUsers />}
                     {currentOption == "optionTwo" && <AdminAllUsers />}
                     {currentOption == "optionThree" && <AdminAllTickets />}
+                    {currentOption == "optionEight" && <AdminAllOrders/>}
                 </div>
             </div>
         </div>

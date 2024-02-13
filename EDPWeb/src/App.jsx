@@ -44,6 +44,7 @@ import TicketSubmission from "./Tickets/TicketSubmission";
 import ViewTicket from "./Tickets/ViewTicket";
 import Receipt from "./Carts&Order/Receipt";
 import Custom401 from "./ErrorPages/Custom401";
+import MembershipPurchase from "./Membership/MembershipPurchase";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -146,10 +147,7 @@ function App() {
                             path="/eventrecords"
                             element={<EventRecords />}
                         />
-                        <Route
-                            path="/membership"
-                            element={<MembershipMain />}
-                        />
+
                         <Route
                             path="/myCart"
                             element={<GetCartItem />}
@@ -253,6 +251,14 @@ function App() {
                         <Route
                             path="/support/ticket/:ticketId"
                             element={<ViewTicket />}
+                        />
+                        <Route
+                            path="/membership"
+                            element={ <MembershipMain /> }
+                        />
+                        <Route
+                            path="/membership/:membershipType"
+                            element={<MembershipPurchase />}
                         />
                         <Route
                             path="/401"
