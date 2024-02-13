@@ -12,12 +12,13 @@ import UserSettings from "./UserSettings";
 
 
 function UserAccount() {
-    const [ user, setUser ] = useState("");
-    const [ currentOption, setCurrentOption ] = useState("optionOne");
-    const [ groupsList, setGroupsList ] = useState([]);
-    const [ groupsLengthList, setGroupsLengthList ] = useState([]);
-    const [ friendsList, setFriendsList ] = useState([]);
-    const [ supportTicketList, setSupportTicketList ] = useState([]);
+    const [user, setUser] = useState("");
+    const [currentOption, setCurrentOption] = useState("optionOne");
+    const [groupsList, setGroupsList] = useState([]);
+    const [groupsLengthList, setGroupsLengthList] = useState([]);
+    const [friendsList, setFriendsList] = useState([]);
+    const [supportTicketList, setSupportTicketList] = useState([]);
+    const [orderList, setOrderList] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem("accessToken")) {
@@ -31,7 +32,7 @@ function UserAccount() {
                 })
                 .catch(function (err) {
                     console.log(err);
-            })
+                })
         }
     }, [])
 
@@ -65,7 +66,7 @@ function UserAccount() {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
                         "googleAccessToken"
-                    )}`, 
+                    )}`,
                 },
             })
                 .then((res) => {
@@ -74,14 +75,14 @@ function UserAccount() {
                 })
                 .catch(function (err) {
                     console.log(err);
-            })
+                })
         }
     }, []);
 
     const getUserLength = (groupID) => {
         http.get(`/group/groupDetails/${groupID}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
@@ -91,19 +92,19 @@ function UserAccount() {
             })
             .catch(function (err) {
                 console.log(err);
-        })
+            })
     }
 
     useEffect(() => {
         groupsList.map((groups, i) => {
             getUserLength(groups.id);
         })
-    }, [ groupsList ])
+    }, [groupsList])
 
     useEffect(() => {
         http.get("/friends/getApprovedFriends", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
@@ -111,13 +112,13 @@ function UserAccount() {
             })
             .catch(function (err) {
                 console.log(err);
-        })
+            })
     })
 
     const removeFriend = (id) => {
         http.delete(`/friends/approveDelete/${id}`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
@@ -132,7 +133,7 @@ function UserAccount() {
     useEffect(() => {
         http.get("/ticket/getAllUserTickets", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
@@ -140,13 +141,28 @@ function UserAccount() {
             })
             .catch(function (err) {
                 console.log(err);
-        })
+            })
     }, [])
 
     const openTicket = (id) => {
         navigate(`/support/ticket/${id}`);
     }
-    
+
+    useEffect(() => {
+        http.get("/order/GetMyOrders", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setOrderList(res.data)
+                console.log(orderList)
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+    }, [supportTicketList]);
+
     return (
         <div className="">
             {user && (
@@ -271,6 +287,20 @@ function UserAccount() {
                                             setCurrentOption("optionSix")
                                         }
                                     >
+                                        <button>Transaction History </button>
+                                    </div>
+
+                                    <div
+                                        className={
+                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
+                                            (currentOption == "optionSeven"
+                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
+                                                : ``)
+                                        }
+                                        onClick={() =>
+                                            setCurrentOption("optionSeven")
+                                        }
+                                    >
                                         <button>Settings</button>
                                     </div>
                                 </nav>
@@ -349,7 +379,7 @@ function UserAccount() {
                                         </p>
                                         <div className="my-5 grid grid-cols-3 text-black">
                                             {groupsLengthList &&
-                                            groupsList.length != 0 ? (
+                                                groupsList.length != 0 ? (
                                                 groupsList.map((groups, i) => {
                                                     return (
                                                         <div className="bg-gray-200 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
@@ -364,7 +394,7 @@ function UserAccount() {
                                                                     <span className="mx-2">
                                                                         {
                                                                             groupsLengthList[
-                                                                                i
+                                                                            i
                                                                             ]
                                                                         }
                                                                     </span>
@@ -566,31 +596,31 @@ function UserAccount() {
                                                                 <div className="">
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "open" && (
-                                                                        <Badge
-                                                                            color="indigo"
-                                                                            className="w-fit text-sm my-auto mx-2"
-                                                                        >
-                                                                            Open
-                                                                        </Badge>
-                                                                    )}
+                                                                            <Badge
+                                                                                color="indigo"
+                                                                                className="w-fit text-sm my-auto mx-2"
+                                                                            >
+                                                                                Open
+                                                                            </Badge>
+                                                                        )}
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "closed" && (
-                                                                        <Badge
-                                                                            color="failure"
-                                                                            className="w-fit text-sm my-auto mx-2"
-                                                                        >
-                                                                            Closed
-                                                                        </Badge>
-                                                                    )}
+                                                                            <Badge
+                                                                                color="failure"
+                                                                                className="w-fit text-sm my-auto mx-2"
+                                                                            >
+                                                                                Closed
+                                                                            </Badge>
+                                                                        )}
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "pending" && (
-                                                                        <Badge
-                                                                            color="warning"
-                                                                            className="w-fit text-sm my-auto mx-2"
-                                                                        >
-                                                                            Pending
-                                                                        </Badge>
-                                                                    )}
+                                                                            <Badge
+                                                                                color="warning"
+                                                                                className="w-fit text-sm my-auto mx-2"
+                                                                            >
+                                                                                Pending
+                                                                            </Badge>
+                                                                        )}
                                                                 </div>
                                                             </div>
                                                         );
@@ -601,6 +631,36 @@ function UserAccount() {
                                 )}
 
                                 {currentOption == "optionSix" && (
+                                    <div className="">
+                                        <div className="">
+                                            <h1 className="text-3xl font-light">
+                                                Transaction history
+                                            </h1>
+                                            {orderList.length == 0 && (
+                                                <p>
+                                                    You have not purchase anything
+                                                </p>
+                                            )}
+                                            {orderList &&
+                                                orderList.map((order, i) =>
+                                                {
+                                                    return (
+                                                        <div>
+                                                            <p>{order.orderId}</p>
+                                                            <button>
+                                                                <Link
+                                                                    to={`/receipt/${order.orderId}`}>
+                                                                    Click
+                                                                </Link>
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                })}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {currentOption == "optionSeven" && (
                                     <div className="text-black">
                                         <UserSettings />
                                     </div>

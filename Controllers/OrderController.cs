@@ -30,7 +30,7 @@ namespace EnterpriseDevProj.Controllers
         }
 
         // Order
-        [HttpPost("NewOrder")]
+        [HttpPost("NewOrder"), Authorize]
         public IActionResult NewOrder()
         {
             var user = GetUserId();
@@ -55,9 +55,27 @@ namespace EnterpriseDevProj.Controllers
             return Ok(newOrder);
         }
 
+        [HttpGet("GetMyOrders"), Authorize]
+        public IActionResult GetMyOrders()
+        {
+            var user = GetUserId();
+            IQueryable result = _context.Orders.Where(t => t.UserId == user).Include(t => t.OrderItems);
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("GetMyCurrentOrder"), Authorize]
+        public IActionResult GetMyCurrentOrder()
+        {
+            var user = GetUserId();
+            var result = _context.Orders.Where(t => t.UserId == user).Include(t => t.OrderItems).OrderByDescending(t => t.OrderId).FirstOrDefault();
+
+            return Ok(result);
+        }
 
         // OrderItem
-        [HttpPost("CreateOrderItem")]
+        [HttpPost("CreateOrderItem"), Authorize]
         public IActionResult CreateOrderItem(AddOrderItemRequest orderItem)
         {
             try
@@ -67,7 +85,7 @@ namespace EnterpriseDevProj.Controllers
                 var now = DateTime.Now;
 
 
-                var result = _context.Orders.OrderBy(t => t.CreatedAt).Select(t => t.OrderId).FirstOrDefault();
+                var result = _context.Orders.OrderByDescending(t => t.OrderId).Select(t => t.OrderId).FirstOrDefault();
                 logger.LogInformation(result.ToString());
 
                 var myOrderItem = new OrderItem()
@@ -103,6 +121,24 @@ namespace EnterpriseDevProj.Controllers
                 logger.LogError(e, "Failed to create order item. Please troubleshoot the abovementioned error(s) and try again.");
                 return StatusCode(500);
             }
+        }
+
+        [HttpGet("GetOrderItem/{id}"), Authorize]
+        public IActionResult GetOrderItem(int id)
+        {
+            // Get the user ID from the JWT token
+            var userId = GetUserId();
+
+            // Check if the user is authorized to access the order items
+            var order = _context.Orders.FirstOrDefault(o => o.OrderId == id && o.UserId == userId);
+            if (order == null)
+            {
+                // If the order does not belong to the user, return 403 Forbidden
+                return StatusCode(403, "You are not authorized to access this order item.");
+            }
+            var usersOrderItems = _context.OrderItems.Where(t => t.OrderId == id);
+            List<OrderItem> orderItems = usersOrderItems.Include(t => t.Event).OrderByDescending(x => x.CreatedAt).ToList();
+            return Ok(orderItems);  
         }
     }
 }

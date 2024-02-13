@@ -42,6 +42,7 @@ import PurchaseComplete from "./Carts&Order/PurchaseComplete"
 import TicketMain from "./Tickets/TicketMain";
 import TicketSubmission from "./Tickets/TicketSubmission";
 import ViewTicket from "./Tickets/ViewTicket";
+import Receipt from "./Carts&Order/Receipt";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -163,8 +164,12 @@ function App() {
                         />
                         <Route
                             path="/purchaseComplete"
-                            element={<PurchaseComplete/>}
-                            />
+                            element={<PurchaseComplete />}
+                        />
+                        <Route
+                            path="/receipt/:id"
+                            element={<Receipt />}
+                        />
                         <Route
                             path="/eventapplicationdetailed/Details/:EventId"
                             element={<EventApplicationDetailed />}
