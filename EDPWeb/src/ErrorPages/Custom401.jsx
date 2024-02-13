@@ -60,7 +60,7 @@ function Custom401() {
 
     const navigate = useNavigate();
     return (
-        <div className="mt-20 flex flex-col items-center justify-center w-screen">
+        <div className="pt-20 bg-gradient-to-br from-gray-900 to-purple-900 text-gray-100 flex flex-col items-center justify-center w-screen h-[89vh]">
             <p className="text-6xl font-semibold">Hey!</p> 
             <p className="pt-5">
                 <span className="italic">{flavourText}</span>
