@@ -19,5 +19,6 @@ namespace EnterpriseDevProj.Models.CartFolder
         public List<CartItem>? CartItems { get; set; }
 
         public double SubTotal { get; set; }
+        public int VoucherUsed { get; set; }
     }
 }

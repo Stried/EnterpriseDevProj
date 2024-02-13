@@ -209,6 +209,19 @@ namespace EnterpriseDevProj.Controllers
             return Ok();
         }
 
+        [HttpPost("updateCartUsedVoucher/{voucherUsed}"), Authorize]
+        public IActionResult UpdateCartVoucherUsedl(int voucherUsed)
+        {
+            var userID = GetUserID();
+            var cartOfUser = _context.Carts.Where(x => x.UserId == userID).FirstOrDefault();
+            cartOfUser.VoucherUsed = voucherUsed;
+
+            _context.Carts.Update(cartOfUser);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
         // Participant
         [ProducesResponseType(typeof(IEnumerable<CartParticipantDTO>), StatusCodes.Status200OK)]
         [HttpPost("/AddCartParticipant"), Authorize]

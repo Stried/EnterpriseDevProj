@@ -12,7 +12,8 @@ import UserSettings from "./UserSettings";
 
 
 function UserAccount() {
-    const [user, setUser] = useState("");
+    const [ user, setUser ] = useState("");
+    const [ membershipStatus, setMembershipStaus ] = useState("");
     const [currentOption, setCurrentOption] = useState("optionOne");
     const [groupsList, setGroupsList] = useState([]);
     const [groupsLengthList, setGroupsLengthList] = useState([]);
@@ -161,7 +162,21 @@ function UserAccount() {
             .catch(function (err) {
                 console.log(err);
             })
-    }, [supportTicketList]);
+    }, [ supportTicketList ]);
+    
+    useEffect(() => {
+        http.get("/membership/getMembership", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setMembershipStaus(res.data);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
+    }, [])
 
     return (
         <div className="">
@@ -218,20 +233,6 @@ function UserAccount() {
                                         }
                                     >
                                         <button>My Account</button>
-                                    </div>
-
-                                    <div
-                                        className={
-                                            `px-3 py-2 rounded-md hover:bg-orange-300 cursor-pointer ` +
-                                            (currentOption == "optionTwo"
-                                                ? `bg-gradient-to-r from-red-400/70 to-transparent`
-                                                : ``)
-                                        }
-                                        onClick={() =>
-                                            setCurrentOption("optionTwo")
-                                        }
-                                    >
-                                        <button>Membership</button>
                                     </div>
 
                                     <div
@@ -313,7 +314,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 FULL NAME{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.name}
@@ -323,7 +324,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 NRIC{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.nric}
@@ -333,7 +334,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 EMAIL ADDRESS{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.email}
@@ -343,18 +344,26 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 PHONE NUMBER{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.phoneNumber}
                                             </h2>
                                         </div>
-                                    </div>
-                                )}
-
-                                {currentOption == "optionTwo" && (
-                                    <div className="text-black">
-                                        To be done, eventually.
+                                        <div className="pb-7">
+                                            <p className="text-lg flex">
+                                                MEMBERSHIP STATUS{" "}
+                                                
+                                            </p>
+                                            <h2 className="text-2xl font-medium leading-6">
+                                                {membershipStatus.membershipStatus ==
+                                                    "NTUCMember" && <p>NTUC Member</p>}
+                                                {membershipStatus.membershipStatus ==
+                                                    "FriendsOfUPlay" && <p>Friends Of UPlay</p>}
+                                                {membershipStatus.membershipStatus ==
+                                                    "Standard" && <p>Standard</p>}
+                                            </h2>
+                                        </div>
                                     </div>
                                 )}
 
@@ -379,7 +388,7 @@ function UserAccount() {
                                         </p>
                                         <div className="my-5 grid grid-cols-3 text-black">
                                             {groupsLengthList &&
-                                                groupsList.length != 0 ? (
+                                            groupsList.length != 0 ? (
                                                 groupsList.map((groups, i) => {
                                                     return (
                                                         <div className="bg-gray-200 px-4 py-5 rounded-md shadow-lg mr-4 mb-4">
@@ -394,7 +403,7 @@ function UserAccount() {
                                                                     <span className="mx-2">
                                                                         {
                                                                             groupsLengthList[
-                                                                            i
+                                                                                i
                                                                             ]
                                                                         }
                                                                     </span>
@@ -596,31 +605,31 @@ function UserAccount() {
                                                                 <div className="">
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "open" && (
-                                                                            <Badge
-                                                                                color="indigo"
-                                                                                className="w-fit text-sm my-auto mx-2"
-                                                                            >
-                                                                                Open
-                                                                            </Badge>
-                                                                        )}
+                                                                        <Badge
+                                                                            color="indigo"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Open
+                                                                        </Badge>
+                                                                    )}
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "closed" && (
-                                                                            <Badge
-                                                                                color="failure"
-                                                                                className="w-fit text-sm my-auto mx-2"
-                                                                            >
-                                                                                Closed
-                                                                            </Badge>
-                                                                        )}
+                                                                        <Badge
+                                                                            color="failure"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Closed
+                                                                        </Badge>
+                                                                    )}
                                                                     {tickets.ticketStatus.toLowerCase() ==
                                                                         "pending" && (
-                                                                            <Badge
-                                                                                color="warning"
-                                                                                className="w-fit text-sm my-auto mx-2"
-                                                                            >
-                                                                                Pending
-                                                                            </Badge>
-                                                                        )}
+                                                                        <Badge
+                                                                            color="warning"
+                                                                            className="w-fit text-sm my-auto mx-2"
+                                                                        >
+                                                                            Pending
+                                                                        </Badge>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         );
@@ -638,10 +647,11 @@ function UserAccount() {
                                             </h1>
                                             {orderList.length == 0 && (
                                                 <p>
-                                                    You have not purchase anything
+                                                    You have not purchase
+                                                    anything
                                                 </p>
                                             )}
-                                            {orderList &&
+                                            {orderList && (
                                                 <div className="bg-gray-100 text-black mt-3 rounded-md pt-2 pl-2 pr-2 drop-shadow-lg">
                                                     <div className="flex flex-col-3 font-semibold justify-between pr-2 border-b-2 border-zinc-200 pb-2">
                                                         <div className="pl-1">
@@ -650,50 +660,74 @@ function UserAccount() {
                                                         <div className="pr-12 pl-3">
                                                             Time of Purchase
                                                         </div>
-                                                        <div className="pr-40">
-                                                            
-                                                        </div>
+                                                        <div className="pr-40"></div>
                                                     </div>
-                                                    {orderList.map((order, i) => {
-                                                        return (
-                                                            <div key={i}>
-                                                                {i != orderList.length-1 &&
-                                                                    <div 
-                                                                    className="bg-gray-100 font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
-                                                                        <div className="flex pl-2">
-                                                                            {order.orderId}
+                                                    {orderList.map(
+                                                        (order, i) => {
+                                                            return (
+                                                                <div key={i}>
+                                                                    {i !=
+                                                                        orderList.length -
+                                                                            1 && (
+                                                                        <div className="bg-gray-100 font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                                                            <div className="flex pl-2">
+                                                                                {
+                                                                                    order.orderId
+                                                                                }
+                                                                            </div>
+                                                                            <div className="flex">
+                                                                                {new Date(
+                                                                                    order.createdAt
+                                                                                ).toLocaleString(
+                                                                                    "en-US"
+                                                                                )}
+                                                                            </div>
+                                                                            <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
+                                                                                <Link
+                                                                                    to={`/receipt/${order.orderId}`}
+                                                                                >
+                                                                                    Click
+                                                                                    to
+                                                                                    view
+                                                                                    receipt
+                                                                                </Link>
+                                                                            </button>
                                                                         </div>
-                                                                        <div className="flex">
-                                                                            {new Date(order.createdAt).toLocaleString('en-US')}
+                                                                    )}
+                                                                    {i ==
+                                                                        orderList.length -
+                                                                            1 && (
+                                                                        <div className="bg-gray-100 text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                                                            <div className="flex pl-2">
+                                                                                {
+                                                                                    order.orderId
+                                                                                }
+                                                                            </div>
+                                                                            <div className="flex">
+                                                                                {new Date(
+                                                                                    order.createdAt
+                                                                                ).toLocaleString(
+                                                                                    "en-US"
+                                                                                )}
+                                                                            </div>
+                                                                            <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
+                                                                                <Link
+                                                                                    to={`/receipt/${order.orderId}`}
+                                                                                >
+                                                                                    Click
+                                                                                    to
+                                                                                    view
+                                                                                    receipt
+                                                                                </Link>
+                                                                            </button>
                                                                         </div>
-                                                                        <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
-                                                                            <Link to={`/receipt/${order.orderId}`}>
-                                                                                Click to view receipt
-                                                                            </Link>
-                                                                        </button>
-                                                                    </div>
-                                                                }
-                                                                {i == orderList.length-1 &&
-                                                                    <div 
-                                                                    className="bg-gray-100 text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
-                                                                        <div className="flex pl-2">
-                                                                            {order.orderId}
-                                                                        </div>
-                                                                        <div className="flex">
-                                                                            {new Date(order.createdAt).toLocaleString('en-US')}
-                                                                        </div>
-                                                                        <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
-                                                                            <Link to={`/receipt/${order.orderId}`}>
-                                                                                Click to view receipt
-                                                                            </Link>
-                                                                        </button>
-                                                                    </div>
-                                                                }
-                                                            </div>
-                                                        )
-                                                    })}
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        }
+                                                    )}
                                                 </div>
-                                            }
+                                            )}
                                         </div>
                                     </div>
                                 )}

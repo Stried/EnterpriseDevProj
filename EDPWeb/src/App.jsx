@@ -44,6 +44,7 @@ import TicketSubmission from "./Tickets/TicketSubmission";
 import ViewTicket from "./Tickets/ViewTicket";
 import Receipt from "./Carts&Order/Receipt";
 import Custom401 from "./ErrorPages/Custom401";
+import MembershipPurchase from "./Membership/MembershipPurchase";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -146,10 +147,7 @@ function App() {
                             path="/eventrecords"
                             element={<EventRecords />}
                         />
-                        <Route
-                            path="/membership"
-                            element={<MembershipMain />}
-                        />
+
                         <Route
                             path="/myCart"
                             element={<GetCartItem />}
@@ -255,6 +253,14 @@ function App() {
                             element={<ViewTicket />}
                         />
                         <Route
+                            path="/membership"
+                            element={<MembershipMain />}
+                        />
+                        <Route
+                            path="/membership/:membershipType"
+                            element={<MembershipPurchase />}
+                        />
+                        <Route
                             path="/401"
                             element={<Custom401 />}
                         />
@@ -268,6 +274,20 @@ function App() {
                         />
                     </Routes>
                 </div>
+
+                <Footer container>
+                    <Footer.Copyright
+                        href="#"
+                        by="UPLAY™"
+                        year={2023}
+                    />
+                    <Footer.LinkGroup>
+                        <Footer.Link href="#">About</Footer.Link>
+                        <Footer.Link href="#">Privacy Policy</Footer.Link>
+                        <Footer.Link href="#">Licensing</Footer.Link>
+                        <Footer.Link href="#">Contact</Footer.Link>
+                    </Footer.LinkGroup>
+                </Footer>
             </div>
         </UserContext.Provider>
     );

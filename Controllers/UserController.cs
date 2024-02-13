@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EnterpriseDevProj.Models.MembershipFolder;
 using EnterpriseDevProj.Models.UserFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +65,15 @@ namespace EnterpriseDevProj.Controllers
                 };
 
                 dbContext.Users.Add(user);
+                dbContext.SaveChanges();
+
+                var userFromDB = dbContext.Users.Where(x => x.Email == registerRequest.Email).FirstOrDefault();
+                Membership membership = new()
+                {
+                    UserId = userFromDB.Id,
+                    MembershipStatus = "Standard"
+                };
+                dbContext.Memberships.Add(membership);
                 dbContext.SaveChanges();
 
                 return Ok();

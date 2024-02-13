@@ -5,6 +5,8 @@ using System.Security.Claims;
 
 namespace EnterpriseDevProj.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class MembershipController : ControllerBase
     {
         private MyDbContext _context;
@@ -46,7 +48,7 @@ namespace EnterpriseDevProj.Controllers
             }
         }
 
-        [HttpPost("changeStatus/friendsOfUplay"), Authorize]
+        [HttpPost("changeStatus/friendsOfUPlay"), Authorize]
         public IActionResult UpgradeToFriendsOfUplay()
         {
             var userID = GetUserID();
@@ -80,6 +82,15 @@ namespace EnterpriseDevProj.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        [HttpGet("getMembership"), Authorize]
+        public IActionResult GetMembershipDetails()
+        {
+            var userID = GetUserID();
+            var memberUser = _context.Memberships.Where(u => u.UserId == userID).FirstOrDefault();
+
+            return Ok(memberUser);
         }
 
         public int GetUserID()

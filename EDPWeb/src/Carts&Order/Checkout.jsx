@@ -68,11 +68,31 @@ function Checkout() {
             },
         })
             .then((res) => {
-                console.log(res.status);
+                console.log(res.status + "Success in updating subtotal");
             })
             .catch(function (err) {
                 console.log(err);
-        })
+            })
+            
+        if (usedVoucher) {
+            http.post(
+                `/cart/updateCartUsedVoucher/${usedVoucher.voucher.id}`,
+                null,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "accessToken"
+                        )}`, // This is needed for mine for some reason, not part of the practical
+                    },
+                }
+            )
+                .then((res) => {
+                    console.log(res.status + "Success in updating voucher ID");
+                })
+                .catch(function (err) {
+                    console.log(err);
+            })
+        }
     }
 
     return (
