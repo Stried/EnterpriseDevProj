@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { FaCcVisa, FaCcMastercard, FaCcJcb } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import http from "../../http";
+import { Button, Modal } from "flowbite-react";
 
 function Checkout() {
     const [cartItemList, setCartItemList] = useState([])
-    const [voucherList, setVoucherList] = useState([]);
+    const [ voucherList, setVoucherList ] = useState([]);
+    const [ usedVoucher, setUsedVoucher ] = useState(null);
+    const [ vouchersModal, setVouchersModal ] = useState(false);
 
     let subTotal = 0;
     cartItemList.forEach((cartItem) => {
@@ -14,18 +17,18 @@ function Checkout() {
     let voucher = 0;
 
     useEffect(() => {
-        http.get("/voucher/VoucherGetAll", {
+        http.get("/voucher/claimedVouchers", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
-                setVoucherList(res.data)
+                setVoucherList(res.data);
                 console.log(res.data);
             })
             .catch(function (err) {
                 console.log(err);
-            })
+            });
 
         http.get("/cart/getMyCartItems", {
             headers: {
@@ -43,16 +46,39 @@ function Checkout() {
     let voucherString;
     let voucherCount = voucherList.length
     if (voucherCount <= 1) {
-        voucherString = " voucher is available to use"
+        voucherString = " voucher is available to claim and use"
     }
     else {
-        voucherString = " vouchers are available to use"
+        voucherString = " vouchers are available to claim and use"
+    }
+
+    const selectVoucher = (vouchers) => {
+        setUsedVoucher(vouchers);
+        subTotal -= vouchers.voucher.voucherValue;
+        console.log(subTotal)
+    }
+
+    const updateCartSubtotal = (subtotal) => {
+        if (usedVoucher) {
+            subtotal -= usedVoucher.voucher.voucherValue
+        }
+        http.post(`/cart/updateCartSubtotal/${subtotal}`, null, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // This is needed for mine for some reason, not part of the practical
+            },
+        })
+            .then((res) => {
+                console.log(res.status);
+            })
+            .catch(function (err) {
+                console.log(err);
+        })
     }
 
     return (
         <div className="bg-gray-200 pb-10 flex flex-col-2 justify-between">
             <div className="pl-20 w-3/4 mr-10">
-                <div className="text-2xl font-extralight p-6">
+                <div className="py-10 text-semibold text-3xl">
                     Confirm Purchase
                 </div>
                 <div className="flex bg-zinc-300 pl-5">
@@ -82,8 +108,11 @@ function Checkout() {
                             <span className="font-bold">{voucherCount}</span>
                             {voucherString}
                         </div>
-                        <div className="inline-block underline font-semibold">
-                            <Link to={"/"}>Use a voucher</Link>
+                        <div
+                            onClick={() => setVouchersModal(true)}
+                            className="inline-block underline font-semibold"
+                        >
+                            <button>Use a voucher</button>
                         </div>
                     </div>
                 </div>
@@ -130,29 +159,84 @@ function Checkout() {
             </div>
             <div className="w-1/4 bg-gray-100 rounded-lg border border-gray-300 mt-20 pt-3 px-3 mr-7 flex flex-col">
                 <div className="text-2xl p-5 font-semibold text-center">
-                    Confirm Purchase
+                    Transaction Summary
                 </div>
                 <div className="flex flex-col-2 justify-between w-full text-lg mb-3">
                     <div>Sub Total</div>
                     <div>${subTotal}</div>
                 </div>
-                <div className="flex flex-col-2 justify-between w-full text-lg mb-3">
-                    <div>Use Voucher</div>
-                    <div>None</div>
+                <div className="flex flex-col justify-between w-full text-lg mb-3">
+                    <div>Voucher Applied:</div>
+                    {usedVoucher == null && <div className="">None</div>}
+                    {usedVoucher && (
+                        <div className="text-emerald-600">
+                            {usedVoucher.voucher.voucherName} ($
+                            {usedVoucher.voucher.voucherValue})
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-grow"></div>
-                <div className="flex flex-col-2 justify-between w-full text-lg mb-3 border-black border-t-2 border-dashed pt-3">
+                <hr className="border-1 border-gray-800" />
+                <div className="flex flex-col-2 justify-between w-full text-lg mb-3 border-black pt-3">
                     <div className="place-self-center">
-                        Purchased Items ({cartItemList.length} items)
+                        Purchased Items <br /> ({cartItemList.length} items)
                     </div>
                     <div className="text-3xl font-semibold text-orange-600">
-                        ${subTotal - voucher}
+                        {usedVoucher && (
+                            <p>
+                                ${subTotal - usedVoucher.voucher.voucherValue}
+                            </p>
+                        )}
+                        {!usedVoucher && (
+                            <p>
+                                ${subTotal}
+                            </p>
+                        )}
                     </div>
                 </div>
                 <button className="bg-orange-400 font-bold my-3 py-5 rounded-lg text-2xl hover:bg-orange-600 hover:text-white transition duration-300">
-                    <Link to={"/paymentForm"}>Finalize Purchase</Link>
+                    <Link onClick={() => updateCartSubtotal(subTotal)} to={"/paymentForm"}>Finalize Purchase</Link>
                 </button>
             </div>
+
+            {/* Modal for vouchers page */}
+            <Modal
+                dismissible
+                show={vouchersModal}
+                onClose={() => setVouchersModal(false)}
+            >
+                <Modal.Header className="bg-gray-100 h-16 rounded-t-md">
+                    Vouchers List
+                </Modal.Header>
+                <Modal.Body className="bg-gray-200 rounded-b-md">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pl-1 drop-shadow-mdspace-y-6 overflow-y-scroll custom-scrollbar">
+                        {voucherList.map((vouchers, i) => {
+                            return (
+                                <div
+                                    className="border-2 border-solid border-gray-300 bg-gradient-to-br from-amber-200 to-rose-400 hover:from-rose-400 hover:to-amber-200 px-2 py-2 rounded-md "
+                                    key={vouchers.id}
+                                >
+                                    <h1 className="font-semibold">
+                                        {vouchers.voucher.voucherName}
+                                    </h1>
+                                    <p className="text-emerald-600">
+                                        ${vouchers.voucher.voucherValue}
+                                    </p>
+
+                                    <button
+                                        className="pt-4 text-sky-700"
+                                        onClick={() => {
+                                            selectVoucher(voucherList[i]);
+                                        }}
+                                    >
+                                        Use Voucher
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }

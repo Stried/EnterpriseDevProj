@@ -77,6 +77,16 @@ namespace EnterpriseDevProj.Controllers
         //    IEnumerable<CartDTO> data = result.Select(t => _mapper.Map<CartDTO>(t));
         //    return Ok(data);
         //}
+
+        [HttpGet, Authorize]
+        public IActionResult GetCartItem()
+        {
+            int userID = GetUserID();
+            var cartItem = _context.Carts.Where(x => x.UserId == userID).FirstOrDefault();
+
+            return Ok(cartItem);
+        }
+
         [HttpDelete("/DeleteCart"), Authorize]
         public IActionResult DeleteCart(int cartId)
         {
@@ -183,6 +193,19 @@ namespace EnterpriseDevProj.Controllers
 
             _context.CartItems.Remove(myCartItem);
             _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpPost("updateCartSubtotal/{subTotal}"), Authorize]
+        public IActionResult UpdateCartSubTotal(int subTotal)
+        {
+            var userID = GetUserID();
+            var cartOfUser = _context.Carts.Where(x => x.UserId == userID).FirstOrDefault();
+            cartOfUser.SubTotal = subTotal;
+
+            _context.Carts.Update(cartOfUser);
+            _context.SaveChanges();
+
             return Ok();
         }
 
@@ -301,6 +324,18 @@ namespace EnterpriseDevProj.Controllers
             }
 
             return Ok();
+        }
+
+        public int GetUserID()
+        {
+            try
+            {
+                return Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return 401;
+            }
         }
     }
 }
