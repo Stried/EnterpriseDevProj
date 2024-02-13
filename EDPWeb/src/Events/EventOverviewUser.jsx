@@ -195,7 +195,7 @@ const truncateText = (text, maxLength) => {
     Search
   </button>
   </div>
-<div className="text-center text-xl text-red-500 py-2"><Link to={"/eventapply"}>Interested in hosting your own events? Create one here!</Link></div>
+<div className="text-center text-xl text-orange-500 py-2"><Link to={"/eventapply"}>Interested in hosting your own events? Create one here!</Link></div>
 
 </div>
 

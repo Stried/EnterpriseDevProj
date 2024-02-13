@@ -54,7 +54,7 @@ function NavBar() {
                     </Link>
                 )}
                 <Link
-                    to={"/eventrecords"}
+                    to={"/eventoverviewuser"}
                     className="transition-all duration-300 ease-in-out bg-no-repeat bg-left-bottom bg-[length:0%_4px] bg-gradient-to-r from-orange-400 to-red-500 hover:bg-[length:100%_4px]"
                 >
                     EVENTS

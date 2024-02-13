@@ -17,6 +17,7 @@ import DOMPurify from 'dompurify';
 import Calendar from 'react-calendar';
 import './Calendar.css';
 import 'react-calendar/dist/Calendar.css';
+import './prose.css'
 import {
   Box,
   RadioGroup,
@@ -220,7 +221,7 @@ function EventDetail() {
     <div className="border-b-2 border-gray-300 mb-4" />
 
 <div>Available spots left: </div>
-    <div className="prose" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+    <div className="prose-content " dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
   </div>
 
 

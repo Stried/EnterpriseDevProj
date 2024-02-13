@@ -270,9 +270,7 @@ function ApproveEvent() {
                 <p className="py-5 text-xl"> Event Price: Free</p>
               )}
 
-
-        </div>
-              <div className="p-5 text-right mr-10 w-1/2 mx-auto rounded-lg ">
+<div className="text-center">
         <form
           onSubmit={formikApplication.handleSubmit}
           className="text-lg font-medium"
@@ -330,6 +328,8 @@ function ApproveEvent() {
           </button>
         </form>
       </div>
+        </div>
+
       </div>
     </div>
 </div>
