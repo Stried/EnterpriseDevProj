@@ -25,6 +25,7 @@ import { red } from "@mui/material/colors";
 import "react-multi-date-picker/styles/colors/red.css";
 import "./DatePickerStyle.css";
 import "./CustomSelectStyle.css";
+import CurrencyInput from 'react-currency-input-field';
 import {
   Box,
   RadioGroup,
@@ -118,9 +119,7 @@ function EventRecordUpdate() {
       ActivityType: selectedevent.activityType,
       EventLocation: selectedevent.eventLocation,
       ExpiryDate: selectedevent.expiryDate,
-      RemainingPax: selectedevent.remainingPax,
       AvgRating: selectedevent.avgRating,
-      DateType: selectedevent.dateType,
       ContentHTML: selectedevent.contentHTML,
       EventDates: datetimeList,
     },
@@ -134,24 +133,25 @@ function EventRecordUpdate() {
 
       EventPrice: yup
         .number()
-        .integer()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-        .required(),
+        .required()
+,
 
       FriendPrice: yup
         .number()
-        .integer()
+        .min(0, "Minimum 0 SGD")
+        .max(10000, "Maximum 10000 SGD")
+        .required()
+,
+
+      NTUCPrice: yup
+        .number()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
         .required(),
 
-      NTUCPrice: yup
-        .number()
-        .integer()
-        .min(0, "Minimum 0 SGD")
-        .max(10000, "Maximum 10000 SGD")
-        .required(),
+        
 
       MaxPax: yup
         .number()
@@ -170,14 +170,7 @@ function EventRecordUpdate() {
         .max(50, "Are you sure this is a proper location?")
         .required(),
       ExpiryDate: yup.date(),
-      RemainingPax: yup
-        .number()
-        .integer()
-        .min(1, "Minimum 1 person per event")
-        .max(200, "Maximum 200 people per event")
-        .required(),
       AvgRating: yup.number(),
-      DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
       EventDates: yup.array().min(1, "Please set a date"),
 
@@ -210,9 +203,7 @@ console.log("Form data for event dates: "+data.EventDates)
         Approval: (data.Approval = data.Approval),
         ActivityType: (data.ActivityType = data.ActivityType.trim()),
         EventLocation: (data.EventLocation = data.EventLocation.trim()),
-        RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
-        DateType: (data.DateType = data.DateType.trim()),
         ContentHTML: (data.ContentHTML = editor.getHTML().trim()),
         EventDates: formattedDates,
       };
@@ -228,7 +219,6 @@ console.log("Form data for event dates: "+data.EventDates)
         formData.ExpiryDate = formattedMaxDate;
       }
       if (editor.getHTML().trim() === "<p></p>") {
-        // Set an error for the ContentHTML field
         setFieldError('ContentHTML', 'Content is required');
         return;
       }
@@ -292,7 +282,7 @@ console.log("Form data for event dates: "+data.EventDates)
   };
 
   const handleUpdateContent = (content) => {
-    // Update the state or perform any actions with the updated content
+
     formikEvent.setFieldValue("ContentHTML", content);
   };
 
@@ -355,36 +345,34 @@ console.log("Form data for event dates: "+data.EventDates)
               </div>
             ) : null}
           </div>
-
           <div className="my-4">
-            <label htmlFor="eventprice">Event Fee</label>
-            <p className="opacity-70 italic">Event Entry Fee</p>
-            <input
-              type="number"
-              name="EventPrice"
-              id="eventprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.EventPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
-            {formikEvent.errors.EventPrice ? (
+          <label htmlFor="friendprice">Entry Price</label>
+            <p className="opacity-70 italic">Entry Price for guests</p>
+          <CurrencyInput
+          name="EventPrice"
+          id="eventprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.EventPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
+                    {formikEvent.errors.EventPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.EventPrice}
               </div>
             ) : null}
           </div>
+        
 
           <div className="my-4">
             <label htmlFor="friendprice">Uplay Friends Price</label>
             <p className="opacity-70 italic">Event Uplay Friends Price</p>
-            <input
-              type="number"
-              name="FriendPrice"
-              id="friendprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.FriendPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
+            <CurrencyInput
+          name="FriendPrice"
+          id="friendprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.FriendPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
             {formikEvent.errors.FriendPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.FriendPrice}
@@ -395,14 +383,13 @@ console.log("Form data for event dates: "+data.EventDates)
           <div className="my-4">
             <label htmlFor="ntucprice">NTUC Membership Price</label>
             <p className="opacity-70 italic">Event NTUC Membership Price</p>
-            <input
-              type="number"
-              name="NTUCPrice"
-              id="ntucprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.NTUCPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
+            <CurrencyInput
+          name="NTUCPrice"
+          id="ntucprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.EventPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
             {formikEvent.errors.NTUCPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.NTUCPrice}
@@ -466,76 +453,6 @@ console.log("Form data for event dates: "+data.EventDates)
                 *{formikEvent.errors.EventLocation}
               </div>
             ) : null}
-          </div>
-
-          <div className="my-4">
-            <label htmlFor="eventdatetype">Event Date Type</label>
-            <p className="opacity-70 italic">
-              Is your event recurring? or is it a single one-time event?
-            </p>
-
-            <RadioGroup
-              id="eventdatetype"
-              key="eventdatetype"
-              name="DateType"
-              value={selectedRadio}
-              onChange={handleRadioChange}
-              row
-            >
-              <FormControlLabel
-                sx={{
-                  border: "2px solid",
-                  borderColor:
-                    selectedRadio === "Non-Recurring" ? red[400] : "#b3b3b3",
-                  borderRadius: "4px",
-
-                  flex: 1,
-                }}
-                value="Non-Recurring"
-                control={
-                  <Radio
-                    {...controlProps("Non-Recurring")}
-                    sx={{
-                      "& .MuiSvgIcon-root": {
-                        fontSize: 28,
-                        color: red[400],
-                        "&.Mui-checked": {
-                          color: red[400],
-                        },
-                      },
-                    }}
-                  />
-                }
-                label="Non-Recurring"
-              />
-
-              <FormControlLabel
-                sx={{
-                  border: "2px solid",
-                  borderColor:
-                    selectedRadio === "Recurring" ? red[400] : "#b3b3b3",
-                  borderRadius: "4px",
-
-                  flex: 1,
-                }}
-                value="Recurring"
-                control={
-                  <Radio
-                    {...controlProps("Recurring")}
-                    sx={{
-                      "& .MuiSvgIcon-root": {
-                        fontSize: 28,
-                        color: red[400],
-                        "&.Mui-checked": {
-                          color: red[400],
-                        },
-                      },
-                    }}
-                  />
-                }
-                label="Recurring"
-              />
-            </RadioGroup>
           </div>
 
           <div className="my-4">

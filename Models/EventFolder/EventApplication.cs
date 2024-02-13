@@ -10,13 +10,13 @@ namespace EnterpriseDevProj.Models.EventFolder
         public string EventName { get; set; } = string.Empty;
 
         [Required, Range(0, 10000)]
-        public int EventPrice { get; set; }
+        public float EventPrice { get; set; }
 
         [Required, Range(0, 10000)]
-        public int FriendPrice { get; set; }
+        public float FriendPrice { get; set; }
 
         [Required, Range(0, 10000)]
-        public int NTUCPrice { get; set; }
+        public float NTUCPrice { get; set; }
 
         [Required, Range(1, 200)]
         public int MaxPax { get; set; }
@@ -33,13 +33,7 @@ namespace EnterpriseDevProj.Models.EventFolder
         [Required]
         public DateOnly ExpiryDate { get; set; }
 
-        [Required, Range(0, 200)]
-        public int RemainingPax { get; set; }
-
         public float AvgRating { get; set; }
-
-        [Required]
-        public string DateType { get; set; } = string.Empty;
 
         [Required, MaxLength(3000)]
         public string ContentHTML { get; set; } = string.Empty;

@@ -10,13 +10,13 @@ namespace EnterpriseDevProj.Models.EventFolder
         public string EventName { get; set; } = string.Empty;
 
         [Range(0, 10000)]
-        public int EventPrice { get; set; }
+        public float EventPrice { get; set; }
 
         [Range(0, 10000)]
-        public int FriendPrice { get; set; }
+        public float FriendPrice { get; set; }
 
         [Range(0, 10000)]
-        public int NTUCPrice { get; set; }
+        public float NTUCPrice { get; set; }
 
         [Range(1, 200)]
         public int MaxPax { get; set; }

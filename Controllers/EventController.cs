@@ -52,9 +52,7 @@ public IActionResult AddEvents(EventApplication data)
                     ActivityType = data.ActivityType.Trim(),
                     EventLocation = data.EventLocation.Trim(),
                     ExpiryDate = data.ExpiryDate,
-                    RemainingPax = data.RemainingPax,
                     AvgRating = data.AvgRating,
-                    DateType = data.DateType.Trim(),
                     ContentHTML = data.ContentHTML,
                     UserID = userId,
                     EventCreatedAt = now,
@@ -72,6 +70,7 @@ public IActionResult AddEvents(EventApplication data)
                 var myDate = new Date()
                 {
                         EventName=data.EventName.Trim(),
+                        RemainingPax=data.MaxPax,
                         DateOfEvent=currentDate,
                         DateCreatedAt=now,
                         DateUpdatedAt=now,
@@ -122,9 +121,7 @@ public IActionResult AddEvents(EventApplication data)
                     t.ActivityType,
                     t.EventLocation,
                     t.ExpiryDate,
-                    t.RemainingPax,
                     t.AvgRating,
-                    t.DateType,
                     t.ContentHTML,
                     t.UserID,
                     t.EventCreatedAt,
@@ -165,9 +162,7 @@ public IActionResult AddEvents(EventApplication data)
                     t.ActivityType,
                     t.EventLocation,
                     t.ExpiryDate,
-                    t.RemainingPax,
                     t.AvgRating,
-                    t.DateType,
                     t.ContentHTML,
                     t.UserID,
                     t.EventCreatedAt,
@@ -180,6 +175,7 @@ public IActionResult AddEvents(EventApplication data)
                     {
                         d.DateId,
                         d.EventName,
+                        d.RemainingPax,
                         d.DateOfEvent,
                         d.DateCreatedAt,
                         d.DateUpdatedAt
@@ -212,6 +208,7 @@ public IActionResult GetEvent(int EventId)
             {
                 d.DateId,
                 d.EventName,
+                d.RemainingPax,
                 d.DateOfEvent,
                 d.DateCreatedAt,
                 d.DateUpdatedAt
@@ -230,9 +227,7 @@ public IActionResult GetEvent(int EventId)
             eventModel.ActivityType,
             eventModel.EventLocation,
             eventModel.ExpiryDate,
-            eventModel.RemainingPax,
             eventModel.AvgRating,
-            eventModel.DateType,
             eventModel.ContentHTML,
             eventModel.UserID,
             eventModel.EventCreatedAt,
@@ -254,7 +249,7 @@ public IActionResult GetEvent(int EventId)
 }
 
         [HttpPut("Approval/{EventId}"), Authorize]
-        public IActionResult UpdateTutorial(int EventId)
+        public IActionResult Approval(int EventId)
         {
             try
             {
@@ -308,6 +303,7 @@ public IActionResult GetEvent(int EventId)
                             .Select(newDate => new Date
                             {
                                 EventName = eventModel.EventName,
+                                RemainingPax = eventModel.MaxPax,
                                 DateOfEvent = newDate,
                                 DateCreatedAt = DateTime.UtcNow,
                                 DateUpdatedAt = DateTime.UtcNow,
@@ -324,8 +320,6 @@ public IActionResult GetEvent(int EventId)
                         eventModel.ActivityType = updateModel.ActivityType;
                         eventModel.EventLocation = updateModel.EventLocation;
                         eventModel.ExpiryDate = updateModel.ExpiryDate;
-                        eventModel.RemainingPax = updateModel.RemainingPax;
-                        eventModel.DateType = updateModel.DateType;
                         eventModel.ContentHTML = updateModel.ContentHTML;
                         eventModel.EventUpdatedAt = DateTime.UtcNow;
 

@@ -11,6 +11,8 @@ namespace EnterpriseDevProj.Models.EventFolder
 
 		[Required, MinLength(3), MaxLength(60)]
 		public string EventName { get; set; } = string.Empty;
+		[Required, Range(0, 200)]
+        public int RemainingPax {  get; set; }
 
 		[Required]
 		[Column(TypeName = "datetime")]
