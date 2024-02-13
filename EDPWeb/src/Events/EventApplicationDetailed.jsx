@@ -12,7 +12,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "flowbite-react";
-
+import DOMPurify from "dompurify";
+import Calendar from 'react-calendar';
 import {
   Box,
   RadioGroup,
@@ -146,7 +147,7 @@ function ApproveEvent() {
         );
 
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
-
+        const [selectedDate, setSelectedDate] = useState(earliestDate);
 
   const formikApplication = useFormik({
     initialValues: selectedevent,
@@ -184,6 +185,7 @@ function ApproveEvent() {
 
   return (
     <div className="bg-white">
+      <p className="text-6xl text-center py-12">Event Application Review</p>
   <div className=" p-5 grid grid-cols-2 gap-8 mx-28">
 
 

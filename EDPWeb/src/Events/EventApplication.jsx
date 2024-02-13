@@ -63,7 +63,6 @@ function ApplyEvent() {
       ExpiryDate: "",
       RemainingPax: 1,
       AvgRating: 0.0,
-      DateType: "Non-Recurring",
       ContentHTML: "",
       EventDates: [],
       UserID: 0,
@@ -78,24 +77,38 @@ function ApplyEvent() {
 
       EventPrice: yup
         .number()
-        .integer()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-        .required(),
+        .required()
+        .test(
+          'is-decimal',
+          'invalid decimal',
+          value => (value + "").match(/^\d*\.{1}\d*$/),
+        ),
+
 
       FriendPrice: yup
         .number()
-        .integer()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-        .required(),
+        .required()
+        .test(
+          'is-decimal',
+          'invalid decimal',
+          value => (value + "").match(/^\d*\.{1}\d*$/),
+        ),
+
 
       NTUCPrice: yup
         .number()
-        .integer()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-        .required(),
+        .required()
+        .test(
+          'is-decimal',
+          'invalid decimal',
+          value => (value + "").match(/^\d*\.{1}\d*$/),
+        ),
 
       MaxPax: yup
         .number()
@@ -114,14 +127,7 @@ function ApplyEvent() {
         .max(50, "Are you sure this is a proper location?")
         .required(),
       ExpiryDate: yup.date(),
-      RemainingPax: yup
-        .number()
-        .integer()
-        .min(1, "Minimum 1 person per event")
-        .max(200, "Maximum 200 people per event")
-        .required(),
       AvgRating: yup.number(),
-      DateType: yup.string().required(),
       ContentHTML: yup.string().required(),
       EventDates: yup.array().min(1, "Please set a date"),
       UserID: yup.number().integer(),
@@ -162,9 +168,7 @@ function ApplyEvent() {
         Approval: (data.Approval = data.Approval),
         ActivityType: (data.ActivityType = data.ActivityType.trim()),
         EventLocation: (data.EventLocation = data.EventLocation.trim()),
-        RemainingPax: (data.RemainingPax = data.MaxPax),
         AvgRating: (data.AvgRating = data.AvgRating),
-        DateType: (data.DateType = data.DateType.trim()),
         ContentHTML: (data.ContentHTML = sanitizeddata),
         EventDates: formattedDates,
         UserID: user.id,
@@ -229,12 +233,8 @@ function ApplyEvent() {
     formikEvent.setFieldValue("ContentHTML", content);
   };
 
-  const [selectedRadio, setSelectedRadio] = useState("Non-Recurring");
 
-  const handleRadioChange = (event) => {
-    setSelectedRadio(event.target.value);
-    formikEvent.setFieldValue("DateType", event.target.value);
-  };
+
 
   const controlProps = (item) => ({
     checked: selectedRadio === item,
@@ -244,13 +244,8 @@ function ApplyEvent() {
     inputProps: { "aria-label": item },
   });
 
-  const [selectedValue, setSelectedValue] = React.useState(
-    formikEvent.values.DateType
-  );
 
-  useEffect(() => {
-    setSelectedValue(formikEvent.values.DateType);
-  }, [formikEvent.values.DateType]);
+
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -453,76 +448,6 @@ function ApplyEvent() {
             ) : null}
           </div>
 
-          <div className="my-4">
-            <label htmlFor="eventdatetype">Event Date Type</label>
-            <p className="opacity-70 italic">
-              Is your event recurring? or is it a single one-time event?
-            </p>
-
-            <RadioGroup
-              id="eventdatetype"
-              key="eventdatetype"
-              name="DateType"
-              value={selectedRadio}
-              onChange={handleRadioChange}
-              row
-            >
-              <FormControlLabel
-                sx={{
-                  border: "2px solid",
-                  borderColor:
-                    selectedRadio === "Non-Recurring" ? red[400] : "#b3b3b3",
-                  borderRadius: "4px",
-
-                  flex: 1,
-                }}
-                value="Non-Recurring"
-                control={
-                  <Radio
-                    {...controlProps("Non-Recurring")}
-                    sx={{
-                      "& .MuiSvgIcon-root": {
-                        fontSize: 28,
-                        color: red[400],
-                        "&.Mui-checked": {
-                          color: red[400],
-                        },
-                      },
-                    }}
-                  />
-                }
-                label="Non-Recurring"
-              />
-
-              <FormControlLabel
-                sx={{
-                  border: "2px solid",
-                  borderColor:
-                    selectedRadio === "Recurring" ? red[400] : "#b3b3b3",
-                  borderRadius: "4px",
-
-                  flex: 1,
-                }}
-                value="Recurring"
-                control={
-                  <Radio
-                    {...controlProps("Recurring")}
-                    sx={{
-                      "& .MuiSvgIcon-root": {
-                        fontSize: 28,
-                        color: red[400],
-                        "&.Mui-checked": {
-                          color: red[400],
-                        },
-                      },
-                    }}
-                  />
-                }
-                label="Recurring"
-              />
-            </RadioGroup>
-          </div>
-
           <div>
             <DatePicker
               name="EventDates"
@@ -548,7 +473,7 @@ function ApplyEvent() {
           </div>
 
           <div className="my-4">
-          <label htmlFor="eventdatetype">Enter your event's description</label>
+          <label htmlFor="contenthtml">Enter your event's description</label>
             <p className="opacity-70 italic">
               This will show up on the website!
             </p>
