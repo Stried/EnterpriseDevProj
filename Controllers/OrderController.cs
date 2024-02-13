@@ -74,6 +74,13 @@ namespace EnterpriseDevProj.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetMySpecificOrder/{id}"), Authorize]
+        public IActionResult GetMySpecificOrder(int id)
+        {
+            var result = _context.Orders.Where(t => t.OrderId == id).Include(t => t.User).FirstOrDefault();
+            return Ok(result);
+        }
+
         // OrderItem
         [HttpPost("CreateOrderItem"), Authorize]
         public IActionResult CreateOrderItem(AddOrderItemRequest orderItem)
