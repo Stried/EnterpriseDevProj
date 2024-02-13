@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import './MarkdownEditor.css';
 import ReactMarkdown from 'react-markdown';
+import UserContext from "../Users/UserContext";
 import remarkGfm from 'remark-gfm';
 import http from "../../http";
 import React, { useContext, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import DOMPurify from 'dompurify';
 import Calendar from 'react-calendar';
 import './Calendar.css';
 import 'react-calendar/dist/Calendar.css';
+import './prose.css'
 import {
   Box,
   RadioGroup,
@@ -128,7 +130,7 @@ function EventDetail() {
         );
 
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
-
+        
         const rawData =
         {
           Quantity: 1,
@@ -145,6 +147,15 @@ function EventDetail() {
           })
           .then((res) => console.log(res))
         }
+        const { user } = useContext(UserContext);
+        useEffect(() => {
+          if (!user || !user.id) {
+            toast.error("You can only view an event if you are logged in.");
+      
+            navigate("/login");
+          }
+        }, [user, navigate]);
+
   return (
     <div className="bg-white">
   <div className=" p-5 grid grid-cols-2 gap-8 mx-28">
@@ -210,7 +221,7 @@ function EventDetail() {
     <div className="border-b-2 border-gray-300 mb-4" />
 
 <div>Available spots left: </div>
-    <div className="prose" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+    <div className="prose-content " dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
   </div>
 
 
