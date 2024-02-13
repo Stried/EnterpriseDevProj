@@ -131,7 +131,7 @@ function VoucherPage() {
                                             <p className="text-gray-700 text-base w-64">
                                                 {vouchers.voucherName}
                                             </p>
-                                            <p>Uses: {vouchers.voucherUses}</p>
+                                            <p>Left: {vouchers.voucherUses}</p>
                                         </div>
                                     </div>
                                     {vouchers.voucherUses != 0 && (
@@ -192,13 +192,6 @@ function VoucherPage() {
                                                     {
                                                         vouchers.voucher
                                                             .voucherName
-                                                    }
-                                                </p>
-                                                <p>
-                                                    Uses:{" "}
-                                                    {
-                                                        vouchers.voucher
-                                                            .voucherUses
                                                     }
                                                 </p>
                                             </div>

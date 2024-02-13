@@ -201,10 +201,18 @@ namespace EnterpriseDevProj.Controllers
         {
             var userID = GetUserID();
             var cartOfUser = _context.Carts.Where(x => x.UserId == userID).FirstOrDefault();
+            if (cartOfUser == null)
+            {
+                logger.LogInformation("User is null here");
+                return StatusCode(500);
+            }
             cartOfUser.SubTotal = subTotal;
+            logger.LogInformation(subTotal.ToString());
+           
 
             _context.Carts.Update(cartOfUser);
             _context.SaveChanges();
+            logger.LogInformation(cartOfUser.SubTotal.ToString());
 
             return Ok();
         }
@@ -214,10 +222,12 @@ namespace EnterpriseDevProj.Controllers
         {
             var userID = GetUserID();
             var cartOfUser = _context.Carts.Where(x => x.UserId == userID).FirstOrDefault();
+            logger.LogInformation(voucherUsed.ToString());
             cartOfUser.VoucherUsed = voucherUsed;
 
             _context.Carts.Update(cartOfUser);
             _context.SaveChanges();
+            logger.LogInformation(cartOfUser.VoucherUsed.ToString());
 
             return Ok();
         }

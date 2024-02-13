@@ -22,7 +22,7 @@ function Stripe() {
         })
             .then((res) => {
                 setCart(res.data);
-                console.log(res.data.subTotal)
+                console.log(res.data)
                 console.log(res.data.voucherUsed + " is the voucher used")
             })
             .catch(function (err) {
@@ -31,59 +31,52 @@ function Stripe() {
     }, []);
 
     useEffect(() => {
-        total = cart.subTotal
-        console.log(cart.subTotal)
+        total = cart.subTotal;
+        console.log(cart.subTotal);
 
         const payment = {
             Amount: total * 100,
-            Currency: "sgd"
+            Currency: "sgd",
         };
         http.post("/payment/CreatePaymentIntent", payment)
             .then((data) => {
                 setClientSecret(data.data.clientSecret);
-                setClientId(data.data.id)
+                setClientId(data.data.id);
                 console.log(data.data);
-
-                http.post("/cart/updateCartSubtotal/0", null, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "accessToken"
-                        )}`,
-                    },
-                })
-                    .then((res) => {
-                        console.log(res.status);
-                        if (cart.voucherUsed) {
-                            http.put(
-                                `/voucher/usedVoucher/${cart.voucherUsed}`,
-                                null,
-                                {
-                                    headers: {
-                                        Authorization: `Bearer ${localStorage.getItem(
-                                            "accessToken"
-                                        )}`,
-                                    },
-                                }
-                            )
-                                .then((res) => {
-                                    console.log(res.status);
-                                    console.log("SUCCESS");
-                                })
-                                .catch(function (err) {
-                                    console.log(err);
-                                });
-                        }
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    })
-                
-                
                 
             })
             .catch((err) => {
                 console.log(err);
             });
+        
+        // http.post("/cart/updateCartSubtotal/0", null, {
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        //     },
+        // })
+        //     .then((res) => {
+        //         console.log(res.status);
+        //         if (cart.voucherUsed) {
+        //             http.put(`/voucher/usedVoucher/${cart.voucherUsed}`, null, {
+        //                 headers: {
+        //                     Authorization: `Bearer ${localStorage.getItem(
+        //                         "accessToken"
+        //                     )}`,
+        //                 },
+        //             })
+        //                 .then((res) => {
+        //                     console.log(res.status);
+        //                     console.log("SUCCESS");
+        //                 })
+        //                 .catch(function (err) {
+        //                     console.log(err);
+        //                 });
+        //         }
+        //     })
+        //     .catch(function (err) {
+        //         console.log(err);
+        //     });
+      
     }, [cart])
 
     useEffect(() => {

@@ -314,7 +314,6 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 FULL NAME{" "}
-                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.name}
@@ -324,7 +323,6 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 NRIC{" "}
-                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.nric}
@@ -334,7 +332,6 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 EMAIL ADDRESS{" "}
-                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.email}
@@ -344,7 +341,6 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 PHONE NUMBER{" "}
-                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.phoneNumber}
@@ -353,15 +349,20 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 MEMBERSHIP STATUS{" "}
-                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {membershipStatus.membershipStatus ==
-                                                    "NTUCMember" && <p>NTUC Member</p>}
+                                                    "NTUCMember" && (
+                                                    <p>NTUC Member</p>
+                                                )}
                                                 {membershipStatus.membershipStatus ==
-                                                    "FriendsOfUPlay" && <p>Friends Of UPlay</p>}
+                                                    "FriendsOfUPlay" && (
+                                                    <p>Friends Of UPlay</p>
+                                                )}
                                                 {membershipStatus.membershipStatus ==
-                                                    "Standard" && <p>Standard</p>}
+                                                    "Standard" && (
+                                                    <p>Standard</p>
+                                                )}
                                             </h2>
                                         </div>
                                     </div>
@@ -421,7 +422,7 @@ function UserAccount() {
                                                     );
                                                 })
                                             ) : (
-                                                <div className="">
+                                                <div className="text-gray-100">
                                                     <p className="mb-5">
                                                         You are currently not
                                                         part of any groups.
@@ -474,7 +475,7 @@ function UserAccount() {
                                         </div>
                                         <div className="text-black">
                                             {friendsList == 0 ? (
-                                                <div className="">
+                                                <div className="text-gray-100">
                                                     <p className="mb-5">
                                                         You are currently have
                                                         no friends.

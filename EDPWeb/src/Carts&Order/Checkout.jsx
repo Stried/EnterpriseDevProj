@@ -60,7 +60,8 @@ function Checkout() {
 
     const updateCartSubtotal = (subtotal) => {
         if (usedVoucher) {
-            subtotal -= usedVoucher.voucher.voucherValue
+            subtotal = subTotal - usedVoucher.voucher.voucherValue
+            console.log(subtotal)
         }
         http.post(`/cart/updateCartSubtotal/${subtotal}`, null, {
             headers: {
@@ -69,12 +70,14 @@ function Checkout() {
         })
             .then((res) => {
                 console.log(res.status + "Success in updating subtotal");
+                console.log(subtotal)
             })
             .catch(function (err) {
                 console.log(err);
             })
             
         if (usedVoucher) {
+            console.log(usedVoucher.voucher.id);
             http.post(
                 `/cart/updateCartUsedVoucher/${usedVoucher.voucher.id}`,
                 null,
@@ -243,10 +246,11 @@ function Checkout() {
                                         ${vouchers.voucher.voucherValue}
                                     </p>
 
+                                    {/* DO NOT TOUCH THE ASYNC, IT WORKS FOR SOME REASON */}
                                     <button
                                         className="pt-4 text-sky-700"
-                                        onClick={() => {
-                                            selectVoucher(voucherList[i]);
+                                        onClick={async () => {
+                                            await selectVoucher(voucherList[i]);
                                         }}
                                     >
                                         Use Voucher

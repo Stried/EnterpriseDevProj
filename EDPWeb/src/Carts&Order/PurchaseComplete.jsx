@@ -3,9 +3,26 @@ import { Link } from "react-router-dom";
 import http from "./../../http";
 
 function PurchaseComplete() {
+    const [cart, setCart] = useState([]);
     const [cartItemList, setCartItemList] = useState([]);
     const [order, setOrder] = useState("");
 
+    useEffect(() => {
+        http.get("/cart", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+        })
+            .then((res) => {
+                setCart(res.data);
+                console.log(res.data);
+                console.log(res.data.voucherUsed + " is the voucher used");
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }, []);
+    
     useEffect(() => {
         http.get("/cart/getMyCartItems", {
             headers: {
@@ -43,6 +60,34 @@ function PurchaseComplete() {
                             EventId: cartItemList[i].event.eventId,
                         };
 
+                        http.post("/cart/updateCartSubtotal/0", null, {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                            },
+                        })
+                            .then((res) => {
+                                console.log(res.status);
+                                if (cart.voucherUsed) {
+                                    http.put(`/voucher/usedVoucher/${cart.voucherUsed}`, null, {
+                                        headers: {
+                                            Authorization: `Bearer ${localStorage.getItem(
+                                                "accessToken"
+                                            )}`,
+                                        },
+                                    })
+                                        .then((res) => {
+                                            console.log(res.status);
+                                            console.log("SUCCESS");
+                                        })
+                                        .catch(function (err) {
+                                            console.log(err);
+                                        });
+                                }
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                            });
+
                         http.delete(
                             `/cart/deleteCartItem/${cartItemList[i].cartItemId}`,
                             {
@@ -71,8 +116,8 @@ function PurchaseComplete() {
                             },
                         })
                             .then(() => {
-                                console.log(cartItemList[ i ]);
-                                console.log(i)
+                                console.log(cartItemList[i]);
+                                console.log(i);
 
                                 http.get("/order/GetMyCurrentOrder", {
                                     headers: {
