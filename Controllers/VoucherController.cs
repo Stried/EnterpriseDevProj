@@ -132,7 +132,8 @@ namespace EnterpriseDevProj.Controllers
                 if (voucherClaimCheck != null)
                 {
                     logger.LogError("Voucher already claimed");
-                    return BadRequest("Voucher already claimed.");
+                    var message = "Voucher already claimed.";
+                    return BadRequest(new { message });
                 }
 
                 VoucherClaims voucherClaim = new()
@@ -141,6 +142,15 @@ namespace EnterpriseDevProj.Controllers
                     UserId = userID,
                     isUsed = false
                 };
+
+                dbContext.VoucherClaims.Add(voucherClaim);
+                dbContext.SaveChanges();
+
+                Voucher voucher = dbContext.Vouchers.Find(voucherId);
+                voucher.VoucherUses -= 1;
+
+                dbContext.Vouchers.Update(voucher);
+                dbContext.SaveChanges();
 
                 return Ok();
             }
