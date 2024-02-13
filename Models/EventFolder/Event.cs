@@ -38,6 +38,8 @@ namespace EnterpriseDevProj.Models.EventFolder
         public DateOnly ExpiryDate { get; set; }
 
         public float AvgRating { get; set; }
+        [Required]
+        public string EventImageFile { get; set; }
 
         [Required, MaxLength(60000)]
         public string ContentHTML { get; set; } = string.Empty;

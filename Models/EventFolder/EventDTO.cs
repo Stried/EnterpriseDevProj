@@ -33,11 +33,11 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         public string EventLocation { get; set; } = string.Empty;
 
-
         public DateOnly ExpiryDate { get; set; }
 
         public float AvgRating { get; set; }
 
+      public string EventImageFile { get; set; }
 
         public string ContentHTML { get; set; } = string.Empty;
 

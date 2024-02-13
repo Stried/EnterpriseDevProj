@@ -28,7 +28,9 @@ import {
   Radio,
   FormControl,
 } from "@mui/material";
+import { FileInput } from "flowbite-react";
 function ApplyEvent() {
+
   function convertDateTimeToDateOnly(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const year = dateTime.getFullYear();
@@ -39,7 +41,10 @@ function ApplyEvent() {
 
   const { user } = useContext(UserContext);
 
-  
+  const [eventImageFile, setEventImageFile] = useState();
+  useEffect(() => {
+    console.log("EventImageFile:", eventImageFile);
+  }, [eventImageFile]);
 
   const getOneWeekAheadDateTime = () => {
     const currentDate = new Date();
@@ -51,6 +56,32 @@ function ApplyEvent() {
 
     return oneWeekLater;
   };
+
+  const onFileChange = (e) => {
+    let file = e.target.files[0];
+    if (file) {
+        if (file.size > 1024 * 1024) {
+            toast.error("Maximum file size is 1MB");
+            return;
+        }
+    }
+
+    let formData = new FormData();
+    formData.append("File", file);
+    http.post("/file/uploadEventImage", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+    })
+        .then((res) => {
+            console.log(res.data.fileName);
+            setEventImageFile(res.data.fileName);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+};
 
   const formikEvent = useFormik({
     initialValues: {
@@ -67,6 +98,7 @@ function ApplyEvent() {
       AvgRating: 0.0,
       ContentHTML: "",
       EventDates: [],
+      EventImageFile: "",
       UserID: 0,
     },
     validationSchema: yup.object().shape({
@@ -81,23 +113,21 @@ function ApplyEvent() {
         .number()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-,
-
+        ,
 
       FriendPrice: yup
         .number()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
         .required()
-,
-
+        ,
 
       NTUCPrice: yup
         .number()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
         .required()
-,
+        ,
 
       MaxPax: yup
         .number()
@@ -155,6 +185,10 @@ function ApplyEvent() {
       const roundedFriendPrice = parseFloat(data.FriendPrice).toFixed(2);
       const roundedNTUCPrice = parseFloat(data.NTUCPrice).toFixed(2);
 
+      if (eventImageFile) {
+        data.EventImageFile = eventImageFile;
+    }
+
       const formData = {
         EventName: (data.EventName = data.EventName.trim()),
         EventPrice: (data.EventPrice = roundedEventPrice),
@@ -166,6 +200,7 @@ function ApplyEvent() {
         EventLocation: (data.EventLocation = data.EventLocation.trim()),
         AvgRating: (data.AvgRating = data.AvgRating),
         ContentHTML: (data.ContentHTML = sanitizeddata),
+        EventImageFile: eventImageFile,
         EventDates: formattedDates,
         UserID: user.id,
       };
@@ -186,7 +221,7 @@ function ApplyEvent() {
         .post("/event/Applications", formData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            "Content-Type": "application/json",
+            
           },
         })
         .then((res) => {
@@ -225,27 +260,8 @@ function ApplyEvent() {
     { value: "Travel", label: "Travel" },
   ];
 
-  const handleContentChange = (content) => {
-    formikEvent.setFieldValue("ContentHTML", content);
-  };
 
 
-
-
-  const controlProps = (item) => ({
-    checked: selectedRadio === item,
-    onChange: handleChange,
-    value: item,
-    name: "size-radio-button-demo",
-    inputProps: { "aria-label": item },
-  });
-
-
-
-
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -361,12 +377,12 @@ function ApplyEvent() {
             <label htmlFor="friendprice">Uplay Friends Price</label>
             <p className="opacity-70 italic">Event Uplay Friends Price</p>
             <CurrencyInput
-          name="FriendPrice"
-          id="friendprice"
-          onChange={formikEvent.handleChange}
-          value={formikEvent.values.FriendPrice}
-          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-        />
+            name="FriendPrice"
+            id="friendprice"
+            onChange={formikEvent.handleChange}
+            value={formikEvent.values.FriendPrice}
+            className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+          />
             {formikEvent.errors.FriendPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.FriendPrice}
@@ -378,12 +394,12 @@ function ApplyEvent() {
             <label htmlFor="ntucprice">NTUC Membership Price</label>
             <p className="opacity-70 italic">Event NTUC Membership Price</p>
             <CurrencyInput
-          name="NTUCPrice"
-          id="ntucprice"
-          onChange={formikEvent.handleChange}
-          value={formikEvent.values.NTUCPrice}
-          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-        />
+            name="NTUCPrice"
+            id="ntucprice"
+            onChange={formikEvent.handleChange}
+            value={formikEvent.values.NTUCPrice}
+            className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+          />
             {formikEvent.errors.NTUCPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.NTUCPrice}
@@ -408,6 +424,7 @@ function ApplyEvent() {
               <div className="text-red-400">*{formikEvent.errors.MaxPax}</div>
             ) : null}
           </div>
+
           <div className="my-4 custom-select-container">
             <label htmlFor="activitytype">Activity Type</label>
             <p className="opacity-70 italic">What type of event is this?</p>
@@ -448,6 +465,7 @@ function ApplyEvent() {
               </div>
             ) : null}
           </div>
+          
 
           <div>
             <DatePicker
@@ -472,6 +490,20 @@ function ApplyEvent() {
               </div>
             ) : null}
           </div>
+
+          <div className="my-4">
+          <label htmlFor="eventimagefile">Event Image</label>
+          <p className="opacity-70 italic">Upload an image for your event</p>
+            <input
+                type="file"
+                id="EventImageFile"
+                name="eventimagefile"
+                onChange={onFileChange}
+                className="form-input w-full"
+            />
+        </div>
+
+        
 
           <div className="my-4">
           <label htmlFor="contenthtml">Enter your event's description</label>

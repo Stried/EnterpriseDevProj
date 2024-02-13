@@ -370,7 +370,6 @@ function EventRecordUpdate() {
             ) : null}
           </div>
         
-
           <div className="my-4">
             <label htmlFor="friendprice">Uplay Friends Price</label>
             <p className="opacity-70 italic">Event Uplay Friends Price</p>
@@ -598,14 +597,66 @@ function EventRecordUpdate() {
       )}
      </div>
     </div>
-
+    
+    <div className="text-right pr-12">
+  <a
+    onClick={() => {
+      toggleModal(EventId);
+    }}
+    href="#"
+    className="bg-red-600 p-2 px-5 rounded-md text-black hover:bg-red-600 hover:text-white "
+  >
+    Delete Event Record
+  </a>
+<span className="pl-8">
+  <button
+    type="submit"
+    className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+  >
+    Submit
+  </button>
+  </span>
+  <Modal
+    dismissible
+    show={openModals[EventId] === true}
+    onClose={() => toggleModal(EventId)}
+  >
+    <Modal.Header>Event Application Decline</Modal.Header>
+    <Modal.Body>
+      <div className="space-y-6">
+        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+          Are you sure you want to decline the event with:{" "}
+          <div>
+            title: <b>{selectedevent.eventName}</b>
+          </div>{" "}
+          <div>
+            and Event ID: <b>{selectedevent.eventId}</b>
           </div>
-          <button
-            type="submit"
-            className="bg-gradient-to-br from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
-          >
-            Submit
-          </button>
+        </p>
+      </div>
+    </Modal.Body>
+    <Modal.Footer>
+      {openModals[EventId] && (
+        <button
+          onClick={() =>
+            deleteEventRecord(`${selectedevent.eventId}`)
+          }
+          className="px-3 py-2 bg-red-500 hover:bg-red-600 hover:text-white rounded font-medium"
+        >
+          Delete
+        </button>
+      )}
+
+      <button
+        onClick={() => toggleModal(EventId)}
+        className="px-3 py-2 bg-sky-400 hover:bg-sky-600 hover:text-white rounded font-medium"
+      >
+        Cancel
+      </button>
+    </Modal.Footer>
+  </Modal>
+</div>
+</div>
         </form>
       </div>
     </div>

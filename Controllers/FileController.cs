@@ -63,5 +63,26 @@ namespace EnterpriseDevProj.Controllers
 
             return Ok(new { fileName });
         }
+
+        [HttpPost("uploadEventImage"), Authorize]
+        public IActionResult UploadEventImage(IFormFile File){
+
+            if (File.Length > 1024 * 1024)
+            {
+                var message = "Maximum file size is 1MB";
+                return BadRequest(new { message });
+            }
+
+            var id = Nanoid.Generate(size: 10);
+            var filename = id + Path.GetExtension(File.FileName);
+            var imagePath = Path.Combine(environment.ContentRootPath,
+            @"wwwroot/eventimages", filename);
+            using var fileStream = new FileStream(imagePath, FileMode.Create);
+            File.CopyTo(fileStream);
+
+        return Ok(new{filename});
+        
+        }
+
     }
 }

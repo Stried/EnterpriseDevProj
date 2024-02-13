@@ -165,7 +165,7 @@ const EventRecords = () => {
                   <div
                     class="flex items-center"
                   >
-                    Approved by
+                    Created by User ID
                     <a href="#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

@@ -25,16 +25,16 @@ namespace EnterpriseDevProj.Controllers
             this.mapper = mapper;
         }
 
-[HttpPost("Applications"), Authorize]
-[ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
-public IActionResult AddEvents(EventApplication data)
-{
-        if (!ModelState.IsValid)
+    [HttpPost("Applications"), Authorize]
+    [ProducesResponseType(typeof(EventDTO), StatusCodes.Status200OK)]
+    public IActionResult AddEvents(EventApplication data)
     {
-        return BadRequest(ModelState);
-    }
-    using (var transaction = dbContext.Database.BeginTransaction())
-    {
+            if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        using (var transaction = dbContext.Database.BeginTransaction())
+        {
 
         try
         {
@@ -53,6 +53,7 @@ public IActionResult AddEvents(EventApplication data)
                     EventLocation = data.EventLocation.Trim(),
                     ExpiryDate = data.ExpiryDate,
                     AvgRating = data.AvgRating,
+                    EventImageFile = data.EventImageFile,
                     ContentHTML = data.ContentHTML,
                     UserID = userId,
                     EventCreatedAt = now,
@@ -165,6 +166,7 @@ public IActionResult AddEvents(EventApplication data)
                     t.AvgRating,
                     t.ContentHTML,
                     t.UserID,
+                    t.EventImageFile,
                     t.EventCreatedAt,
                     t.EventUpdatedAt,
                     User = new
