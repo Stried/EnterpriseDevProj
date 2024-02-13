@@ -59,7 +59,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetMyOrders()
         {
             var user = GetUserId();
-            IQueryable result = _context.Orders.Where(t => t.UserId == user).Include(t => t.OrderItems);
+            IQueryable result = _context.Orders.Where(t => t.UserId == user).OrderByDescending(t => t.CreatedAt).Include(t => t.OrderItems);
 
             return Ok(result);
         }
