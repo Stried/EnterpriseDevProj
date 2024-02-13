@@ -43,6 +43,7 @@ import TicketMain from "./Tickets/TicketMain";
 import TicketSubmission from "./Tickets/TicketSubmission";
 import ViewTicket from "./Tickets/ViewTicket";
 import Receipt from "./Carts&Order/Receipt";
+import Custom401 from "./ErrorPages/Custom401";
 
 function App() {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -107,7 +108,7 @@ function App() {
 
     const AdministratorProtected = ({ children }) => {
         if (user.userRole != "Administrator") {
-            return <Custom404 />;
+            return <Custom401 />;
         }
 
         return children;
@@ -249,9 +250,20 @@ function App() {
                             path="/support/submitTicket"
                             element={<TicketSubmission />}
                         />
-                        <Route path="/support/ticket/:ticketId" element={<ViewTicket />} />
+                        <Route
+                            path="/support/ticket/:ticketId"
+                            element={<ViewTicket />}
+                        />
+                        <Route
+                            path="/401"
+                            element={<Custom401 />}
+                        />
                         <Route
                             path="/404"
+                            element={<Custom404 />}
+                        />
+                        <Route
+                            path={"*"}
                             element={<Custom404 />}
                         />
                     </Routes>

@@ -1,4 +1,4 @@
-import { TiTickOutline } from "react-icons/ti";
+import { TiTickOutline, TiTimesOutline } from "react-icons/ti";
 
 function MembershipMain() {
     return (
@@ -11,10 +11,155 @@ function MembershipMain() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-3 grid-rows-1 space-x-5 my-6">
-                <div className="">
-                    <h1 className="text-2xl">Standard</h1>
-                    <TiTickOutline className="text-2xl" />
+            <div className="grid grid-cols-3 grid-rows-1 space-x-5 my-6 mx-10">
+                <div className="my-5 p-10 space-y-6 bg-gray-200">
+                    <h1 className="text-3xl">
+                        Standard{" "} <br />
+                        <span className="text-lg font-medium">
+                            ($FREE / month)
+                        </span>
+                    </h1>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Book events</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Add groups and friends</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Use vouchers to book events
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Participate in giveaways and more!
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTimesOutline className="text-2xl text-red-400" />{" "}
+                        <span className="my-auto">Cheaper Event Prices</span>
+                    </div>
+                    <div className="flex">
+                        <TiTimesOutline className="text-2xl text-red-400" />{" "}
+                        <span className="my-auto">
+                            Birthday Month Discounts
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTimesOutline className="text-2xl text-red-400" />{" "}
+                        <span className="my-auto">
+                            Unique Vouchers for Members
+                        </span>
+                    </div>
+                    <div className="text-center">
+                        <button className="text-xl font-medium text-gray-100 bg-orange-400 rounded px-3 py-2">
+                            Get Now
+                        </button>
+                    </div>
+                </div>
+
+                <div className="my-5 p-10 space-y-6 bg-gray-200">
+                    <h1 className="text-3xl">
+                        Friends of UPLAY <br />
+                        <span className="text-lg font-medium">
+                            ($9.99 / month)
+                        </span>
+                    </h1>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Book events</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Add groups and friends</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Use vouchers to book events
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Participate in giveaways and more!
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Cheaper Event Prices</span>
+                    </div>
+                    <div className="flex">
+                        <TiTimesOutline className="text-2xl text-red-400" />{" "}
+                        <span className="my-auto">
+                            Birthday Month Discounts
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTimesOutline className="text-2xl text-red-400" />{" "}
+                        <span className="my-auto">
+                            Unique Vouchers for Members
+                        </span>
+                    </div>
+                    <div className="text-center">
+                        <button className="text-xl font-medium text-gray-100 bg-orange-400 rounded px-3 py-2">
+                            Get Now
+                        </button>
+                    </div>
+                </div>
+
+                <div className="my-5 p-10 space-y-6 bg-gray-200">
+                    <h1 className="text-3xl">
+                        NTUC Member{" "} <br />
+                        <span className="text-lg  font-medium">
+                            ($14.99 / month)
+                        </span>
+                    </h1>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Book events</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Add groups and friends</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Use vouchers to book events
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Participate in giveaways and more!
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">Cheaper Event Prices</span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Birthday Month Discounts
+                        </span>
+                    </div>
+                    <div className="flex">
+                        <TiTickOutline className="text-2xl text-green-400" />{" "}
+                        <span className="my-auto">
+                            Unique Vouchers for Members
+                        </span>
+                    </div>
+                    <div className="text-center">
+                        <button className="text-xl font-medium text-gray-100 bg-orange-400 rounded px-3 py-2">
+                            Get Now
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

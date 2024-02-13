@@ -630,7 +630,7 @@ function UserAccount() {
                                     </div>
                                 )}
 
-{currentOption == "optionSix" && (
+                                {currentOption == "optionSix" && (
                                     <div className="">
                                         <div className="">
                                             <h1 className="text-3xl font-light">

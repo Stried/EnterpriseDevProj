@@ -140,14 +140,19 @@ function VoucherPage() {
                                             <p>Uses: {vouchers.voucherUses}</p>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() =>
-                                            claimVoucher(vouchers.id)
-                                        }
-                                        className="bg-white text-black text-l font-semibold"
-                                    >
-                                        Claim
-                                    </button>
+                                    {vouchers.voucherUses != 0 && (
+                                        <button
+                                            onClick={() =>
+                                                claimVoucher(vouchers.id)
+                                            }
+                                            className="bg-white text-black text-l font-semibold"
+                                        >
+                                            Claim
+                                        </button>
+                                    ) }
+                                    { vouchers.voucherUses == 0 && (
+                                        <div className="">Fully Claimed</div>
+                                    )}
                                 </div>
                             </div>
                         ))}
