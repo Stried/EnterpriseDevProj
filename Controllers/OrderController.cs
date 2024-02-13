@@ -101,12 +101,18 @@ namespace EnterpriseDevProj.Controllers
                     // Error was in front-end, where it was passing in undefined instead of a value.
                     EventId = orderItem.EventId,
                     // You forgot completely about subtotal, it was returning 0
+                    DateId = orderItem.DateId,
+                    DateOfEvent = orderItem.DateOfEvent,
+                    EventName = orderItem.EventName,
+                    EventPrice = orderItem.EventPrice,
                     SubTotal = orderItem.SubTotal,
                     CreatedAt = now,
                     UpdatedAt = now,
                     OrderId = result,
                 };
                 logger.LogInformation("Check 2");
+
+                
 
                 _context.OrderItems.Add(myOrderItem);
                 _context.SaveChanges();
@@ -134,7 +140,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetOrderItem(int id)
         {
             var usersOrderItems = _context.OrderItems.Where(t => t.OrderId == id);
-            List<OrderItem> orderItems = usersOrderItems.Include(t => t.Event).OrderByDescending(x => x.CreatedAt).ToList();
+            List<OrderItem> orderItems = usersOrderItems.Include(t => t.Dates).OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(orderItems);  
         }
     }

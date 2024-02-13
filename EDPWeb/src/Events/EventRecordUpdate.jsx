@@ -151,8 +151,6 @@ function EventRecordUpdate() {
         .max(10000, "Maximum 10000 SGD")
         .required(),
 
-        
-
       MaxPax: yup
         .number()
         .integer()
@@ -488,7 +486,7 @@ function EventRecordUpdate() {
               </div>
             ) : null}
           </div>
-<div className="my-4">
+        <div className="my-4">
           <label htmlFor="eventlocation">Event Details</label>
             <p className="opacity-70 italic">
               Create the details, and tell us more about your event

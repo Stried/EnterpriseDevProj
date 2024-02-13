@@ -12,7 +12,15 @@ namespace EnterpriseDevProj.Models.CartFolder
         [Required]
         public int Quantity { get; set; }
         public int CartId { get; set; }
+        public int DateId { get; set; }
         public int EventId { get; set; }
+        [Required]
+        public int EventPrice {get; set;}		
+        [Required, MinLength(3), MaxLength(60)]
+		public string EventName { get; set; } = string.Empty;
+        [Required]
+        [Column(TypeName = "datetime")]
+        public DateTime DateOfEvent { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
@@ -20,7 +28,7 @@ namespace EnterpriseDevProj.Models.CartFolder
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
         public Cart? Cart { get; set; }
-        public Event? Event { get; set; }
+        public Date? Dates {get; set;}
         public List<CartParticipant>? Participants { get; set; }
     }
 }

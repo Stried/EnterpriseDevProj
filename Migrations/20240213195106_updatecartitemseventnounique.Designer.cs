@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240213142801_EventDateTypeDrop")]
-    partial class EventDateTypeDrop
+    [Migration("20240213195106_updatecartitemseventnounique")]
+    partial class updatecartitemseventnounique
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,12 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("DateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfEvent")
+                        .HasColumnType("datetime");
+
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
@@ -82,7 +88,8 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("DateId")
+                        .IsUnique();
 
                     b.ToTable("CartItems");
                 });
@@ -128,9 +135,6 @@ namespace EnterpriseDevProj.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateCreatedAt")
                         .HasColumnType("datetime");
 
@@ -152,8 +156,6 @@ namespace EnterpriseDevProj.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("DateId");
-
-                    b.HasIndex("CartItemId");
 
                     b.HasIndex("EventId");
 
@@ -653,15 +655,15 @@ namespace EnterpriseDevProj.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Date", "Dates")
+                        .WithOne("CartItem")
+                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "DateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
 
-                    b.Navigation("Event");
+                    b.Navigation("Dates");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartParticipant", b =>
@@ -677,17 +679,11 @@ namespace EnterpriseDevProj.Migrations
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
                 {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemId");
-
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
                         .WithMany("Dates")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CartItem");
 
                     b.Navigation("Event");
                 });
@@ -851,6 +847,11 @@ namespace EnterpriseDevProj.Migrations
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartItem", b =>
                 {
                     b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
+                {
+                    b.Navigation("CartItem");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>

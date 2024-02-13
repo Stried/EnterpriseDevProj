@@ -99,16 +99,16 @@ function Receipt() {
                                             {i + 1 + ". "}
                                         </div>
                                         <div className="">
-                                            {orderItem.event.eventName}
+                                            {orderItem.eventName}
                                         </div>
                                         <div>
                                             {orderItem.quantity}
                                         </div>
                                         <div>
-                                            ${orderItem.event.eventPrice}
+                                            ${orderItem.eventPrice}
                                         </div>
                                         <div>
-                                            ${orderItem.quantity * orderItem.event.eventPrice}
+                                            ${orderItem.quantity * orderItem.eventPrice}
                                         </div>
                                     </div>
                                 )

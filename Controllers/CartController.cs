@@ -113,15 +113,19 @@ namespace EnterpriseDevProj.Controllers
             var myCartItem = new CartItem()
             {
                 Quantity = cartItem.Quantity,
+                DateOfEvent = cartItem.DateOfEvent,
+                EventPrice = cartItem.EventPrice,
+                EventName = cartItem.EventName,
                 CreatedAt = now,
                 UpdatedAt = now,
+                DateId = cartItem.DateId,
                 CartId = result,
                 EventId = cartItem.EventId
             };
             var eventPrice = _context.Events.Where(t => t.EventId == cartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
             myCartItem.SubTotal = myCartItem.Quantity * eventPrice;
 
-            var checkForCartItem = _context.CartItems.Where(x => x.EventId == cartItem.EventId && x.CartId == result).FirstOrDefault();
+            var checkForCartItem = _context.CartItems.Where(x => x.DateId == cartItem.DateId && x.CartId == result).FirstOrDefault();
             if (checkForCartItem != null)
             {
                 checkForCartItem.Quantity += 1;
@@ -133,7 +137,7 @@ namespace EnterpriseDevProj.Controllers
             _context.CartItems.Add(myCartItem);
             _context.SaveChanges();
 
-            CartItem? newCartItem = _context.CartItems.Include(t => t.Cart).Include(e => e.Event)
+            CartItem? newCartItem = _context.CartItems.Include(t => t.Cart).Include(e => e.Dates)
                         .FirstOrDefault(t => t.CartId == myCartItem.CartId && t.EventId == myCartItem.EventId);
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
             return Ok(cartItemDTO);
@@ -149,7 +153,7 @@ namespace EnterpriseDevProj.Controllers
                 // userID from user cart can be found
                 var userCart = _context.Carts.First(x => x.UserId == userId);
 
-                var userCartItems = _context.CartItems.Where(u => u.CartId == userCart.CartId).Include(e => e.Event);
+                var userCartItems = _context.CartItems.Where(u => u.CartId == userCart.CartId).Include(e => e.Dates);
 
                 List<CartItem> cartItemsList = userCartItems.OrderBy(x => x.CreatedAt).ToList();
                 // IEnumerable<CartItem> data = cartItemsList.Select(t => _mapper.Map<CartItem>(t));

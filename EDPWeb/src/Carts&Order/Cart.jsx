@@ -42,8 +42,8 @@ function Cart() {
         switch (option.label) {
             case "Alphabetical (Ascending)":
                 sortedList = cartItemList.slice().sort((a, b) => {
-                    const nameA = a.event.eventName.toUpperCase();
-                    const nameB = b.event.eventName.toUpperCase();
+                    const nameA = a.eventName.toUpperCase();
+                    const nameB = b.eventName.toUpperCase();
 
                     if (nameA < nameB) {
                         return -1;
@@ -55,13 +55,13 @@ function Cart() {
                 });
                 break;
             case "Price (Ascending)":
-                sortedList = cartItemList.slice().sort((a, b) => (a.event.eventPrice * a.quantity) - (b.event.eventPrice * b.quantity));
+                sortedList = cartItemList.slice().sort((a, b) => (a.eventPrice * a.quantity) - (b.eventPrice * b.quantity));
                 break;
             case "Price (Descending)":
-                sortedList = cartItemList.slice().sort((a, b) => (b.event.eventPrice * b.quantity) - (a.event.eventPrice * a.quantity));
+                sortedList = cartItemList.slice().sort((a, b) => (b.eventPrice * b.quantity) - (a.eventPrice * a.quantity));
                 break;
             default:
-                sortedList = cartItemList.slice().sort((a, b) => (a.event.eventPrice * a.quantity) - (b.event.eventPrice * b.quantity));
+                sortedList = cartItemList.slice().sort((a, b) => (a.eventPrice * a.quantity) - (b.eventPrice * b.quantity));
         }
         console.log(option.label)
 
@@ -71,7 +71,7 @@ function Cart() {
 
     let total = 0;
     cartItemList.forEach((cartItem) => {
-        total = total + (cartItem.event.eventPrice * cartItem.quantity)
+        total = total + (cartItem.eventPrice * cartItem.quantity)
     })
 
     let totalString;
@@ -213,16 +213,17 @@ function Cart() {
                                                     <div className="">
                                                         <div className="text-2xl font-bold pb-3">
                                                             <IconContext.Provider value={{ className: "ml-2 mb-1 hover:text-blue-800" }}>
-                                                                {cartItem.event.eventName}{" "}<IoMdOpen className='inline-block' />
+                                                                {cartItem.eventName}{" "}<IoMdOpen className='inline-block' />
                                                             </IconContext.Provider>
                                                         </div>
+                                                        <div>{cartItem.dateOfEvent}</div>
                                                         <div className="text-2xl">
                                                             $
-                                                            {cartItem.event.eventPrice *
+                                                            {cartItem.eventPrice *
                                                                 cartItem.quantity}
                                                         </div>
                                                         <div className="text-xl text-zinc-600">
-                                                            ${cartItem.event.eventPrice}{" "}
+                                                            ${cartItem.eventPrice}{" "}
                                                             each
                                                         </div>
                                                     </div>
@@ -305,7 +306,6 @@ function Cart() {
                                                                 <span className="pl-1 text-sky-700">
                                                                     {
                                                                         cartItem
-                                                                            .event
                                                                             .eventName
                                                                     }
                                                                 </span>
@@ -319,8 +319,7 @@ function Cart() {
                                                         </div>
                                                         <div className="mr-2 text-xl font-bold">
                                                             $
-                                                            {cartItem.event
-                                                                .eventPrice *
+                                                            {cartItem.eventPrice *
                                                                 cartItem.quantity}
                                                         </div>
                                                     </div>

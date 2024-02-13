@@ -29,6 +29,7 @@ import {
   Typography,
   CardContent,
 } from "@mui/material";
+import { select } from "slate";
 
 function EventDetail() {
   let { EventId } = useParams();
@@ -39,12 +40,18 @@ function EventDetail() {
     setIsCardShifted(!isCardShifted);
   };
 
-
+  const [error, setError] = useState("");
   const [selectedevent, setevent] = useState("");
   const [dateTimeDates, setDateTimeDates] = useState([]);
   const [allowedDates, setAllowedDates] = useState([]);
   const [dateInfoList, setDateInfoList] = useState([]);
-
+  const [dateId, setDateId] = useState(null);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  const [populateddates, setpopulateddates] = useState([]);
+  const earliestDate = allowedDates.length > 0 ? new Date(Math.min(...allowedDates)) : new Date();
+  const maxDate = allowedDates.length > 0 ? new Date(Math.max(...allowedDates)) : new Date();
+  const [selectedDate, setSelectedDate] = useState(earliestDate);
+  console.log(selectedevent.eventImageFile);
   useEffect(() => {
     http
       .get(`/event/Details/${EventId}`, {
@@ -58,7 +65,7 @@ function EventDetail() {
 
         const datesArray = res.data.dates;
         const dateInfoArray = [];
-
+        setpopulateddates(datesArray);
         const dateTimeDatesList = datesArray.map((dateObj) => dateObj.dateOfEvent);
         setDateTimeDates(dateTimeDatesList);
 
@@ -97,29 +104,51 @@ function EventDetail() {
 
   const navigate = useNavigate();
   const [selectedTime, setSelectedTime] = useState(null);
-
+  const [selectedremaining, setselectedremaining] = useState();
   const onChange = (date) => {
     setSelectedDate(date);
-
+  };
+  
+  useEffect(() => {
     const index = allowedDates.findIndex(
       (allowedDate) =>
-        allowedDate.getFullYear() === date.getFullYear() &&
-        allowedDate.getMonth() === date.getMonth() &&
-        allowedDate.getDate() === date.getDate()
+        allowedDate.getFullYear() === selectedDate.getFullYear() &&
+        allowedDate.getMonth() === selectedDate.getMonth() &&
+        allowedDate.getDate() === selectedDate.getDate()
     );
-
+  
     if (index !== -1) {
       const correspondingTime = dateTimeDates[index];
       const formattedTime = new Date(correspondingTime).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true, 
+        hour12: true,
       });
       setSelectedTime(formattedTime);
+  
+      const selectedDateTimeObj = new Date(dateTimeDates[index]);
+  
+      const year = selectedDateTimeObj.getFullYear();
+      const month = String(selectedDateTimeObj.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDateTimeObj.getDate()).padStart(2, '0');
+      const hours = String(selectedDateTimeObj.getHours()).padStart(2, '0');
+      const minutes = String(selectedDateTimeObj.getMinutes()).padStart(2, '0');
+      const seconds = String(selectedDateTimeObj.getSeconds()).padStart(2, '0');
+  
+      const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  
+      setSelectedDateTime(formattedDateTime);
+      setselectedremaining(selectedevent.dates[index].remainingPax)
+      setDateId(selectedevent.dates[index].dateId);
+    } else {
+      setSelectedTime(null);
+      setSelectedDateTime(null);
+      setDateId(null);
     }
-  };
-  const earliestDate = allowedDates.length > 0 ? new Date(Math.min(...allowedDates)) : new Date();
-  const maxDate = allowedDates.length > 0 ? new Date(Math.max(...allowedDates)) : new Date();
+    console.log(dateId)
+  }, [selectedDate, allowedDates, dateTimeDates, selectedevent.dates]);
+
+
 
         const tileDisabled = ({ date }) =>
         !allowedDates.some(
@@ -129,23 +158,40 @@ function EventDetail() {
             allowedDate.getDate() === date.getDate()
         );
 
+
+console.log("the populated:"+ populateddates);
+
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
-        
-        const rawData =
-        {
-          Quantity: 1,
-          EventId: EventId
-        }
-        console.log(earliestDate);
-        const [selectedDate, setSelectedDate] = useState(earliestDate);
+        console.log(selectedDateTime)
+        console.log(dateTimeDates)
+
 
         const addToCart = () => {
+            if (!selectedDateTime || !dateTimeDates.includes(selectedDateTime)) {
+                setError("Please select a valid date and time for this event.");
+                return;
+              }
+
+              const rawData =
+              {
+                Quantity: 1,
+                EventId: EventId,
+                EventPrice: selectedevent.eventPrice,
+                EventName: selectedevent.eventName,
+                DateId: dateId,
+                DateOfEvent: selectedDateTime,
+              }
+
           http.post("/cart/AddCartItem", rawData, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           })
           .then((res) => console.log(res))
+          .catch((error) => {
+            console.error(error);
+            setError("An error occurred while adding to the cart. Please try again.");
+          });
         }
         const { user } = useContext(UserContext);
         useEffect(() => {
@@ -363,9 +409,10 @@ function EventDetail() {
                           </p>
                       </span>
                   </div>
-                  <div className="">
+                  <div className="mb-2 flex items-center justify-center">
                       <img
                           className="object-contain max-h-full drop-shadow-lg rounded"
+                          style={{ maxHeight: '300px', maxWidth:'450px' }}
                           src={`${
                               import.meta.env.VITE_FILE_EVENT_URL
                           }${selectedevent.eventImageFile}`}
@@ -374,12 +421,9 @@ function EventDetail() {
                   </div>
                   <div className="border-b-2 border-gray-300 mb-4" />
 
-                  <div>Available spots left: </div>
-                  <div
-                      className="prose-content "
-                      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-                  />
-              </div>
+
+    <div className="prose-content " dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+  </div>
 
               <div className="flex flex-col items-end space-y-4">
                   <div className="bg-gray-100 p-4 rounded-md shadow-md sticky top-20">
@@ -391,18 +435,32 @@ function EventDetail() {
                           minDate={earliestDate}
                           maxDate={maxDate}
                       />
+
+
+              {populateddates.length=== 0 ?(<p className="text-red-500 text-center">Sorry, we're all booked out!</p>):(<span></span>)}
                       {selectedTime && (
                           <div className="text-center text-lg mt-4">
                               Selected Time: {selectedTime}
                           </div>
                       )}
-
+                 {selectedDateTime && (
+            <div className="text-center text-lg mt-4">
+              Selected DateTime: {selectedDateTime}
+            </div>
+          )}
+                  {error && (
+          <div className="text-red-500 text-center mt-4">
+            {error}
+          </div>
+        )}
+                <div className="py-3">Available spots left:{selectedremaining} </div>
                       {selectedevent.eventPrice !== 0 ? (
-                          <p className="py-5 text-xl">
+                        
+                          <p className="pb-3 text-xl">
                               Event Price: ${selectedevent.eventPrice}
                           </p>
                       ) : (
-                          <p className="py-5 text-xl"> Event Price: Free</p>
+                          <p className="pb-3 text-xl"> Event Price: Free</p>
                       )}
 
                       <div className="p-5 text-right space-x-4">

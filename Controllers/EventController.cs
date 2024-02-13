@@ -204,19 +204,18 @@ public IActionResult GetEvent(int EventId)
             return NotFound();
         }
 
-        var datesList = dbContext.Dates
-            .Where(d => d.EventId == EventId)
-            .Select(d => new
-            {
-                d.DateId,
-                d.EventName,
-                d.RemainingPax,
-                d.DateOfEvent,
-                d.DateCreatedAt,
-                d.DateUpdatedAt
-            })
-            .ToList();
-
+var datesList = dbContext.Dates
+    .Where(d => d.EventId == EventId && d.RemainingPax > 0)
+    .Select(d => new
+    {
+        d.DateId,
+        d.EventName,
+        d.RemainingPax,
+        d.DateOfEvent,
+        d.DateCreatedAt,
+        d.DateUpdatedAt
+    })
+    .ToList();
         var data = new
         {
             eventModel.EventId,
@@ -231,10 +230,10 @@ public IActionResult GetEvent(int EventId)
             eventModel.ExpiryDate,
             eventModel.AvgRating,
             eventModel.ContentHTML,
+            eventModel.EventImageFile,
             eventModel.UserID,
             eventModel.EventCreatedAt,
             eventModel.EventUpdatedAt,
-            eventModel.EventImageFile,
             User = new
             {
                 eventModel.User?.Name
