@@ -254,7 +254,7 @@ function App() {
                         />
                         <Route
                             path="/membership"
-                            element={ <MembershipMain /> }
+                            element={<MembershipMain />}
                         />
                         <Route
                             path="/membership/:membershipType"
@@ -274,6 +274,20 @@ function App() {
                         />
                     </Routes>
                 </div>
+
+                <Footer container>
+                    <Footer.Copyright
+                        href="#"
+                        by="UPLAY™"
+                        year={2023}
+                    />
+                    <Footer.LinkGroup>
+                        <Footer.Link href="#">About</Footer.Link>
+                        <Footer.Link href="#">Privacy Policy</Footer.Link>
+                        <Footer.Link href="#">Licensing</Footer.Link>
+                        <Footer.Link href="#">Contact</Footer.Link>
+                    </Footer.LinkGroup>
+                </Footer>
             </div>
         </UserContext.Provider>
     );

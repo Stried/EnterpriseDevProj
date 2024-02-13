@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import http from "./../../http"
+import http from "./../../http";
 
 function PurchaseComplete() {
     const [cartItemList, setCartItemList] = useState([]);
-    const [order, setOrder] = useState("")
+    const [order, setOrder] = useState("");
 
     useEffect(() => {
         http.get("/cart/getMyCartItems", {
@@ -13,13 +13,13 @@ function PurchaseComplete() {
             },
         })
             .then((res) => {
-                console.log(res.data)
+                console.log(res.data);
                 setCartItemList(res.data);
-                console.log(cartItemList)
+                console.log(cartItemList);
             })
             .catch(function (err) {
                 console.log(err);
-            })
+            });
     }, []);
 
     useEffect(() => {
@@ -27,43 +27,74 @@ function PurchaseComplete() {
         const timerId = setTimeout(() => {
             http.post("/order/NewOrder", null, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "accessToken"
+                    )}`,
                 },
-            }).then((res) => {
-
-                for (var i = 0; i < cartItemList.length; i++) {
-                    const formData = {
-                        // Please note that when taking from a json response, first letter is always small
-                        Quantity: cartItemList[i].quantity,
-                        SubTotal: cartItemList[i].subTotal,
-                        // Error also caused by fact that cartItemList[i] returns undefined, u can test it if you want.
-                        // Changed to cartItemList.Event.EventId to referece event Id from event object
-                        EventId: cartItemList[i].event.eventId
-                    }
-                    http.post("/order/CreateOrderItem", formData, {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                        },
-                    })
-                        .then(() => {
-                            http.get("/order/GetMyCurrentOrder", {
-                                headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                                },
-                            })
-                                .then((res) => {
-                                    setOrder(res.data)
-                                    console.log(order.orderId)
-                                })
-                                .catch(function (err) {
-                                    console.log(err);
-                                })
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                }
             })
+                .then((res) => {
+                    for (var i = 0; i < cartItemList.length; i++) {
+                        const formData = {
+                            // Please note that when taking from a json response, first letter is always small
+                            Quantity: cartItemList[i].quantity,
+                            SubTotal: cartItemList[i].subTotal,
+                            // Error also caused by fact that cartItemList[i] returns undefined, u can test it if you want.
+                            // Changed to cartItemList.Event.EventId to referece event Id from event object
+                            EventId: cartItemList[i].event.eventId,
+                        };
+
+                        http.delete(
+                            `/cart/deleteCartItem/${cartItemList[i].cartItemId}`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem(
+                                        "accessToken"
+                                    )}`, // This is needed for mine for some reason, not part of the practical
+                                    "Content-Type": "application/json",
+                                },
+                            }
+                        )
+                            .then((res) => {
+                                console.log(res.data);
+                                console.log("Success");
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                            });
+
+                        console.log(cartItemList[i].cartItemId);
+                        http.post("/order/CreateOrderItem", formData, {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem(
+                                    "accessToken"
+                                )}`,
+                            },
+                        })
+                            .then(() => {
+                                console.log(cartItemList[ i ]);
+                                console.log(i)
+
+                                http.get("/order/GetMyCurrentOrder", {
+                                    headers: {
+                                        Authorization: `Bearer ${localStorage.getItem(
+                                            "accessToken"
+                                        )}`,
+                                    },
+                                })
+                                    .then((res) => {
+                                        setOrder(res.data);
+                                        console.log(i);
+                                        console.log(i);
+                                    })
+                                    .catch(function (err) {
+                                        console.log(err);
+                                    });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                })
                 .catch((err) => {
                     console.log(err);
                 });
@@ -86,20 +117,16 @@ function PurchaseComplete() {
             </div>
             <div className="flex justify-evenly mt-10">
                 <div className="bg-orange-400 px-3 py-2 rounded-xl font-semibold text-xl hover:shadow-lg hover:bg-orange-600 hover:text-white transition duration-300">
-                    <Link
-                        to="/">
-                        Return Home
-                    </Link>
+                    <Link to="/">Return Home</Link>
                 </div>
                 <div className="bg-orange-400 px-3 py-2 rounded-xl font-semibold text-xl hover:shadow-lg hover:bg-orange-600 hover:text-white transition duration-300">
-                    <Link
-                        to={`/receipt/${order.orderId}`}>
+                    <Link to={`/receipt/${order.orderId}`}>
                         View Receipt {order.orderId}
                     </Link>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default PurchaseComplete;

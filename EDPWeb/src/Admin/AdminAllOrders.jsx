@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import http from "../../http";
+import http from "../../http";  
+import { Link } from "react-router-dom";
 
 function AdminAllOrders() {
     const [orderList, setOrderList] = useState([]);
 
     useEffect(() => {
-        http.get("/orders/GetAllOrders", {
+        http.get("/order/GetAllOrders", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
@@ -17,10 +18,13 @@ function AdminAllOrders() {
             .catch(function (err) {
                 console.log(err);
             });
-    });
+    }, []);
 
     return (
         <div>
+            <div>
+
+            </div>
             <div>
                 {orderList.map((order, i) => {
                     return (
@@ -43,7 +47,7 @@ function AdminAllOrders() {
                                 </div>
                             )}
                             {i == orderList.length - 1 && (
-                                <div className="bg-gray-100 text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                <div className="bg-gray-100 font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
                                     <div className="flex pl-2">
                                         {order.orderId}
                                     </div>

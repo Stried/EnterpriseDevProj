@@ -131,12 +131,6 @@ function VoucherPage() {
                                             <p className="text-gray-700 text-base w-64">
                                                 {vouchers.voucherName}
                                             </p>
-                                            <p>
-                                                Expires{" "}
-                                                {dayjs(
-                                                    vouchers.voucherExpiry
-                                                ).format("DD MMM YYYY")}
-                                            </p>
                                             <p>Uses: {vouchers.voucherUses}</p>
                                         </div>
                                     </div>
@@ -199,12 +193,6 @@ function VoucherPage() {
                                                         vouchers.voucher
                                                             .voucherName
                                                     }
-                                                </p>
-                                                <p>
-                                                    Expires{" "}
-                                                    {dayjs(
-                                                        vouchers.voucherExpiry
-                                                    ).format("DD MMM YYYY")}
                                                 </p>
                                                 <p>
                                                     Uses:{" "}

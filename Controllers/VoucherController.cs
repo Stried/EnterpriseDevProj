@@ -168,7 +168,7 @@ namespace EnterpriseDevProj.Controllers
             {
                 int userID = GetUserID();
 
-                var claimedVoucherList = dbContext.VoucherClaims.Where(x => x.UserId == userID).Include(v => v.Voucher).ToList();
+                var claimedVoucherList = dbContext.VoucherClaims.Where(x => x.UserId == userID && x.isUsed == false).Include(v => v.Voucher).ToList();
                 return Ok(claimedVoucherList);
             }
             catch (Exception e)
@@ -176,6 +176,21 @@ namespace EnterpriseDevProj.Controllers
                 logger.LogError(e, "Error in displaying claimed vouchers.");
                 return StatusCode(500);
             }
+        }
+
+        [HttpPut("usedVoucher/{voucherID}"), Authorize]
+        public IActionResult UsedVoucher(int voucherID)
+        {
+            var userID = GetUserID();
+            var voucherId = voucherID;
+
+            var voucherItem = dbContext.VoucherClaims.Where(x => x.VoucherId == voucherId && x.UserId == userID).First();
+
+            voucherItem.isUsed = true;
+            dbContext.VoucherClaims.Update(voucherItem);
+            dbContext.SaveChanges();
+
+            return Ok();
         }
 
         public int GetUserID()

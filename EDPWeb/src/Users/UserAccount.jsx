@@ -314,7 +314,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 FULL NAME{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.name}
@@ -324,7 +324,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 NRIC{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.nric}
@@ -334,7 +334,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 EMAIL ADDRESS{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.email}
@@ -344,7 +344,7 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 PHONE NUMBER{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
                                                 {user.phoneNumber}
@@ -353,10 +353,15 @@ function UserAccount() {
                                         <div className="pb-7">
                                             <p className="text-lg flex">
                                                 MEMBERSHIP STATUS{" "}
-                                                <FaPen className="my-auto mx-2" />
+                                                
                                             </p>
                                             <h2 className="text-2xl font-medium leading-6">
-                                                {membershipStatus.membershipStatus}
+                                                {membershipStatus.membershipStatus ==
+                                                    "NTUCMember" && <p>NTUC Member</p>}
+                                                {membershipStatus.membershipStatus ==
+                                                    "FriendsOfUPlay" && <p>Friends Of UPlay</p>}
+                                                {membershipStatus.membershipStatus ==
+                                                    "Standard" && <p>Standard</p>}
                                             </h2>
                                         </div>
                                     </div>

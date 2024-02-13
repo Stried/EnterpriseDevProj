@@ -42,13 +42,13 @@ function Receipt() {
     }, [id]);
 
     return (
-        <div className="bg-gray-200 py-10 h-screen">
-            <div className="text-5xl font-bold flex text-center justify-center w-full">
+        <div className="bg-gradient-to-br from-blue-950 to-red-700 py-10 text-gray-100 h-screen">
+            <div className="text-3xl font-bold flex text-center justify-center w-full">
                 Viewing Receipt
                 <br />
                 No. {order.orderId}
             </div>
-            <div className=" flex flex-col mt-5 bg-zinc-400 w-6/12 rounded-lg mx-auto">
+            <div className=" flex flex-col mt-5 bg-gray-300/30 w-6/12 rounded-lg mx-auto">
                 <div className="flex flex-row justify-center text-xl mb-5">
                     <div className="flex flex-col py-2 px-3">
                         <div className="mt-2">
@@ -63,16 +63,16 @@ function Receipt() {
                     </div>
                     <div className="flex flex-col py-2 px-3">
                         <div className="mt-2">
-                            <span className="font-semibold">Receipt Name: </span>{order.orderId}
+                            <span className="font-semibold">Receipt No: </span>{order.orderId}
                         </div>
                         <div className="mt-2">
                             <span className="font-semibold">Purchased At: </span>{new Date(order.createdAt).toLocaleString()}
                         </div>
                     </div>
                 </div>
-                <div className="flex-col flex text-xl justify-center w-11/12 mx-auto">
+                <div className="flex-col flex text-lg justify-center w-11/12 mx-auto">
                     <div>
-                        <div className="bg-red-400 grid grid-cols-5 font-semibold justify-between text-center px-2 border-b-2 border-zinc-200 py-2 rounded-t-2">
+                        <div className="grid grid-cols-5 font-semibold justify-between text-center px-2 border-b-2 border-zinc-200/50 py-2 rounded-t-2">
                             <div className="">
                                 Item No.
                             </div>
@@ -83,7 +83,7 @@ function Receipt() {
                                 Quantity
                             </div>
                             <div>
-                                Price per Item
+                                Price/Item
                             </div>
                             <div>
                                 SubTotal
@@ -94,7 +94,7 @@ function Receipt() {
                         {
                             orderItemsList.map((orderItem, i) => {
                                 return (
-                                    <div key={orderItem} className="grid grid-cols-5 text-center items-center px-2 py-2 border-b-2">
+                                    <div key={orderItem} className="grid grid-cols-5 text-center items-center px-2 py-2 border-b-2 border-zinc-200/50">
                                         <div>
                                             {i + 1 + ". "}
                                         </div>
@@ -117,10 +117,10 @@ function Receipt() {
                     </div>
                 </div>
             </div>
-            <div className="flex justify-center mt-10 text-xl font-semibold bg-red-400 w-1/12 mx-auto text-center rounded hover:bg-red-600 hover:text-white transition duration-300">
+            <div className="mt-10 text-xl font-semibold w-1/12 mx-auto text-center rounded">
                 <Link
                     to="/">
-                    Return Home?
+                    Return Home
                 </Link>
             </div>
         </div>

@@ -23,6 +23,7 @@ function Stripe() {
             .then((res) => {
                 setCart(res.data);
                 console.log(res.data.subTotal)
+                console.log(res.data.voucherUsed + " is the voucher used")
             })
             .catch(function (err) {
                 console.log(err);
@@ -31,6 +32,7 @@ function Stripe() {
 
     useEffect(() => {
         total = cart.subTotal
+        console.log(cart.subTotal)
 
         const payment = {
             Amount: total * 100,
@@ -51,10 +53,33 @@ function Stripe() {
                 })
                     .then((res) => {
                         console.log(res.status);
+                        if (cart.voucherUsed) {
+                            http.put(
+                                `/voucher/usedVoucher/${cart.voucherUsed}`,
+                                null,
+                                {
+                                    headers: {
+                                        Authorization: `Bearer ${localStorage.getItem(
+                                            "accessToken"
+                                        )}`,
+                                    },
+                                }
+                            )
+                                .then((res) => {
+                                    console.log(res.status);
+                                    console.log("SUCCESS");
+                                })
+                                .catch(function (err) {
+                                    console.log(err);
+                                });
+                        }
                     })
                     .catch(function(err) {
                         console.log(err);
-                })
+                    })
+                
+                
+                
             })
             .catch((err) => {
                 console.log(err);
@@ -81,24 +106,24 @@ function Stripe() {
 
 
                 // Proceed to payment only after fetching cart items
-                const payment = {
-                    Amount: total * 100,
-                    Currency: "sgd"
-                };
-                http.post("/payment/CreatePaymentIntent", payment)
-                    .then((data) => {
-                        setClientSecret(data.data.clientSecret);
-                        setClientId(data.data.id)
-                        console.log(data.data);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                // const payment = {
+                //     Amount: total * 100,
+                //     Currency: "sgd"
+                // };
+                // http.post("/payment/CreatePaymentIntent", payment)
+                //     .then((data) => {
+                //         setClientSecret(data.data.clientSecret);
+                //         setClientId(data.data.id)
+                //         console.log(data.data);
+                //     })
+                //     .catch((err) => {
+                //         console.log(err);
+                //     });
             })
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }, [cart]);
 
     const appearance = {
         theme: 'stripe',
