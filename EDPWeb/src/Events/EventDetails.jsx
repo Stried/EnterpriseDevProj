@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import './MarkdownEditor.css';
 import ReactMarkdown from 'react-markdown';
+import UserContext from "../Users/UserContext";
 import remarkGfm from 'remark-gfm';
 import http from "../../http";
 import React, { useContext, useEffect, useState } from "react";
@@ -128,7 +129,7 @@ function EventDetail() {
         );
 
         const sanitizedHtml = DOMPurify.sanitize(selectedevent.contentHTML);
-
+        
         const rawData =
         {
           Quantity: 1,
@@ -145,6 +146,15 @@ function EventDetail() {
           })
           .then((res) => console.log(res))
         }
+        const { user } = useContext(UserContext);
+        useEffect(() => {
+          if (!user || !user.id) {
+            toast.error("You can only view an event if you are logged in.");
+      
+            navigate("/login");
+          }
+        }, [user, navigate]);
+
   return (
     <div className="bg-white">
   <div className=" p-5 grid grid-cols-2 gap-8 mx-28">

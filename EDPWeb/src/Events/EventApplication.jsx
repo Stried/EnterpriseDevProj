@@ -1,4 +1,3 @@
-
 import { AiOutlineUser } from "react-icons/ai";
 import { GrGroup } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +18,7 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import "./CKEditorStyles.css";
 import DOMPurify from "dompurify";
+import CurrencyInput from 'react-currency-input-field';
 import ReactMarkdown from "react-markdown";
 import {
   Box,
@@ -38,6 +38,8 @@ function ApplyEvent() {
   }
 
   const { user } = useContext(UserContext);
+
+  
 
   const getOneWeekAheadDateTime = () => {
     const currentDate = new Date();
@@ -79,12 +81,7 @@ function ApplyEvent() {
         .number()
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
-        .required()
-        .test(
-          'is-decimal',
-          'invalid decimal',
-          value => (value + "").match(/^\d*\.{1}\d*$/),
-        ),
+,
 
 
       FriendPrice: yup
@@ -92,11 +89,7 @@ function ApplyEvent() {
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
         .required()
-        .test(
-          'is-decimal',
-          'invalid decimal',
-          value => (value + "").match(/^\d*\.{1}\d*$/),
-        ),
+,
 
 
       NTUCPrice: yup
@@ -104,11 +97,7 @@ function ApplyEvent() {
         .min(0, "Minimum 0 SGD")
         .max(10000, "Maximum 10000 SGD")
         .required()
-        .test(
-          'is-decimal',
-          'invalid decimal',
-          value => (value + "").match(/^\d*\.{1}\d*$/),
-        ),
+,
 
       MaxPax: yup
         .number()
@@ -128,7 +117,11 @@ function ApplyEvent() {
         .required(),
       ExpiryDate: yup.date(),
       AvgRating: yup.number(),
-      ContentHTML: yup.string().required(),
+      ContentHTML: yup
+      .string()
+      .required()
+      .min(60, "Are you sure this is enough to describe your event?")
+      .max(60000, "Maximum 60000 characters."),
       EventDates: yup.array().min(1, "Please set a date"),
       UserID: yup.number().integer(),
     }),
@@ -158,12 +151,15 @@ function ApplyEvent() {
       }
 
       const sanitizeddata=DOMPurify.sanitize(data.ContentHTML)
+      const roundedEventPrice = parseFloat(data.EventPrice).toFixed(2);
+      const roundedFriendPrice = parseFloat(data.FriendPrice).toFixed(2);
+      const roundedNTUCPrice = parseFloat(data.NTUCPrice).toFixed(2);
 
       const formData = {
         EventName: (data.EventName = data.EventName.trim()),
-        EventPrice: (data.EventPrice = data.EventPrice),
-        FriendPrice: (data.FriendPrice = data.FriendPrice),
-        NTUCPrice: (data.NTUCPrice = data.EventPrice),
+        EventPrice: (data.EventPrice = roundedEventPrice),
+        FriendPrice: (data.FriendPrice = roundedFriendPrice),
+        NTUCPrice: (data.NTUCPrice = roundedNTUCPrice),
         MaxPax: (data.MaxPax = data.MaxPax),
         Approval: (data.Approval = data.Approval),
         ActivityType: (data.ActivityType = data.ActivityType.trim()),
@@ -308,11 +304,18 @@ function ApplyEvent() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!user || !user.id) {
+      toast.error("You can only create an event application if you are logged in.");
+
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
       <div className="p-5 text-center bg-stone-100 w-7/12 mx-auto rounded-lg drop-shadow-lg shadow-lg">
-        <h1 className="text-xl font-medium">Event Application</h1>
+      <p className="text-4xl text-center font-medium">Create Event Application</p>
         <form
           onSubmit={formikEvent.handleSubmit}
           className="text-lg font-medium"
@@ -337,34 +340,33 @@ function ApplyEvent() {
           </div>
 
           <div className="my-4">
-            <label htmlFor="eventprice">Event Fee</label>
-            <p className="opacity-70 italic">Event Entry Fee</p>
-            <input
-              type="number"
-              name="EventPrice"
-              id="eventprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.EventPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
-            {formikEvent.errors.EventPrice ? (
+          <label htmlFor="friendprice">Entry Price</label>
+            <p className="opacity-70 italic">Entry Price for guests</p>
+          <CurrencyInput
+          name="EventPrice"
+          id="eventprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.EventPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
+                    {formikEvent.errors.EventPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.EventPrice}
               </div>
             ) : null}
           </div>
+        
 
           <div className="my-4">
             <label htmlFor="friendprice">Uplay Friends Price</label>
             <p className="opacity-70 italic">Event Uplay Friends Price</p>
-            <input
-              type="number"
-              name="FriendPrice"
-              id="friendprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.FriendPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
+            <CurrencyInput
+          name="FriendPrice"
+          id="friendprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.FriendPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
             {formikEvent.errors.FriendPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.FriendPrice}
@@ -375,14 +377,13 @@ function ApplyEvent() {
           <div className="my-4">
             <label htmlFor="ntucprice">NTUC Membership Price</label>
             <p className="opacity-70 italic">Event NTUC Membership Price</p>
-            <input
-              type="number"
-              name="NTUCPrice"
-              id="ntucprice"
-              onChange={formikEvent.handleChange}
-              value={formikEvent.values.NTUCPrice}
-              className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
-            />
+            <CurrencyInput
+          name="NTUCPrice"
+          id="ntucprice"
+          onChange={formikEvent.handleChange}
+          value={formikEvent.values.NTUCPrice}
+          className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
+        />
             {formikEvent.errors.NTUCPrice ? (
               <div className="text-red-400">
                 *{formikEvent.errors.NTUCPrice}

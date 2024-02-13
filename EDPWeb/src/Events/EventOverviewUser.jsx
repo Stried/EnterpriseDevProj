@@ -172,7 +172,8 @@ const truncateText = (text, maxLength) => {
         <h1 className="text-center text-5xl mt-10 text-black">
           Events
         </h1>
-        <div className="text-center border-4" style={{ width: "1100px", margin: "0 auto", marginBottom: "75px", marginTop:"25px" }}>
+        <div className="text-center border-4" style={{ width: "1000px", margin: "0 auto", marginBottom: "75px", marginTop:"25px" }}>
+          <div className="pt-2">
   <input
     type="text"
     id="search"
@@ -189,10 +190,13 @@ const truncateText = (text, maxLength) => {
 
   <button
     onClick={handleSearch}
-    className="bg-gradient-to-br ml-5 from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
+    className=" bg-gradient-to-br ml-5 from-orange-400 to-red-500 px-3 py-2 rounded-md tracking-wide hover:brightness-90 transition ease-in-out duration-300"
   >
     Search
   </button>
+  </div>
+<div className="text-center text-xl text-red-500 py-2"><Link to={"/eventapply"}>Interested in hosting your own events? Create one here!</Link></div>
+
 </div>
 
         <div className="flex flex-wrap justify-center gap-8 mb-96 ">

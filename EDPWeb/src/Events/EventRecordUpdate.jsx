@@ -169,9 +169,14 @@ function EventRecordUpdate() {
         .min(5, "Are you sure this is a proper location?")
         .max(50, "Are you sure this is a proper location?")
         .required(),
-      ExpiryDate: yup.date(),
+      ExpiryDate: yup
+      .date(),
       AvgRating: yup.number(),
-      ContentHTML: yup.string().required(),
+      ContentHTML: yup
+      .string()
+      .required()
+      .min(60, "Are you sure this is enough to describe your event?")
+      .max(60000, "Maximum 60000 characters."),
       EventDates: yup.array().min(1, "Please set a date"),
 
     }),
@@ -189,16 +194,19 @@ function EventRecordUpdate() {
         const trimmedDate = typeof customDate === 'string' ? customDate.trim() : customDate;
         return trimmedDate ? new Date(trimmedDate) : null;
       });
+      const roundedEventPrice = parseFloat(data.EventPrice).toFixed(2);
+      const roundedFriendPrice = parseFloat(data.FriendPrice).toFixed(2);
+      const roundedNTUCPrice = parseFloat(data.NTUCPrice).toFixed(2);
 
-
-console.log("Form data for event dates: "+data.EventDates)
+      console.log("Form data for event dates: "+data.EventDates)
       
+
 
       const formData = {
         EventName: (data.EventName = data.EventName.trim()),
-        EventPrice: (data.EventPrice = data.EventPrice),
-        FriendPrice: (data.FriendPrice = data.FriendPrice),
-        NTUCPrice: (data.NTUCPrice = data.EventPrice),
+        EventPrice: (data.EventPrice = roundedEventPrice),
+        FriendPrice: (data.FriendPrice = roundedFriendPrice),
+        NTUCPrice: (data.NTUCPrice = roundedNTUCPrice),
         MaxPax: (data.MaxPax = data.MaxPax),
         Approval: (data.Approval = data.Approval),
         ActivityType: (data.ActivityType = data.ActivityType.trim()),
@@ -322,7 +330,7 @@ console.log("Form data for event dates: "+data.EventDates)
   return (
     <div className="bg-gradient-to-br from-orange-400 to-red-500 py-10">
       <div className="p-5 text-center bg-stone-100 w-7/12 mx-auto rounded-lg drop-shadow-lg shadow-lg">
-        <h1 className="text-xl font-medium">Event Record Update</h1>
+        <p className="text-4xl text-center font-medium">Event Record Update</p>
         <form
           onSubmit={formikEvent.handleSubmit}
           className="text-lg font-medium"
@@ -387,7 +395,7 @@ console.log("Form data for event dates: "+data.EventDates)
           name="NTUCPrice"
           id="ntucprice"
           onChange={formikEvent.handleChange}
-          value={formikEvent.values.EventPrice}
+          value={formikEvent.values.NTUCPrice}
           className="bg-transparent border-gray-800 border-2 rounded w-1/2 px-3 py-2 my-2 focus:outline-none focus:ring focus:ring-red-400"
         />
             {formikEvent.errors.NTUCPrice ? (

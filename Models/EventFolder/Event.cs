@@ -39,7 +39,7 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         public float AvgRating { get; set; }
 
-        [Required, MaxLength(3000)]
+        [Required, MaxLength(60000)]
         public string ContentHTML { get; set; } = string.Empty;
 
         [Required]

@@ -35,7 +35,7 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         public string DateType { get; set; } = string.Empty;
 
-        [MaxLength(3000)]
+        [MaxLength(60000)]
         public string ContentHTML { get; set; } = string.Empty;
         public List<DateTime> EventDates { get; set; } = new List<DateTime>();
 
