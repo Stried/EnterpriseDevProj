@@ -17,6 +17,14 @@ function VoucherPage() {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
+        getVouchers();
+    }, []);
+
+    useEffect(() => {
+        getClaimedVouchers()
+    }, [])
+
+    const getVouchers = () => {
         http.get("/voucher/VoucherGetAll")
             .then((res) => {
                 setVouchersList(res.data);
@@ -24,9 +32,9 @@ function VoucherPage() {
             .catch(function (err) {
                 console.log(err);
             });
-    }, []);
+    }
 
-    useEffect(() => {
+    const getClaimedVouchers = () => {
         http.get("voucher/claimedVouchers", {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -39,7 +47,7 @@ function VoucherPage() {
             .catch(function (err) {
                 console.log(err);
         })
-    }, [])
+    }
 
     const deleteVoucher = (id) => {
         http.delete(`/deleteVoucher/${id}`, {
@@ -65,6 +73,9 @@ function VoucherPage() {
             })
             .then((res) => {
                 console.log(res.status);
+                getVouchers();
+                getClaimedVouchers();
+                toast.info("Voucher has been claimed.")
             })
             .catch(function (err) {
                 console.log(err);
