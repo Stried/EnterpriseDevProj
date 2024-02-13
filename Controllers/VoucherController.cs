@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using EnterpriseDevProj.Models.VoucherFolder;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace EnterpriseDevProj.Controllers
 {
@@ -116,5 +119,76 @@ namespace EnterpriseDevProj.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPost("claimVoucher/{voucherId}"), Authorize]
+        public IActionResult ClaimVoucher(int voucherId)
+        {
+            try
+            {
+                int userID = GetUserID();
+                int voucherID = voucherId;
+
+                var voucherClaimCheck = dbContext.VoucherClaims.Where(x => x.UserId == userID && x.VoucherId == voucherId).FirstOrDefault();
+                if (voucherClaimCheck != null)
+                {
+                    logger.LogError("Voucher already claimed");
+                    var message = "Voucher already claimed.";
+                    return BadRequest(new { message });
+                }
+
+                VoucherClaims voucherClaim = new()
+                {
+                    VoucherId = voucherID,
+                    UserId = userID,
+                    isUsed = false
+                };
+
+                dbContext.VoucherClaims.Add(voucherClaim);
+                dbContext.SaveChanges();
+
+                Voucher voucher = dbContext.Vouchers.Find(voucherId);
+                voucher.VoucherUses -= 1;
+
+                dbContext.Vouchers.Update(voucher);
+                dbContext.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in claiming voucher");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("claimedVouchers"), Authorize]
+        public IActionResult ViewClaimedVouchers()
+        {
+            try
+            {
+                int userID = GetUserID();
+
+                var claimedVoucherList = dbContext.VoucherClaims.Where(x => x.UserId == userID).Include(v => v.Voucher).ToList();
+                return Ok(claimedVoucherList);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in displaying claimed vouchers.");
+                return StatusCode(500);
+            }
+        }
+
+        public int GetUserID()
+        {
+            try
+            {
+                return Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).SingleOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return 401;
+            }
+        }
     }
+
 }

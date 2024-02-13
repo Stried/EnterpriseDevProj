@@ -23,16 +23,14 @@ function PurchaseComplete() {
     }, []);
 
     useEffect(() => {
-        const delay = 5000; // 2 seconds in milliseconds
+        const delay = 2000; // 2 seconds in milliseconds
         const timerId = setTimeout(() => {
             http.post("/order/NewOrder", null, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
             }).then((res) => {
-                console.log(cartItemList)
-                console.log(cartItemList[0].event.eventId);
-                console.log(cartItemList[0].subTotal)
+
                 for (var i = 0; i < cartItemList.length; i++) {
                     const formData = {
                         // Please note that when taking from a json response, first letter is always small
@@ -96,7 +94,7 @@ function PurchaseComplete() {
                 <div className="bg-orange-400 px-3 py-2 rounded-xl font-semibold text-xl hover:shadow-lg hover:bg-orange-600 hover:text-white transition duration-300">
                     <Link
                         to={`/receipt/${order.orderId}`}>
-                        View Receipt
+                        View Receipt {order.orderId}
                     </Link>
                 </div>
             </div>

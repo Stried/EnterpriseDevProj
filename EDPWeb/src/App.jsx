@@ -77,8 +77,7 @@ function App() {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
                         "accessToken"
-                    )}`, // This is needed for mine for some reason, not part of the practical
-                    // - So then, is it really practical? Pratically practicalism? Practicalismality? Praticalismalitism? Malteser?
+                    )}`,
                 },
             })
                 .then((res) => {
@@ -93,7 +92,7 @@ function App() {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(
                         "googleAccessToken"
-                    )}`, // This is needed for mine for some reason, not part of the practical
+                    )}`,
                 },
             })
                 .then((res) => {

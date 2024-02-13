@@ -51,7 +51,7 @@ function Checkout() {
 
     return (
         <div className="bg-gray-200 pb-10 flex flex-col-2 justify-between">
-            <div className='pl-20 w-3/4 mr-10'>
+            <div className="pl-20 w-3/4 mr-10">
                 <div className="text-2xl font-extralight p-6">
                     Confirm Purchase
                 </div>
@@ -79,10 +79,11 @@ function Checkout() {
                     </div>
                     <div className="text-orange-800 border-2 border-orange-600 my-8 ml-10 px-5 rounded flex flex-row justify-between w-full bg-orange-300 items-center">
                         <div className="inline-block">
-                            <span className="font-bold">{voucherCount}</span>{voucherString}
+                            <span className="font-bold">{voucherCount}</span>
+                            {voucherString}
                         </div>
                         <div className="inline-block underline font-semibold">
-                            Use a voucher
+                            <Link to={"/"}>Use a voucher</Link>
                         </div>
                     </div>
                 </div>
@@ -91,42 +92,40 @@ function Checkout() {
                         Purchased Items
                     </div>
                     <button className="underline inline-block font-semibold my-9 py-1 px-2 rounded-md bg-orange-400 hover:text-white hover:bg-orange-600 transition duration-300">
-                        <Link
-                            to="/myCart">
-                            Edit Purchase?
-                        </Link>
+                        <Link to="/myCart">Edit Purchase?</Link>
                     </button>
                 </div>
                 <div className="custom-scrollbar overflow-y-scroll h-48">
-                    {
-                        cartItemList.map((cartItem, i) => {
-                            return (
-                                <div
-                                    key={cartItem}
-                                    className="ml-7">
-                                    <div className="p-2 flex justify-between">
-                                        <div className="flex">
-                                            <img
-                                                src="../src/assets/backgroundMain1.jpg"
-                                                className="w-48 rounded-lg"
-                                            ></img>
-                                            <div className="ml-3">
-                                                <div className="font-bold text-xl text-wrap">
-                                                    {cartItem.event.eventName}
-                                                </div>
-                                                <div className="">
-                                                    Qty: {cartItem.quantity}
-                                                </div>
+                    {cartItemList.map((cartItem, i) => {
+                        return (
+                            <div
+                                key={cartItem}
+                                className="ml-7"
+                            >
+                                <div className="p-2 flex justify-between">
+                                    <div className="flex">
+                                        <img
+                                            src="../src/assets/backgroundMain1.jpg"
+                                            className="w-48 rounded-lg"
+                                        ></img>
+                                        <div className="ml-3">
+                                            <div className="font-bold text-xl text-wrap">
+                                                {cartItem.event.eventName}
+                                            </div>
+                                            <div className="">
+                                                Qty: {cartItem.quantity}
                                             </div>
                                         </div>
-                                        <div className="text-3xl font-bold">
-                                            ${cartItem.event.eventPrice * cartItem.quantity}
-                                        </div>
+                                    </div>
+                                    <div className="text-3xl font-bold">
+                                        $
+                                        {cartItem.event.eventPrice *
+                                            cartItem.quantity}
                                     </div>
                                 </div>
-                            )
-                        })
-                    }
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
             <div className="w-1/4 bg-gray-100 rounded-lg border border-gray-300 mt-20 pt-3 px-3 mr-7 flex flex-col">
@@ -143,18 +142,19 @@ function Checkout() {
                 </div>
                 <div className="flex flex-grow"></div>
                 <div className="flex flex-col-2 justify-between w-full text-lg mb-3 border-black border-t-2 border-dashed pt-3">
-                    <div className="place-self-center">Purchased Items ({cartItemList.length} items)</div>
-                    <div className="text-3xl font-semibold text-orange-600">${subTotal - voucher}</div>
+                    <div className="place-self-center">
+                        Purchased Items ({cartItemList.length} items)
+                    </div>
+                    <div className="text-3xl font-semibold text-orange-600">
+                        ${subTotal - voucher}
+                    </div>
                 </div>
                 <button className="bg-orange-400 font-bold my-3 py-5 rounded-lg text-2xl hover:bg-orange-600 hover:text-white transition duration-300">
-                    <Link
-                        to={"/paymentForm"}>
-                        Finalize Purchase
-                    </Link>
+                    <Link to={"/paymentForm"}>Finalize Purchase</Link>
                 </button>
             </div>
         </div>
-    )
+    );
 }
 
 export default Checkout

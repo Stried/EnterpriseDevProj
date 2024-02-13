@@ -56,6 +56,8 @@ namespace EnterpriseDevProj
 
         public DbSet<Voucher> Vouchers { get; set; }
 
+        public DbSet<VoucherClaims> VoucherClaims { get; set; }
+
         public DbSet<Ticket> Tickets { get; set; }
 
         public DbSet<Comment> Comments { get; set; }

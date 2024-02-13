@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240213051736_VoucherClaims2")]
+    partial class VoucherClaims2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,9 +142,6 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
 
-                    b.Property<int>("RemainingPax")
-                        .HasColumnType("int");
-
                     b.HasKey("DateId");
 
                     b.HasIndex("CartItemId");
@@ -172,6 +172,10 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(3000)
                         .HasColumnType("varchar(3000)");
 
+                    b.Property<string>("DateType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("EventCreatedAt")
                         .HasColumnType("datetime");
 
@@ -185,8 +189,8 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
 
-                    b.Property<float>("EventPrice")
-                        .HasColumnType("float");
+                    b.Property<int>("EventPrice")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EventUpdatedAt")
                         .HasColumnType("datetime");
@@ -194,14 +198,17 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateOnly>("ExpiryDate")
                         .HasColumnType("date");
 
-                    b.Property<float>("FriendPrice")
-                        .HasColumnType("float");
+                    b.Property<int>("FriendPrice")
+                        .HasColumnType("int");
 
                     b.Property<int>("MaxPax")
                         .HasColumnType("int");
 
-                    b.Property<float>("NTUCPrice")
-                        .HasColumnType("float");
+                    b.Property<int>("NTUCPrice")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RemainingPax")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -211,6 +218,37 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CartItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ImageCreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ImageUpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("CartItemId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
@@ -668,6 +706,23 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
+                        .WithMany()
+                        .HasForeignKey("CartItemId");
+
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CartItem");
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
