@@ -149,12 +149,11 @@ function Cart() {
 
     return ( 
         <div className="text-blue-950 bg-gradient-to-br from-gray-800 to-red-700 pb-10">
-            <div className='pt-10'>
-                <div className="text-center items-center justify-center">
-                    <h1 className='text-gray-200 font-bold text-6xl'>Your Cart</h1><br/>
-                    <h2 className='text-gray-200 font-semibold text-3xl italic'>Stuff you've ordered goes here!</h2>
-                </div>
+            <div className="text-center items-center justify-center">
+                <h1 className='text-gray-200 font-bold text-6xl pt-10'>Your Cart</h1><br/>
+                <h2 className='text-gray-200 font-semibold text-3xl italic'>Stuff you've ordered goes here!</h2>
             </div>
+
             {cartItemList.length > 0 && (
                 <div>
                     <div className='mt-5 flex justify-between'>
@@ -350,7 +349,7 @@ function Cart() {
             )}
             {cartItemList.length === 0 && (
                 <div className=''>
-                    <div className='text-5xl font-semibold flex items-center justify-center pt-48 pb-10'>
+                    <div className='text-5xl font-semibold flex items-center justify-center pt-48 pb-10 text-gray-100'>
                         Your Shopping Cart is Currently Empty
                     </div>
                     <div className='text-3xl font-semibold flex w-3/12 justify-center mx-auto mb-48 bg-orange-400 py-2 rounded-lg hover:bg-orange-600 hover:text-white transition duration-300'>

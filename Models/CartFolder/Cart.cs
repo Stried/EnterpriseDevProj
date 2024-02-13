@@ -17,5 +17,7 @@ namespace EnterpriseDevProj.Models.CartFolder
         public DateTime UpdatedAt { get; set; }
         public User? User { get; set; }
         public List<CartItem>? CartItems { get; set; }
+
+        public double SubTotal { get; set; }
     }
 }

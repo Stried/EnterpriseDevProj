@@ -630,11 +630,11 @@ function UserAccount() {
                                     </div>
                                 )}
 
-                                {currentOption == "optionSix" && (
+{currentOption == "optionSix" && (
                                     <div className="">
                                         <div className="">
                                             <h1 className="text-3xl font-light">
-                                                Transaction history
+                                                Transaction History
                                             </h1>
                                             {orderList.length == 0 && (
                                                 <p>
@@ -642,20 +642,58 @@ function UserAccount() {
                                                 </p>
                                             )}
                                             {orderList &&
-                                                orderList.map((order, i) =>
-                                                {
-                                                    return (
-                                                        <div>
-                                                            <p>{order.orderId}</p>
-                                                            <button>
-                                                                <Link
-                                                                    to={`/receipt/${order.orderId}`}>
-                                                                    Click
-                                                                </Link>
-                                                            </button>
+                                                <div className="bg-gray-100 text-black mt-3 rounded-md pt-2 pl-2 pr-2 drop-shadow-lg">
+                                                    <div className="flex flex-col-3 font-semibold justify-between pr-2 border-b-2 border-zinc-200 pb-2">
+                                                        <div className="pl-1">
+                                                            Receipt Id
                                                         </div>
-                                                    )
-                                                })}
+                                                        <div className="pr-12 pl-3">
+                                                            Time of Purchase
+                                                        </div>
+                                                        <div className="pr-40">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    {orderList.map((order, i) => {
+                                                        return (
+                                                            <div key={i}>
+                                                                {i != orderList.length-1 &&
+                                                                    <div 
+                                                                    className="bg-gray-100 font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                                                        <div className="flex pl-2">
+                                                                            {order.orderId}
+                                                                        </div>
+                                                                        <div className="flex">
+                                                                            {new Date(order.createdAt).toLocaleString('en-US')}
+                                                                        </div>
+                                                                        <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
+                                                                            <Link to={`/receipt/${order.orderId}`}>
+                                                                                Click to view receipt
+                                                                            </Link>
+                                                                        </button>
+                                                                    </div>
+                                                                }
+                                                                {i == orderList.length-1 &&
+                                                                    <div 
+                                                                    className="bg-gray-100 text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                                                        <div className="flex pl-2">
+                                                                            {order.orderId}
+                                                                        </div>
+                                                                        <div className="flex">
+                                                                            {new Date(order.createdAt).toLocaleString('en-US')}
+                                                                        </div>
+                                                                        <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
+                                                                            <Link to={`/receipt/${order.orderId}`}>
+                                                                                Click to view receipt
+                                                                            </Link>
+                                                                        </button>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 )}
