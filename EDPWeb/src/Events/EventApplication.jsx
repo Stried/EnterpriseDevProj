@@ -75,8 +75,9 @@ function ApplyEvent() {
         },
     })
         .then((res) => {
-            console.log(res.data.fileName);
-            setEventImageFile(res.data.fileName);
+            console.log(res.data);
+            // changed to small 'n' in fileName -> filename
+            setEventImageFile(res.data.filename);
         })
         .catch(function (err) {
             console.log(err);
@@ -186,7 +187,8 @@ function ApplyEvent() {
       const roundedNTUCPrice = parseFloat(data.NTUCPrice).toFixed(2);
 
       if (eventImageFile) {
-        data.EventImageFile = eventImageFile;
+          data.EventImageFile = eventImageFile;
+          console.log(data.EventImageFile + "Event Image File HERE")
     }
 
       const formData = {

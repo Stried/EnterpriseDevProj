@@ -40,7 +40,7 @@
 
 	<ItemGroup>
 	  <Folder Include="EDPWeb\src\Tickets\" />
-	  <Folder Include="wwwroot\images\" />
 	  <Folder Include="wwwroot\eventimages\" />
+	  <Folder Include="wwwroot\images\" />
 	</ItemGroup>
 </Project>

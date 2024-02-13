@@ -75,8 +75,7 @@ namespace EnterpriseDevProj.Controllers
 
             var id = Nanoid.Generate(size: 10);
             var filename = id + Path.GetExtension(File.FileName);
-            var imagePath = Path.Combine(environment.ContentRootPath,
-            @"wwwroot/eventimages", filename);
+            var imagePath = Path.Combine(environment.ContentRootPath, @"wwwroot/eventimages", filename);
             using var fileStream = new FileStream(imagePath, FileMode.Create);
             File.CopyTo(fileStream);
 
