@@ -10,26 +10,13 @@ namespace EnterpriseDevProj.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_CartItems_Events_EventId",
-                table: "CartItems");
 
-            migrationBuilder.DropIndex(
-                name: "IX_CartItems_DateId",
-                table: "CartItems");
-
-            migrationBuilder.DropIndex(
-                name: "IX_CartItems_EventId",
-                table: "CartItems");
 
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_CartItems_DateId",
-                table: "CartItems");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_EventId",
