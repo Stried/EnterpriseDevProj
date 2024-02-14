@@ -120,10 +120,10 @@ namespace EnterpriseDevProj.Controllers
                 UpdatedAt = now,
                 DateId = cartItem.DateId,
                 CartId = result,
-                EventId = cartItem.EventId
             };
             var eventPrice = _context.Events.Where(t => t.EventId == cartItem.EventId).Select(t => t.EventPrice).FirstOrDefault();
             myCartItem.SubTotal = myCartItem.Quantity * eventPrice;
+            logger.LogInformation("Check One");
 
             var checkForCartItem = _context.CartItems.Where(x => x.DateId == cartItem.DateId && x.CartId == result).FirstOrDefault();
             if (checkForCartItem != null)
@@ -133,13 +133,18 @@ namespace EnterpriseDevProj.Controllers
 
                 return Ok();
             }
+            logger.LogInformation("Check Two");
 
             _context.CartItems.Add(myCartItem);
             _context.SaveChanges();
 
+            logger.LogInformation("Check Three");
+
             CartItem? newCartItem = _context.CartItems.Include(t => t.Cart).Include(e => e.Dates)
-                        .FirstOrDefault(t => t.CartId == myCartItem.CartId && t.EventId == myCartItem.EventId);
+                        .FirstOrDefault(t => t.CartId == myCartItem.CartId);
             CartItemDTO cartItemDTO = _mapper.Map<CartItemDTO>(newCartItem);
+            logger.LogInformation("Check Four");
+
             return Ok(cartItemDTO);
         }
 

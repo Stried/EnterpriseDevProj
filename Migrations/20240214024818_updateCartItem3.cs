@@ -5,12 +5,14 @@
 namespace EnterpriseDevProj.Migrations
 {
     /// <inheritdoc />
-    public partial class FinalCheck : Migration
+    public partial class updateCartItem3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
+            migrationBuilder.DropColumn(
+                name: "EventId",
+                table: "CartItems");
         }
 
         /// <inheritdoc />

@@ -13,7 +13,6 @@ namespace EnterpriseDevProj.Models.CartFolder
         public int Quantity { get; set; }
         public int CartId { get; set; }
         public int DateId { get; set; }
-        public int EventId { get; set; }
         [Required]
         public int EventPrice {get; set;}		
         [Required, MinLength(3), MaxLength(60)]

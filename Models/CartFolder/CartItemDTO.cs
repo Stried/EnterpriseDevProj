@@ -14,7 +14,6 @@ namespace EnterpriseDevProj.Models.CartFolder
         public string EventName {get; set;} = string.Empty;
         public int DateId {get; set;}
         public DateTime DateOfEvent { get; set; }
-        public int EventId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public CartDTO? Cart { get; set; }
