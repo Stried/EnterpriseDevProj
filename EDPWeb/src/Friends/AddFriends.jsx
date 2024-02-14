@@ -2,7 +2,8 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import http from "../../http";
 import * as yup from "yup";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Spinner, Card, Avatar, theme } from "flowbite-react";
 
 function AddFriends() {
@@ -60,6 +61,7 @@ function AddFriends() {
         })
             .then((res) => {
                 console.log(res.status);
+                toast.info("Friend request has been sent.")
             })
             .catch(function (err) {
                 console.log(err);
@@ -69,6 +71,7 @@ function AddFriends() {
 
     return (
         <div className="flex space-x-3 m-10">
+            <ToastContainer />
             <div className="w-1/3 p-5">
                 <h1 className="text-2xl">Send Friend Request</h1>
                 <div className="my-4">
@@ -118,7 +121,12 @@ function AddFriends() {
                                             {user.email}
                                         </p>
 
-                                        <button onClick={() => sendFriendRequest(user.id)} className="py-2 px-3 mt-3 bg-orange-400 rounded-md">
+                                        <button
+                                            onClick={() =>
+                                                sendFriendRequest(user.id)
+                                            }
+                                            className="py-2 px-3 mt-3 bg-orange-400 rounded-md"
+                                        >
                                             Send Request
                                         </button>
                                     </div>

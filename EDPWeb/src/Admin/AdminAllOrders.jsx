@@ -23,14 +23,11 @@ function AdminAllOrders() {
     return (
         <div>
             <div>
-
-            </div>
-            <div>
                 {orderList.map((order, i) => {
                     return (
-                        <div key={i}>
+                        <div className="" key={i}>
                             {i != orderList.length - 1 && (
-                                <div className="bg-gray-100 font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200 pb-2">
+                                <div className="bg-gray-100 rounded-md items-center font-light text-black content-center my-3 flex flex-col-3 justify-between py-2 pl-6 pr-2 justify-items-center border-b-2 border-zinc-200">
                                     <div className="flex pl-2">
                                         {order.orderId}
                                     </div>
@@ -39,7 +36,7 @@ function AdminAllOrders() {
                                             order.createdAt
                                         ).toLocaleString("en-US")}
                                     </div>
-                                    <button className="bg-red-400 p-1 rounded-md mb-2 -mt-1 px-3 hover:bg-red-600 transition duration-300">
+                                    <button className="bg-red-400 py-2 p-1 mt-1 rounded-md mx-1 px-3 hover:bg-red-500 transition duration-300">
                                         <Link to={`/receipt/${order.orderId}`}>
                                             Click to view receipt
                                         </Link>

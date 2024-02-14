@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240211142502_CommentsUpdate1")]
-    partial class CommentsUpdate1
+    [Migration("20240214064702_ReInit")]
+    partial class ReInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,10 +34,16 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<double>("SubTotal")
+                        .HasColumnType("double");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoucherUsed")
                         .HasColumnType("int");
 
                     b.HasKey("CartId");
@@ -60,7 +66,18 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("EventId")
+                    b.Property<int>("DateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfEvent")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("EventName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<int>("EventPrice")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -76,7 +93,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("EventId")
+                    b.HasIndex("DateId")
                         .IsUnique();
 
                     b.ToTable("CartItems");
@@ -123,9 +140,6 @@ namespace EnterpriseDevProj.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateCreatedAt")
                         .HasColumnType("datetime");
 
@@ -143,9 +157,10 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
 
-                    b.HasKey("DateId");
+                    b.Property<int>("RemainingPax")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CartItemId");
+                    b.HasKey("DateId");
 
                     b.HasIndex("EventId");
 
@@ -170,15 +185,15 @@ namespace EnterpriseDevProj.Migrations
 
                     b.Property<string>("ContentHTML")
                         .IsRequired()
-                        .HasMaxLength(3000)
-                        .HasColumnType("varchar(3000)");
-
-                    b.Property<string>("DateType")
-                        .IsRequired()
+                        .HasMaxLength(60000)
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("EventCreatedAt")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("EventImageFile")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("EventLocation")
                         .IsRequired()
@@ -190,8 +205,8 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("varchar(60)");
 
-                    b.Property<int>("EventPrice")
-                        .HasColumnType("int");
+                    b.Property<float>("EventPrice")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("EventUpdatedAt")
                         .HasColumnType("datetime");
@@ -199,17 +214,14 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateOnly>("ExpiryDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("FriendPrice")
-                        .HasColumnType("int");
+                    b.Property<float>("FriendPrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("MaxPax")
                         .HasColumnType("int");
 
-                    b.Property<int>("NTUCPrice")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RemainingPax")
-                        .HasColumnType("int");
+                    b.Property<float>("NTUCPrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
@@ -219,37 +231,6 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
-                {
-                    b.Property<int>("ImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ImageCreatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("ImageUpdatedAt")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ImageId");
-
-                    b.HasIndex("CartItemId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
@@ -275,6 +256,26 @@ namespace EnterpriseDevProj.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Friends");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.MembershipFolder.Membership", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("MembershipStatus")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Memberships");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.Miscellaneous.Theme", b =>
@@ -312,6 +313,107 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("Themes");
                 });
 
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
+                {
+                    b.Property<int>("OrderItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("DateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateOfEvent")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EventName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("EventPrice")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<float>("SubTotal")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("OrderItemId");
+
+                    b.HasIndex("DateId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
+                {
+                    b.Property<int>("OrderParticipantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderParticipantEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OrderParticipantName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("OrderParticipantPhoneNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("OrderParticipantId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrdersParticipants");
+                });
+
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -323,8 +425,14 @@ namespace EnterpriseDevProj.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -380,6 +488,8 @@ namespace EnterpriseDevProj.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
                 });
@@ -520,6 +630,30 @@ namespace EnterpriseDevProj.Migrations
                     b.ToTable("Vouchers");
                 });
 
+            modelBuilder.Entity("EnterpriseDevProj.Models.VoucherFolder.VoucherClaims", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoucherId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isUsed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("VoucherClaims");
+                });
+
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
@@ -539,15 +673,15 @@ namespace EnterpriseDevProj.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Date", "Dates")
                         .WithOne("CartItem")
-                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "EventId")
+                        .HasForeignKey("EnterpriseDevProj.Models.CartFolder.CartItem", "DateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
 
-                    b.Navigation("Event");
+                    b.Navigation("Dates");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.CartParticipant", b =>
@@ -563,17 +697,11 @@ namespace EnterpriseDevProj.Migrations
 
             modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
                 {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemId");
-
                     b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
                         .WithMany("Dates")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CartItem");
 
                     b.Navigation("Event");
                 });
@@ -589,23 +717,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Image", b =>
-                {
-                    b.HasOne("EnterpriseDevProj.Models.CartFolder.CartItem", "CartItem")
-                        .WithMany()
-                        .HasForeignKey("CartItemId");
-
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-
-                    b.Navigation("Event");
-                });
-
             modelBuilder.Entity("EnterpriseDevProj.Models.FriendsFolder.Friend", b =>
                 {
                     b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
@@ -615,6 +726,58 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.MembershipFolder.Membership", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Date", "Dates")
+                        .WithMany()
+                        .HasForeignKey("DateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dates");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderParticipant", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.OrderFolder.OrderItem", "OrderItem")
+                        .WithMany("Participants")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Comment", b =>
@@ -632,6 +795,17 @@ namespace EnterpriseDevProj.Migrations
                         .IsRequired();
 
                     b.Navigation("Ticket");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.TicketFolder.Ticket", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -664,6 +838,25 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("UserGroup");
                 });
 
+            modelBuilder.Entity("EnterpriseDevProj.Models.VoucherFolder.VoucherClaims", b =>
+                {
+                    b.HasOne("EnterpriseDevProj.Models.UserFolder.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EnterpriseDevProj.Models.VoucherFolder.Voucher", "Voucher")
+                        .WithMany()
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("EnterpriseDevProj.Models.CartFolder.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -674,11 +867,24 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Date", b =>
                 {
                     b.Navigation("CartItem");
+                });
 
+            modelBuilder.Entity("EnterpriseDevProj.Models.EventFolder.Event", b =>
+                {
                     b.Navigation("Dates");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
+                {
+                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("EnterpriseDevProj.Models.UserFolder.User", b =>
@@ -688,6 +894,8 @@ namespace EnterpriseDevProj.Migrations
                     b.Navigation("Events");
 
                     b.Navigation("Friends");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("UserGroups");
                 });

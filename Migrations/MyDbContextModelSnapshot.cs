@@ -69,9 +69,6 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("DateOfEvent")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
                     b.Property<string>("EventName")
                         .IsRequired()
                         .HasMaxLength(60)

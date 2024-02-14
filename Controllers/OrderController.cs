@@ -81,6 +81,15 @@ namespace EnterpriseDevProj.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetMyCurrentOrderReceipt/{id}"), Authorize]
+        public IActionResult GetMyCurrentOrderReceipt(int id)
+        {
+            var user = GetUserId();
+            var result = _context.Orders.Where(t => t.OrderId == id).Include(t => t.OrderItems).Include( t=> t.User).OrderByDescending(t => t.OrderId).FirstOrDefault();
+
+            return Ok(result);
+        }
+
         // OrderItem
         [HttpPost("CreateOrderItem"), Authorize]
         public IActionResult CreateOrderItem(AddOrderItemRequest orderItem)
@@ -112,7 +121,14 @@ namespace EnterpriseDevProj.Controllers
                 };
                 logger.LogInformation("Check 2");
 
-                
+                var date = _context.Dates.FirstOrDefault(d => d.DateId == myOrderItem.DateId);
+
+                if (date != null)
+                {
+
+                    date.RemainingPax -= myOrderItem.Quantity;
+
+                }
 
                 _context.OrderItems.Add(myOrderItem);
                 _context.SaveChanges();
@@ -140,7 +156,7 @@ namespace EnterpriseDevProj.Controllers
         public IActionResult GetOrderItem(int id)
         {
             var usersOrderItems = _context.OrderItems.Where(t => t.OrderId == id);
-            List<OrderItem> orderItems = usersOrderItems.Include(t => t.Dates).OrderByDescending(x => x.CreatedAt).ToList();
+            List<OrderItem> orderItems = usersOrderItems.Include(t => t.Dates)  .OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(orderItems);  
         }
     }

@@ -202,7 +202,7 @@ function UserAccount() {
                                         />
                                     </div>
                                     <div className="w-2/3">
-                                        <h1 className="text-3xl font-medium">
+                                        <h1 className="text-3xl font-medium truncate">
                                             {user.name}
                                         </h1>
                                         <p className="flex">

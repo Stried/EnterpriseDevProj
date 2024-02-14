@@ -25,20 +25,20 @@ function Receipt() {
     }, [id]);
 
     useEffect(() => {
-        http.get(`/order/GetMySpecificOrder/${id}`, {
+        http.get(`/order/GetMyCurrentOrderReceipt/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
         })
             .then((res) => {
                 console.log(res.data);
-                setOrder(res.data)
-                console.log(res.data.user)
-                setUser(res.data.user)
+                setOrder(res.data);
+                console.log(res.data.user);
+                setUser(res.data.user);
             })
             .catch(function (err) {
                 console.log(err);
-            })
+            });
     }, [id]);
 
     return (
