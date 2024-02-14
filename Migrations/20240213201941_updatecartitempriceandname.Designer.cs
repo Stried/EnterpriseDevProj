@@ -3,6 +3,7 @@ using System;
 using EnterpriseDevProj;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EnterpriseDevProj.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240213201941_updatecartitempriceandname")]
+    partial class updatecartitempriceandname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,20 +347,7 @@ namespace EnterpriseDevProj.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DateId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateOfEvent")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EventName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("EventPrice")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderId")
@@ -374,7 +364,7 @@ namespace EnterpriseDevProj.Migrations
 
                     b.HasKey("OrderItemId");
 
-                    b.HasIndex("DateId");
+                    b.HasIndex("EventId");
 
                     b.HasIndex("OrderId");
 
@@ -752,9 +742,9 @@ namespace EnterpriseDevProj.Migrations
 
             modelBuilder.Entity("EnterpriseDevProj.Models.OrderFolder.OrderItem", b =>
                 {
-                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Date", "Dates")
+                    b.HasOne("EnterpriseDevProj.Models.EventFolder.Event", "Event")
                         .WithMany()
-                        .HasForeignKey("DateId")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -764,7 +754,7 @@ namespace EnterpriseDevProj.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Dates");
+                    b.Navigation("Event");
 
                     b.Navigation("Order");
                 });

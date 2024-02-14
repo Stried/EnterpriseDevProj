@@ -32,7 +32,7 @@ namespace EnterpriseDevProj.Models.EventFolder
 
         [Range(0, 200)]
         public int RemainingPax { get; set; }
-
+    
         public string DateType { get; set; } = string.Empty;
 
         [MaxLength(60000)]

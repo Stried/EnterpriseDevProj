@@ -57,7 +57,11 @@ function PurchaseComplete() {
                             SubTotal: cartItemList[i].subTotal,
                             // Error also caused by fact that cartItemList[i] returns undefined, u can test it if you want.
                             // Changed to cartItemList.Event.EventId to referece event Id from event object
-                            EventId: cartItemList[i].event.eventId,
+                            DateOfEvent: cartItemList[i].dateOfEvent,
+                            EventName: cartItemList[i].eventName,
+                            DateId: cartItemList[i].dateId,
+                            EventPrice: cartItemList[i].eventPrice,
+                            EventId: cartItemList[i].eventId,
                         };
 
                         http.post("/cart/updateCartSubtotal/0", null, {

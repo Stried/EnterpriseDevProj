@@ -12,7 +12,7 @@ function Checkout() {
 
     let subTotal = 0;
     cartItemList.forEach((cartItem) => {
-        subTotal = subTotal + (cartItem.event.eventPrice * cartItem.quantity)
+        subTotal = subTotal + (cartItem.eventPrice * cartItem.quantity)
     })
     let voucher = 0;
 
@@ -162,7 +162,7 @@ function Checkout() {
                                         ></img>
                                         <div className="ml-3">
                                             <div className="font-bold text-xl text-wrap">
-                                                {cartItem.event.eventName}
+                                                {cartItem.eventName}
                                             </div>
                                             <div className="">
                                                 Qty: {cartItem.quantity}
@@ -171,7 +171,7 @@ function Checkout() {
                                     </div>
                                     <div className="text-3xl font-bold">
                                         $
-                                        {cartItem.event.eventPrice *
+                                        {cartItem.eventPrice *
                                             cartItem.quantity}
                                     </div>
                                 </div>
